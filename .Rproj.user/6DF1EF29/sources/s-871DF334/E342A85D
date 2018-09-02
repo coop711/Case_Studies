@@ -5,15 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "4019841366",
+    "hash" : "582090773",
     "id" : "E342A85D",
-    "lastKnownWriteTime" : 1535877835,
-    "last_content_update" : 1535877835943,
+    "lastKnownWriteTime" : 1535879130,
+    "last_content_update" : 1535879130911,
     "path" : "~/Google 드라이브/Works/Class/Data_Science/R.WD/Case_Studies/R/Doorae_Report.Rmd",
     "project_path" : null,
     "properties" : {
-        "cursorPosition" : "416,16",
-        "scrollLine" : "392"
+        "cursorPosition" : "474,0",
+        "scrollLine" : "456"
     },
     "relative_order" : 3,
     "source_on_save" : false,

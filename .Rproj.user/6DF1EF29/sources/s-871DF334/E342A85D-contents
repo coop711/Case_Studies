@@ -42,7 +42,8 @@ options(width=132)
 options(digits=3)
 cols.no.summary.names <-c("설립일", "사업자등록", "업태", "종목", "소재지", "사업명", "아이디어", "대표상품") 
 cols.no.summary <- which(names(doorae) %in% cols.no.summary.names)
-sapply(doorae[, -cols.no.summary], summary)
+sapply(doorae[, c(1:9, 15:17)], summary)
+sapply(doorae[, c(18, 20:22, 25:54)], summary)
 # pander(doorae.summary)
 ```
 
@@ -79,7 +80,7 @@ kable(as.matrix(status.vs.structure.ap.2), caption = "ㅇ조직형태와 공동�
 * 공동체상태와 조직형태
     * 경영개선 상태에서 법인격을 갖춘 공동체사업의 비율이 창업준비 상태에서 법인격을 갖춘 공동체사업의 비율보다 압도적으로 많다는 점에 유의.
 
-```{r, echo=FALSE, fig.width = 6, fig.height = 4.5}
+```{r, echo=FALSE, fig.width = 6, fig.height = 4.2}
 source("./mosaic_gg.R")
 mosaic_gg(status.vs.structure, 
           base_family = "HCR Dotum LVT",
@@ -94,7 +95,7 @@ mosaic_gg(status.vs.structure,
 * 조직형태와 공동체상태
     * 이는 거꾸로 법인격을 갖춘 공동체사업체 중에 경영개선 상태에 들어간 비율이 압도적으로 많다는 것으로 이해할 수도 있음.
 
-```{r, echo=FALSE, fig.width = 6, fig.height = 4.5}
+```{r, echo=FALSE, fig.width = 6, fig.height = 4.2}
 mosaic_gg(t(status.vs.structure), 
           base_family = "HCR Dotum LVT",
           ggtitle = "조직형태와 공동체상태",
@@ -291,6 +292,8 @@ box.4 <- box.3 +
 box.4
 ```
 
+<P style = "page-break-before:always">
+
 ### ECDF
 
 * 분위수 비교 뿐 아니라 평균 업력 비교도 가능함
@@ -422,6 +425,8 @@ poly.14 <- poly.13 +
 poly.14
 ```
 
+<P style = "page-break-before:always">
+
 ### Dot Chart
 
 * 전체 주민공동체사업의 업력을 공동체상태별로 한눈에 비교 
@@ -466,6 +471,7 @@ d.9 <- d.8 +
 d.9
 ```
 
+<P style = "page-break-before:always">
 
 ## 방문객과 매출 요약
 
