@@ -1,0 +1,536 @@
+---
+title: "관광두레 주민공동체 현황분석"
+author: "한림대학교 이기원"
+output: html_document
+---
+
+## 자료 구조
+
+### 기초자료
+
+```{r, echo=FALSE, message=FALSE}
+load("doorae_new_data.RData")
+# load("coord.rda")
+library(knitr)
+library(ggplot2)
+library(extrafont)
+library(pander)
+library(RColorBrewer)
+panderOptions("table.split.table", Inf)
+```
+
+
+```{r, echo=FALSE}
+doorae <- doorae0924
+doorae.ys <- doorae0924.ys
+str(doorae[, 1:24])
+```
+
+<P style = "page-break-before:always">
+
+### 성과자료
+
+```{r, echo=FALSE}
+str(doorae[, 25:54])
+```
+
+<P style = "page-break-before:always">
+
+## 변수별 기초통계 및 요약
+
+```{r echo=FALSE}
+options(width=132)
+options(digits=3)
+cols.no.summary.names <-c("설립일", "사업자등록", "업태", "종목", "소재지", "사업명", "아이디어", "대표상품") 
+cols.no.summary <- which(names(doorae) %in% cols.no.summary.names)
+sapply(doorae[, -cols.no.summary], summary)
+# pander(doorae.summary)
+```
+
+<P style = "page-break-before:always">
+
+# 교차분석
+
+## 공동체상태와 조직형태
+
+### 교차표
+
+```{r, echo=FALSE, message=FALSE}
+status.vs.structure <- table(doorae$"공동체상태", doorae$"조직형태", dnn = c("공동체상태", "조직형태"))
+status.vs.structure.am <- addmargins(status.vs.structure)
+dimnames(status.vs.structure.am)[[1]][3] <- "계"
+dimnames(status.vs.structure.am)[[2]][3] <- "계"
+status.vs.structure.ap <- round(prop.table(status.vs.structure, margin = 1) * 100, digits = 1)
+status.vs.structure.ap <-addmargins(status.vs.structure.ap)[1:2, ]
+dimnames(status.vs.structure.ap)[[2]][3] <- "계"
+status.vs.structure.ap.2 <-addmargins(prop.table(status.vs.structure, margin = 2) * 100)[ , 1:2]
+dimnames(status.vs.structure.ap.2)[[1]][3] <- "계"
+```
+
+```{r, echo=FALSE, results='asis'}
+kable(as.matrix(status.vs.structure.am), caption="ㅇ공동체상태와 조직형태(계)")
+kable(as.matrix(status.vs.structure.ap), caption="ㅇ공동체상태와 조직형태(%, 계)")
+kable(as.matrix(status.vs.structure.ap.2), caption="ㅇ조직형태와 공동체상태(%, 계)")
+```
+
+<P style = "page-break-before:always">
+
+### 모자이크 플롯
+
+* 공동체상태와 조직형태
+    * 경영개선 상태에서 법인격을 갖춘 공동체사업의 비율이 창업준비 상태에서 법인격을 갖춘 공동체사업의 비율보다 압도적으로 많다는 점에 유의.
+
+```{r, echo=FALSE, fig.width = 6, fig.height = 4.5}
+source("./mosaic_gg.R")
+mosaic_gg(status.vs.structure, 
+          base_family = "HCR Dotum LVT",
+          ggtitle = "공동체상태와 조직형태",
+          xlab = "조직형태",
+          ylab = "공동체상태",
+          fill.name = "공동체상태")
+# mosaicplot(status.vs.structure, color = rainbow(2), main = "공동체상태와 조직형태")
+# text(coord.text, labels = t(status.vs.structure))
+```
+
+* 조직형태와 공동체상태
+    * 이는 거꾸로 법인격을 갖춘 공동체사업체 중에 경영개선 상태에 들어간 비율이 압도적으로 많다는 것으로 이해할 수도 있음.
+
+```{r, echo=FALSE, fig.width = 6, fig.height = 4.5}
+mosaic_gg(t(status.vs.structure), 
+          base_family = "HCR Dotum LVT",
+          ggtitle = "조직형태와 공동체상태",
+          ylab = "조직형태",
+          xlab = "공동체상태",
+          fill.name = "조직형태")
+# mosaicplot(t(status.vs.structure), color=rainbow(2), main="조직형태와 공동체상태")
+# text(coord.text.1.2, labels=status.vs.structure)
+```
+
+<P style = "page-break-before:always">
+
+## 성장단계 구분에의 시사점
+
+```{r, echo=FALSE}
+doorae$regi.kr <- factor(doorae$"사업자등록여부", levels=c("Yes", "No"), labels=c("등록", "미등록"))
+doorae$busi.kr <- factor(doorae$"성과_사업착수", levels=c("Yes", "No"), labels=c("착수", "미착수"))
+corporate.bi <- which(doorae$"공동체상태" == "경영개선" & doorae$"조직형태" == "법인")
+noncorporate.bi <- which(doorae$"공동체상태" == "경영개선" & doorae$"조직형태" == "임의단체")
+corporate.bp <- which(doorae$"공동체상태" == "창업준비" & doorae$"조직형태" == "법인")
+noncorporate.bp <- which(doorae$"공동체상태" == "창업준비" & doorae$"조직형태" == "임의단체")
+v.names <- c("공동체상태", "조직명", "busi.kr", "regi.kr", "성과_매출_2014", "성과_매출_2015_3개월")
+c.names <- c("공동체상태", "조직명", "사업착수여부", "사업자등록여부", "2014년매출", "2015년(3개월)매출")
+```
+
+* 경영개선 상태의 법인 조직
+    * 모두 사업에 착수하였고, 사업자등록도 마침. 매출도 대부분 발생
+
+```{r, results='asis', echo=FALSE}
+kable(doorae[corporate.bi, v.names], row.names= FALSE, col.names=c.names)
+```
+
+<P style = "page-break-before:always">
+
+* 경영개선 상태의 임의단체 조직 
+    * 임의단체인 경우가 소수 있으나 모두 사업에 착수하였고, 사업자등록도 마침. 모두 매출 발생
+    
+```{r, results='asis', echo=FALSE}
+kable(doorae[noncorporate.bi, v.names], row.names= FALSE, col.names=c.names)
+```
+
+* 창업준비 상태의 법인 조직
+    * 사업미착수는 39%, 사업자미등록이 32%에 달함. 매출 극히 일부 발생.
+    
+```{r, results='asis', echo=FALSE}
+kable(doorae[corporate.bp, v.names], row.names= FALSE, col.names=c.names)
+```
+
+<!--
+<P style = "page-break-before:always">
+-->
+
+* 창업준비 상태의 임의단체 조직 
+    * 대부분 사업미착수(83%)이고, 사업자미등록(93%)인 상태임. 매출 극히 일부에서 발생하는 것으로 보고하고 있으나 개인사업자 명의의 실적임. 
+
+```{r, results='asis', echo=FALSE}
+kable(doorae[noncorporate.bp, v.names], row.names= FALSE, col.names=c.names)
+```
+
+<P style = "page-break-before:always">
+
+### 3원 교차분석
+
+```{r, echo=FALSE}
+comm_stat.org_str.reg.ftbl <- ftable(table("공동체상태 :"=doorae$"공동체상태", "조직형태 :"=doorae$"조직형태", "사업자등록여부:"=doorae$regi.kr))
+comm_stat.org_str.busi.ftbl <- ftable(table("공동체상태 :"=doorae$"공동체상태", "조직형태 :"=doorae$"조직형태", "사업착수여부 :"=doorae$busi.kr))
+```
+
+```{r, echo=FALSE, results='asis'}
+kable(as.matrix(round(prop.table(comm_stat.org_str.reg.ftbl, margin=1)*100, digits=1)), caption = "* 공동체상태/조직형태와 사업자등록여부(%)")
+```
+
+```{r, echo=FALSE, results='asis'}
+kable(as.matrix(comm_stat.org_str.busi.ftbl), caption = "* 공동체상태/조직형태와 사업착수여부")
+```
+
+```{r, echo=FALSE, results='asis'}
+kable(as.matrix(round(prop.table(comm_stat.org_str.busi.ftbl, margin=1)*100, digits=1)), caption = "* 공동체상태/조직형태와 사업착수여부(%)")
+```
+
+<P style = "page-break-before:always">
+
+## 공동체상태와 법인유형
+
+### 교차표
+
+```{r, results='asis', echo=FALSE}
+status.vs.corporate_type <- table(doorae$"공동체상태", doorae$"법인유형", dnn=c("공동체상태", "조직유형"))
+# kable(status.vs.corporate_type, caption="<공동체상태와 조직유형>")
+kable(status.vs.corporate_type, caption="<공동체상태와 조직유형>")
+```
+
+```{r, results='asis', echo=FALSE}
+stock.co<-which(doorae$"법인유형"=="주식회사")
+# kable(doorae[stock.co, c("공동체상태", "조직명")], caption="<주식회사인 공동체사업체>")
+kable(doorae[stock.co, c("공동체상태", "조직명")], caption="<주식회사인 공동체사업체>")
+```
+
+### 모자이크 플롯
+
+```{r, echo=FALSE, fig.width = 6, fig.height = 4.5}
+mosaic_gg(t(status.vs.corporate_type), 
+          base_family = "HCR Dotum LVT",
+          ggtitle = "공동체상태와 조직유형",
+          xlab = "조직유형",
+          ylab = "공동체상태",
+          fill.name = "조직유형")
+# mosaicplot(status.vs.corporate_type, color=rainbow(7), main="공동체상태와 조직유형", las=1)
+# text(coord.text.2, labels=t(status.vs.corporate_type), cex=0.8)
+```
+
+<P style = "page-break-before:always">
+
+## 공동체상태와 사업아이템
+
+### 교차표(개소수)
+
+* 경영개선 상태에서는 '식음'과 '체험', 창업준비 상태에서는 '식음'과 '관광기념품'이 많이 있음.
+
+```{r, results='asis', echo=FALSE}
+status.vs.business_item <- table(doorae$"공동체상태", doorae$"사업아이템", dnn=c("공동체상태", "사업아이템"))
+status.vs.business_item.am <- addmargins(status.vs.business_item, margin=2)
+dimnames(status.vs.business_item.am)[[2]][8] <- "계"
+kable(status.vs.business_item.am, caption= "<공동체상태와 사업아이템>")
+```
+
+### 교차표(%) 
+
+* 창업준비 상태에서 '관광기념품'의 비중이 매우 높음.
+
+```{r, results='asis', echo=FALSE}
+status.vs.business_item.p <- prop.table(status.vs.business_item, margin=1)*100
+status.vs.business_item.p.am <- addmargins(status.vs.business_item.p, margin=2)
+dimnames(status.vs.business_item.p.am)[[2]][8] <- "계"
+kable(round(status.vs.business_item.p.am, digits=1), caption= "<공동체상태와 사업아이템(%)>")
+```
+
+### 모자이크 플롯
+
+```{r, echo=FALSE, fig.width = 6, fig.height = 4.5}
+mosaic_gg(t(status.vs.business_item), 
+          base_family = "HCR Dotum LVT",
+          ggtitle = "공동체상태와 사업아이템",
+          xlab = "공동체상태",
+          ylab = "사업아이템",
+          fill.name = "사업아이템")
+# mosaicplot(status.vs.business_item, color=rainbow(7), main="공동체상태와 사업아이템", las=1)
+# text(coord.text.3, labels=t(status.vs.business_item), cex=0.8)
+```
+
+<P style = "page-break-before:always">
+
+## 공동체상태와 업력
+
+* 경영개선 상태에서 업력이 중위수비교나 평균적으로 3년 이상 오래됨.
+    * 경영개선 상태에 진입하기까지의 기간에 대한 시사점.
+    * 창업준비 상태에서 예그리나(11.6년)와 같이 예외적인 경우도 있음.
+
+### 요약표
+
+```{r, echo=FALSE, results='markup'}
+tapply(doorae$"업력", doorae$"공동체상태", summary)
+```
+
+### Box Plot
+
+* 공동체 상태별 5숫자 요약 및 이상점 파악 
+    * '아름다운인제관광'과 '예그리나'가 예외적으로 오랜 업력
+
+```{r, echo=FALSE, fig.width=5, fig.height=5}
+# plot(x=doorae$"공동체상태", y=doorae$"업력", main="공동체상태와 업력")
+# text(x=c(1.5, 2), y=c(12.3, 12.3), labels=doorae$"조직명"[c(21,63)])
+source("theme_kr_HCR.R")
+box.1 <- ggplot(data = doorae.ys, mapping = aes(x = status, y = years)) + 
+  geom_boxplot() + 
+  theme_bw() + 
+  theme.kr.HCR
+# box.1
+box.2 <- box.1 + 
+  ggtitle("공동체상태와 업력") + 
+  xlab("공동체상태") + 
+  ylab("업력(년)") 
+# box.2
+box.3 <- box.2 + 
+  scale_x_discrete(labels = c("창업준비", "경영개선")) 
+# box.3
+box.4 <- box.3 + 
+  annotate("text", 
+           x = c(0.8, 1.65), 
+           y = c(14.7, 15.4), 
+           label = c("예그리나", "아름다운인제관광"), 
+           size = 3.5, 
+           family = "HCR Dotum LVT")
+box.4
+```
+
+### ECDF
+
+* 분위수 비교 뿐 아니라 평균 업력 비교도 가능함
+
+```{r echo=FALSE, fig.width=4.5, fig.height=4.5}
+library(ggplot2)
+ecdf.1 <- ggplot(data = doorae.ys, 
+                 mapping = aes(x = years, colour = status)) 
+ecdf.2 <- ecdf.1 + 
+  stat_ecdf()
+# ecdf.2
+ecdf.3 <- ecdf.2 + 
+  theme_bw() + 
+  theme.kr.HCR
+# ecdf.3
+# ecdf.4 <- ecdf.3 + theme(panel.background=element_rect("white"), panel.border=element_rect(colour="black", fill=NA))
+ecdf.5 <- ecdf.3 + 
+  ggtitle("공동체상태와 업력") +
+  xlab("업력(년)") +
+  ylab("분위") 
+# ecdf.5
+ecdf.8 <- ecdf.5 + 
+  labs(colour = "공동체상태") 
+# ecdf.8
+ecdf.9 <- ecdf.8 + 
+  scale_colour_brewer(palette = "Set1", 
+                      labels = c("창업준비", "경영개선")) 
+# ecdf.9
+ecdf.10 <- ecdf.9 + 
+  theme(legend.position = c(0.8, 0.5))
+# ecdf.10
+ecdf.11 <- ecdf.10 + 
+  annotate("segment", 
+           x = 4.3, 
+           xend = 7.4, 
+           y = 0.5, 
+           yend = 0.5, 
+           colour = "blue", 
+           arrow = arrow(ends = "both", length = unit(0.2, "cm")))
+# ecdf.11
+ecdf.12 <- ecdf.11 + 
+  scale_x_continuous(breaks = c(0, 1.3, 4.39, 12.3), 
+                     labels = c(0, 1.3, 4.39,  12.3))
+# ecdf.12
+ecdf.13 <- ecdf.12 + 
+  annotate("text", 
+           x = 5.85, 
+           y = 0.54, 
+           label = "중위수의 차이", 
+           size = 3, 
+           family = "HCR Dotum LVT")
+# ecdf.13
+ecdf.14 <- ecdf.13 + 
+  annotate("text", 
+           x = 5.85, 
+           y = 0.46, 
+           label = "약 3년", 
+           size = 3, 
+           family = "HCR Dotum LVT")
+ecdf.14
+```
+
+```{r, echo=FALSE}
+x.pre <- tapply(doorae.ys$years, doorae.ys$status, sort)$"창업준비"
+x.post <- tapply(doorae.ys$years, doorae.ys$status, sort)$"경영개선"
+n.pre<-length(x.pre)
+n.post <- length(x.post)
+y.pre <- (1:n.pre)/n.pre
+y.post <- (1:n.post)/n.post
+ecdf.x.pre <- c(0, rep(x.pre, each=2))
+ecdf.y.pre <- c(rep(c(0, head(y.pre, -1)), each=2), 1)
+ecdf.x.post <- c(0, rep(x.post, each=2))
+ecdf.y.post <- c(rep(c(0, head(y.post, -1)), each=2), 1)
+years.x <- c(ecdf.x.pre, rev(ecdf.x.post))
+years.y <- c(ecdf.y.pre, rev(ecdf.y.post))
+years.df <- data.frame(years = years.x, ecdf.years = years.y)
+```
+
+
+```{r echo=FALSE, fig.width=4.5, fig.height=4.5}
+poly.1 <- ggplot(data = years.df, 
+                 mapping = aes(x = years, y = ecdf.years)) + 
+  geom_path()
+poly.2 <- poly.1 + 
+  geom_polygon(alpha = 0.3, 
+               fill = "red") 
+poly.3 <- poly.2 + 
+  theme_bw() + theme.kr.HCR
+poly.4 <- poly.3 + 
+  theme(panel.background = element_rect("white"), 
+        panel.border = element_rect(colour = "black", fill = NA))
+poly.5 <- poly.4 + 
+  ggtitle("공동체상태와 업력")
+poly.6 <- poly.5 + 
+  xlab("업력(년)")
+poly.7 <- poly.6 + 
+  ylab("분위") 
+poly.8 <- poly.7 + 
+  labs(colour = "공동체상태") 
+poly.9 <- poly.8 + 
+  scale_colour_discrete(labels = c("창업준비", "경영개선"))
+poly.10 <- poly.9 + 
+  theme(legend.position = c(0.8, 0.5))
+poly.11 <- poly.10 + 
+  scale_x_continuous(breaks = c(0, 1.3, 4.39, 12.3), 
+                     labels = c(0, 1.3, 4.39, 12.3))
+poly.12 <- poly.11 + 
+  annotate("text", 
+           x = 7.5, 
+           y = 0.75, 
+           label="두 도표 간 면적은\n평균의 차이,\n약 3년", 
+           size = 4, 
+           angle = 15, 
+           family = "HCR Dotum LVT")
+poly.13 <- poly.12 + 
+  annotate("text", 
+           x = 10, 
+           y = 0.6, 
+           label = "경영개선", 
+           size = 4, 
+           family = "HCR Dotum LVT")
+poly.14 <- poly.13 + 
+  annotate("text", 
+           x = 3, 
+           y = 0.9, 
+           label = "창업준비", 
+           size = 4, 
+           family = "HCR Dotum LVT")
+poly.14
+```
+
+### Dot Chart
+
+* 전체 주민공동체사업의 업력을 공동체상태별로 한눈에 비교 
+    * 개별 조직명도 파악됨.
+
+```{r echo=FALSE, fig.width=6, fig.height=9}
+nameorder <- doorae$"조직명"[order(doorae$"공동체상태", doorae$"업력")]
+doorae$name <- factor(doorae$"조직명", levels = nameorder)
+d.1 <- ggplot(data = doorae, 
+              mapping = aes(x = 업력, y = name)) + 
+  geom_segment(aes(yend = name), 
+               xend = 0, 
+               colour = "grey50")
+# d.1
+d.2 <- d.1 + 
+  geom_point(size = 3, 
+             aes(colour = 공동체상태)) 
+# d.2
+d.3 <- d.2 + 
+  scale_colour_brewer(palette = "Set1", 
+                      limits = c("경영개선", "창업준비"))
+# d.3
+d.4 <- d.3 + 
+  theme_bw()
+# d.4
+d.5 <- d.4 + 
+  theme.kr.HCR
+# d.5
+d.6 <- d.5 + 
+  ylab("조직명")  
+# d.6
+d.7 <- d.6 + 
+  theme(axis.text.y = element_text(size = 6)) 
+# d.7
+d.8 <- d.7 + 
+  theme(panel.grid.major.y = element_blank(), 
+        legend.position = c(0.9, 0.55), 
+        legend.justification=c(1, 0.5))
+# d.8
+d.9 <- d.8 + 
+  ggtitle("공동체상태별 업력") 
+d.9
+```
+
+
+## 방문객과 매출 요약
+
+### 공동체상태별 평균 비교
+
+```{r, echo=FALSE}
+status.visitors.sales.mean <- aggregate(doorae[c("성과_방문객_2014", "성과_방문객_2015_3개월", "성과_매출_2014", "성과_매출_2015_3개월")], list("공동체상태"=doorae$"공동체상태"), mean)
+v.vs.names <- c("공동체상태", "방문객(2014)", "방문객(2015, 3개월)", "매출(2014)", "매출(2015, 3개월)")
+kable(status.visitors.sales.mean, col.names = v.vs.names)
+```
+
+### 공동체상태별 중위수 비교
+
+```{r, echo=FALSE}
+status.visitors.sales.median <- aggregate(doorae[c("성과_방문객_2014", "성과_방문객_2015_3개월", "성과_매출_2014", "성과_매출_2015_3개월")], list("공동체상태"=doorae$"공동체상태"), median)
+kable(status.visitors.sales.median, col.names = v.vs.names)
+```
+
+
+## 방문객 및 매출 상위 조직
+
+```{r, echo=FALSE}
+o.visitors.14 <- order(doorae$"성과_방문객_2014", decreasing=TRUE)
+v.names.v.14 <- c("공동체상태", "조직명", "성과_방문객_2014")
+c.names.v.14 <- c("공동체상태", "조직명", "방문객(2014)")
+o.visitors.15 <- order(doorae$"성과_방문객_2015_3개월", decreasing=TRUE)
+v.names.v.15 <- c("공동체상태", "조직명", "성과_방문객_2015_3개월")
+c.names.v.15 <- c("공동체상태", "조직명", "방문객(2015, 3개월)")
+o.sales.14 <- order(doorae$"성과_매출_2014", decreasing=TRUE)
+v.names.s.14 <- c("공동체상태", "조직명", "성과_매출_2014")
+c.names.s.14 <- c("공동체상태", "조직명", "매출(2014)")
+o.sales.15 <- order(doorae$"성과_매출_2015_3개월", decreasing=TRUE)
+v.names.s.15 <- c("공동체상태", "조직명", "성과_매출_2015_3개월")
+c.names.s.15 <- c("공동체상태", "조직명", "매출(2015, 3개월)")
+```
+
+### 방문객(2014)
+
+```{r, results='asis', echo=FALSE}
+kable(doorae[o.visitors.14, v.names.v.14][1:20, ], row.names=FALSE, col.names=c.names.v.14)
+```
+
+### 방문객(2015, 3개월)
+
+```{r, results='asis', echo=FALSE}
+kable(doorae[o.visitors.15, v.names.v.15][1:20, ], row.names=FALSE, col.names=c.names.v.15)
+```
+
+<P style = "page-break-before:always">
+
+### 매출(2014)
+
+```{r, results='asis', echo=FALSE}
+kable(doorae[o.sales.14, v.names.s.14][1:20, ], row.names=FALSE, col.names=c.names.s.14)
+```
+
+### 매출(2015, 3개월)
+
+```{r, results='asis', echo=FALSE}
+kable(doorae[o.sales.15, v.names.s.15][1:20, ], row.names=FALSE, col.names=c.names.s.15, align=c('l', 'l', 'r'))
+```
+
+### 자료 갈무리
+
+```{r}
+doorae0928 <- doorae
+save.image("doorae_new.RData")

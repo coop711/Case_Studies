@@ -1,0 +1,44 @@
+---
+title: "Doorae_data"
+author: "coop711"
+date: "2015년 9월 28일"
+output: html_document
+---
+
+```{r}
+library(xlsx)
+library(pander)
+panderOptions("table.split.table", 132)
+doorae0924.rest<-read.xlsx("../data/Data0924.xlsx", 1, colIndex=2:54, endRow=98, stringsAsFactors=TRUE)
+doorae0924.name <- read.xlsx("../data/Data0924.xlsx", 1, colIndex=1, endRow=98)
+doorae0924 <- data.frame(doorae0924.name, doorae0924.rest)
+doorae0924$"시도"
+```
+
+* 전북이 두 개 나옴에 유의. 어떤 사연인가 하면,
+
+```{r}
+(id.to.fix <- which(doorae0924$"시도"=="전북 "))
+doorae0924$"조직명"[id.to.fix]
+doorae0924$"시도"[id.to.fix] <- "전북"
+doorae0924$"시도"
+pander(table(doorae0924$"시도"))
+```
+
+count가 없는 factor level도 손봐야 함. 이는 간단히
+
+```{r}
+(doorae0924$"시도" <- factor(doorae0924$"시도"))
+```
+
+```{r}
+str(doorae0924)
+years.in.business <- round(as.numeric(difftime(Sys.Date(), doorae0924$"설립일", units="days"))/365, digits=1)
+str(years.in.business)
+head(years.in.business)
+doorae0924$"업력" <- years.in.business
+str(doorae0924)
+doorae0924$"사업자등록여부" <- factor(ifelse(doorae0924$"사업자등록" == "NA", "No", "Yes"), levels=c("Yes", "No"))
+doorae0924.ys <- data.frame(status=factor(doorae0924$"공동체상태", levels=c("창업준비", "경영개선")), years=doorae0924$"업력")
+save.image("../R/doorae_new.rda")
+```                        
