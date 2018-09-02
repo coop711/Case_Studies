@@ -48,7 +48,8 @@ kable(t(as.matrix(table(doorae0924$"시도"))))
 
 ```{r, difftime}
 str(doorae0924)
-years.in.business <- round(as.numeric(difftime(Sys.Date(), doorae0924$"설립일", units="days"))/365, digits=1)
+# years.in.business <- round(as.numeric(difftime(Sys.Date(), doorae0924$"설립일", units = "days")) / 365, digits = 1)
+years.in.business <- round(as.numeric(difftime("2015-09-24", doorae0924$"설립일", units = "days")) / 365, digits = 1)
 str(years.in.business)
 head(years.in.business)
 doorae0924$"업력" <- years.in.business
@@ -59,7 +60,7 @@ str(doorae0924)
 
 ```{r, business registration}
 doorae0924$"사업자등록여부" <- factor(ifelse(doorae0924$"사업자등록" == "NA", "No", "Yes"), levels = c("Yes", "No"))
-doorae0924.ys <- data.frame(status=factor(doorae0924$"공동체상태", levels = c("창업준비", "경영개선")), years = doorae0924$"업력")
+doorae0924.ys <- data.frame(status = factor(doorae0924$"공동체상태", levels = c("창업준비", "경영개선")), years = doorae0924$"업력")
 ```
 
 ### Save data

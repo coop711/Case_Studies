@@ -304,11 +304,12 @@ doorae0924$&quot;시도&quot;</code></pre>
 ##  $ 사업실적_파일럿       : num  1 0 0 0 0 2 3 2 6 0 ...
 ##  $ 사업실적_관광공사     : num  0 0 0 0 0 3 3 1 0 0 ...
 ##  $ 기타                  : num  0 1 0 0 0 4 4 2 0 0 ...</code></pre>
-<pre class="r"><code>years.in.business &lt;- round(as.numeric(difftime(Sys.Date(), doorae0924$&quot;설립일&quot;, units=&quot;days&quot;))/365, digits=1)
+<pre class="r"><code># years.in.business &lt;- round(as.numeric(difftime(Sys.Date(), doorae0924$&quot;설립일&quot;, units = &quot;days&quot;)) / 365, digits = 1)
+years.in.business &lt;- round(as.numeric(difftime(&quot;2015-09-24&quot;, doorae0924$&quot;설립일&quot;, units = &quot;days&quot;)) / 365, digits = 1)
 str(years.in.business)</code></pre>
-<pre><code>##  num [1:97] 4.3 3.5 3.3 5.7 3.3 4.5 7 5.1 4.4 3.1 ...</code></pre>
+<pre><code>##  num [1:97] 1.4 0.6 0.4 2.7 0.4 1.6 4.1 2.1 1.4 0.1 ...</code></pre>
 <pre class="r"><code>head(years.in.business)</code></pre>
-<pre><code>## [1] 4.3 3.5 3.3 5.7 3.3 4.5</code></pre>
+<pre><code>## [1] 1.4 0.6 0.4 2.7 0.4 1.6</code></pre>
 <pre class="r"><code>doorae0924$&quot;업력&quot; &lt;- years.in.business
 str(doorae0924)</code></pre>
 <pre><code>## 'data.frame':    97 obs. of  55 variables:
@@ -366,12 +367,12 @@ str(doorae0924)</code></pre>
 ##  $ 사업실적_파일럿       : num  1 0 0 0 0 2 3 2 6 0 ...
 ##  $ 사업실적_관광공사     : num  0 0 0 0 0 3 3 1 0 0 ...
 ##  $ 기타                  : num  0 1 0 0 0 4 4 2 0 0 ...
-##  $ 업력                  : num  4.3 3.5 3.3 5.7 3.3 4.5 7 5.1 4.4 3.1 ...</code></pre>
+##  $ 업력                  : num  1.4 0.6 0.4 2.7 0.4 1.6 4.1 2.1 1.4 0.1 ...</code></pre>
 <ul>
 <li>사업자등록여부와 업력을 함께 새로운 data frame 으로</li>
 </ul>
 <pre class="r"><code>doorae0924$&quot;사업자등록여부&quot; &lt;- factor(ifelse(doorae0924$&quot;사업자등록&quot; == &quot;NA&quot;, &quot;No&quot;, &quot;Yes&quot;), levels = c(&quot;Yes&quot;, &quot;No&quot;))
-doorae0924.ys &lt;- data.frame(status=factor(doorae0924$&quot;공동체상태&quot;, levels = c(&quot;창업준비&quot;, &quot;경영개선&quot;)), years = doorae0924$&quot;업력&quot;)</code></pre>
+doorae0924.ys &lt;- data.frame(status = factor(doorae0924$&quot;공동체상태&quot;, levels = c(&quot;창업준비&quot;, &quot;경영개선&quot;)), years = doorae0924$&quot;업력&quot;)</code></pre>
 </div>
 <div id="save-data" class="section level3">
 <h3>Save data</h3>
