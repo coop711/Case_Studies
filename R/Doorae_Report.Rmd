@@ -40,8 +40,8 @@ str(doorae[, 25:54])
 ```{r echo=FALSE}
 options(width=132)
 options(digits=3)
-cols.no.summary.names <-c("설립일", "사업자등록", "업태", "종목", "소재지", "사업명", "아이디어", "대표상품") 
-cols.no.summary <- which(names(doorae) %in% cols.no.summary.names)
+# cols.no.summary.names <-c("설립일", "사업자등록", "업태", "종목", "소재지", "사업명", "아이디어", "대표상품") 
+# cols.no.summary <- which(names(doorae) %in% # cols.no.summary.names)
 sapply(doorae[, c(1:9, 15:17)], summary)
 sapply(doorae[, c(18, 20:22, 25:54)], summary)
 # pander(doorae.summary)
@@ -58,19 +58,26 @@ sapply(doorae[, c(18, 20:22, 25:54)], summary)
 ```{r, echo=FALSE, message=FALSE}
 status.vs.structure <- table(doorae$"공동체상태", doorae$"조직형태", dnn = c("공동체상태", "조직형태"))
 status.vs.structure.am <- addmargins(status.vs.structure)
-dimnames(status.vs.structure.am)[[1]][3] <- "계"
-dimnames(status.vs.structure.am)[[2]][3] <- "계"
+# dimnames(status.vs.structure.am)[[1]][3] <- "계"
+rownames(status.vs.structure.am)[3] <- "계"
+# dimnames(status.vs.structure.am)[[2]][3] <- "계"
+colnames(status.vs.structure.am)[3] <- "계"
 status.vs.structure.ap <- round(prop.table(status.vs.structure, margin = 1) * 100, digits = 1)
 status.vs.structure.ap <- addmargins(status.vs.structure.ap)[1:2, ]
-dimnames(status.vs.structure.ap)[[2]][3] <- "계"
+# dimnames(status.vs.structure.ap)[[2]][3] <- "계"
+colnames(status.vs.structure.ap)[3] <- "계"
 status.vs.structure.ap.2 <-addmargins(prop.table(status.vs.structure, margin = 2) * 100)[ , 1:2]
-dimnames(status.vs.structure.ap.2)[[1]][3] <- "계"
+# dimnames(status.vs.structure.ap.2)[[1]][3] <- "계"
+rownames(status.vs.structure.ap.2)[3] <- "계"
 ```
 
 ```{r, echo=FALSE, results='asis'}
-kable(as.matrix(status.vs.structure.am), caption = "ㅇ공동체상태와 조직형태(계)")
-kable(as.matrix(status.vs.structure.ap), caption = "ㅇ공동체상태와 조직형태(%, 계)")
-kable(as.matrix(status.vs.structure.ap.2), caption = "ㅇ조직형태와 공동체상태(%, 계)")
+kable(as.matrix(status.vs.structure.am), 
+      caption = "ㅇ공동체상태와 조직형태(계)")
+kable(as.matrix(status.vs.structure.ap), 
+      caption = "ㅇ공동체상태와 조직형태(%, 계)")
+kable(as.matrix(status.vs.structure.ap.2), 
+      caption = "ㅇ조직형태와 공동체상태(%, 계)")
 ```
 
 <P style = "page-break-before:always">
@@ -82,28 +89,35 @@ kable(as.matrix(status.vs.structure.ap.2), caption = "ㅇ조직형태와 공동�
 
 ```{r, echo=FALSE, fig.width = 6, fig.height = 4.2}
 source("./mosaic_gg.R")
-mosaic_gg(status.vs.structure, 
-          base_family = "HCR Dotum LVT",
+load("./coord.rda")
+mosaic_gg(t(status.vs.structure), 
+          base_family = "",
           ggtitle = "공동체상태와 조직형태",
-          xlab = "조직형태",
-          ylab = "공동체상태",
+          ylab = "조직형태",
+          xlab = "공동체상태",
           fill.name = "공동체상태")
-# mosaicplot(status.vs.structure, color = rainbow(2), main = "공동체상태와 조직형태")
-# text(coord.text, labels = t(status.vs.structure))
+# mosaicplot(status.vs.structure, 
+#            color = rainbow(2), 
+#            main = "공동체상태와 조직형태")
+# text(coord.text, 
+#      labels = t(status.vs.structure))
 ```
 
 * 조직형태와 공동체상태
     * 이는 거꾸로 법인격을 갖춘 공동체사업체 중에 경영개선 상태에 들어간 비율이 압도적으로 많다는 것으로 이해할 수도 있음.
 
 ```{r, echo=FALSE, fig.width = 6, fig.height = 4.2}
-mosaic_gg(t(status.vs.structure), 
-          base_family = "HCR Dotum LVT",
+mosaic_gg(status.vs.structure, 
+          base_family = "",
           ggtitle = "조직형태와 공동체상태",
-          ylab = "조직형태",
-          xlab = "공동체상태",
+          xlab = "조직형태",
+          ylab = "공동체상태",
           fill.name = "조직형태")
-# mosaicplot(t(status.vs.structure), color=rainbow(2), main="조직형태와 공동체상태")
-# text(coord.text.1.2, labels=status.vs.structure)
+# mosaicplot(t(status.vs.structure), 
+#            color = rainbow(2), 
+#            main="조직형태와 공동체상태")
+# text(coord.text.1.2, 
+#      labels=status.vs.structure)
 ```
 
 <P style = "page-break-before:always">
@@ -189,7 +203,7 @@ kable(status.vs.corporate_type, caption="<공동체상태와 조직유형>")
 ```
 
 ```{r, results='asis', echo=FALSE}
-stock.co<-which(doorae$"법인유형"=="주식회사")
+stock.co <- which(doorae$"법인유형"=="주식회사")
 # kable(doorae[stock.co, c("공동체상태", "조직명")], caption="<주식회사인 공동체사업체>")
 kable(doorae[stock.co, c("공동체상태", "조직명")], caption="<주식회사인 공동체사업체>")
 ```
@@ -198,13 +212,18 @@ kable(doorae[stock.co, c("공동체상태", "조직명")], caption="<주식회�
 
 ```{r, echo=FALSE, fig.width = 6, fig.height = 4.5}
 mosaic_gg(t(status.vs.corporate_type), 
-          base_family = "HCR Dotum LVT",
+          base_family = "",
           ggtitle = "공동체상태와 조직유형",
-          xlab = "조직유형",
-          ylab = "공동체상태",
+          ylab = "조직유형",
+          xlab = "공동체상태",
           fill.name = "조직유형")
-# mosaicplot(status.vs.corporate_type, color=rainbow(7), main="공동체상태와 조직유형", las=1)
-# text(coord.text.2, labels=t(status.vs.corporate_type), cex=0.8)
+# mosaicplot(status.vs.corporate_type, 
+#            color=rainbow(7), 
+#            main="공동체상태와 조직유형", 
+#            las=1)
+# text(coord.text.2, 
+#      labels=t(status.vs.corporate_type), 
+#      cex=0.8)
 ```
 
 <P style = "page-break-before:always">
@@ -218,7 +237,8 @@ mosaic_gg(t(status.vs.corporate_type),
 ```{r, results='asis', echo=FALSE}
 status.vs.business_item <- table(doorae$"공동체상태", doorae$"사업아이템", dnn=c("공동체상태", "사업아이템"))
 status.vs.business_item.am <- addmargins(status.vs.business_item, margin=2)
-dimnames(status.vs.business_item.am)[[2]][8] <- "계"
+# dimnames(status.vs.business_item.am)[[2]][8] <- "계"
+colnames(status.vs.business_item.am)[8] <- "계"
 kable(status.vs.business_item.am, caption= "<공동체상태와 사업아이템>")
 ```
 
@@ -237,13 +257,18 @@ kable(round(status.vs.business_item.p.am, digits=1), caption= "<공동체상태�
 
 ```{r, echo=FALSE, fig.width = 6, fig.height = 4.5}
 mosaic_gg(t(status.vs.business_item), 
-          base_family = "HCR Dotum LVT",
+          base_family = "",
           ggtitle = "공동체상태와 사업아이템",
           xlab = "공동체상태",
           ylab = "사업아이템",
           fill.name = "사업아이템")
-# mosaicplot(status.vs.business_item, color=rainbow(7), main="공동체상태와 사업아이템", las=1)
-# text(coord.text.3, labels=t(status.vs.business_item), cex=0.8)
+# mosaicplot(status.vs.business_item, 
+#            color=rainbow(7), 
+#            main="공동체상태와 사업아이템", 
+#            las=1)
+# text(coord.text.3, 
+#      labels=t(status.vs.business_item), 
+#      cex=0.8)
 ```
 
 <P style = "page-break-before:always">
@@ -266,13 +291,18 @@ tapply(doorae$"업력", doorae$"공동체상태", summary)
     * '아름다운인제관광'과 '예그리나'가 예외적으로 오랜 업력
 
 ```{r, echo=FALSE, fig.width=5, fig.height=5}
-# plot(x=doorae$"공동체상태", y=doorae$"업력", main="공동체상태와 업력")
-# text(x=c(1.5, 2), y=c(12.3, 12.3), labels=doorae$"조직명"[c(21,63)])
-source("theme_kr_HCR.R")
-box.1 <- ggplot(data = doorae.ys, mapping = aes(x = status, y = years)) + 
+# plot(x = doorae$"공동체상태", y = doorae$"업력", main = "공동체상태와 업력")
+# text(x = c(1.5, 2), y = c(12.3, 12.3), 
+#     labels = doorae$"조직명"[c(22, 64)])
+# source("theme_kr_HCR.R")
+box.0 <- ggplot(data = doorae.ys, 
+                mapping = aes(x = status, 
+                              y = years))
+# box.0
+box.1 <- box.0 + 
   geom_boxplot() + 
-  theme_bw() + 
-  theme.kr.HCR
+  theme_bw() 
+#  theme.kr.HCR
 # box.1
 box.2 <- box.1 + 
   ggtitle("공동체상태와 업력") + 
@@ -288,7 +318,7 @@ box.4 <- box.3 +
            y = c(11.7, 12.4), 
            label = c("예그리나", "아름다운인제관광"), 
            size = 3.5, 
-           family = "HCR Dotum LVT")
+           family = "")
 box.4
 ```
 
@@ -302,14 +332,16 @@ box.4
 library(ggplot2)
 ecdf.1 <- ggplot(data = doorae.ys, 
                  mapping = aes(x = years, colour = status)) 
+# ecdf.1
 ecdf.2 <- ecdf.1 + 
   stat_ecdf()
 # ecdf.2
 ecdf.3 <- ecdf.2 + 
-  theme_bw() + 
-  theme.kr.HCR
+  theme_bw() 
+#  theme.kr.HCR
 # ecdf.3
-# ecdf.4 <- ecdf.3 + theme(panel.background=element_rect("white"), panel.border=element_rect(colour="black", fill=NA))
+ecdf.4 <- ecdf.3 + theme(panel.background=element_rect("white"), panel.border=element_rect(colour="black", fill=NA))
+# ecdf.4
 ecdf.5 <- ecdf.3 + 
   ggtitle("공동체상태와 업력") +
   xlab("업력(년)") +
@@ -344,7 +376,7 @@ ecdf.13 <- ecdf.12 +
            y = 0.54, 
            label = "중위수의 차이", 
            size = 3, 
-           family = "HCR Dotum LVT")
+           family = "")
 # ecdf.13
 ecdf.14 <- ecdf.13 + 
   annotate("text", 
@@ -352,7 +384,7 @@ ecdf.14 <- ecdf.13 +
            y = 0.46, 
            label = "약 3년", 
            size = 3, 
-           family = "HCR Dotum LVT")
+           family = "")
 ecdf.14
 ```
 
@@ -375,31 +407,44 @@ years.df <- data.frame(years = years.x, ecdf.years = years.y)
 
 ```{r echo=FALSE, fig.width=4.5, fig.height=4.5}
 poly.1 <- ggplot(data = years.df, 
-                 mapping = aes(x = years, y = ecdf.years)) + 
+                 mapping = aes(x = years, 
+                               y = ecdf.years)) + 
   geom_path()
+# poly.1
 poly.2 <- poly.1 + 
   geom_polygon(alpha = 0.3, 
                fill = "red") 
+# poly.2
 poly.3 <- poly.2 + 
-  theme_bw() + theme.kr.HCR
+  theme_bw() 
+# poly.3
+# + theme.kr.HCR
 poly.4 <- poly.3 + 
   theme(panel.background = element_rect("white"), 
         panel.border = element_rect(colour = "black", fill = NA))
+# poly.4
 poly.5 <- poly.4 + 
   ggtitle("공동체상태와 업력")
+# poly.5
 poly.6 <- poly.5 + 
   xlab("업력(년)")
+# poly.6
 poly.7 <- poly.6 + 
   ylab("분위") 
+# poly.7
 poly.8 <- poly.7 + 
   labs(colour = "공동체상태") 
+# poly.8
 poly.9 <- poly.8 + 
   scale_colour_discrete(labels = c("창업준비", "경영개선"))
+# poly.9
 poly.10 <- poly.9 + 
   theme(legend.position = c(0.8, 0.5))
+# poly.10
 poly.11 <- poly.10 + 
   scale_x_continuous(breaks = c(0, 1.3, 4.39, 12.3), 
                      labels = c(0, 1.3, 4.39, 12.3))
+# poly.11
 poly.12 <- poly.11 + 
   annotate("text", 
            x = 4.4, 
@@ -407,21 +452,22 @@ poly.12 <- poly.11 +
            label="두 도표 간 면적은\n평균의 차이,\n약 3년", 
            size = 4, 
            angle = 15, 
-           family = "HCR Dotum LVT")
+           family = "")
+# poly.12
 poly.13 <- poly.12 + 
   annotate("text", 
            x = 6, 
            y = 0.6, 
            label = "경영개선", 
            size = 4, 
-           family = "HCR Dotum LVT")
+           family = "")
 poly.14 <- poly.13 + 
   annotate("text", 
            x = 1, 
            y = 0.9, 
            label = "창업준비", 
            size = 4, 
-           family = "HCR Dotum LVT")
+           family = "")
 poly.14
 ```
 
@@ -440,32 +486,32 @@ d.1 <- ggplot(data = doorae,
   geom_segment(aes(yend = name), 
                xend = 0, 
                colour = "grey50")
-# d.1
+d.1
 d.2 <- d.1 + 
   geom_point(size = 3, 
              aes(colour = 공동체상태)) 
-# d.2
+d.2
 d.3 <- d.2 + 
   scale_colour_brewer(palette = "Set1", 
                       limits = c("경영개선", "창업준비"))
-# d.3
+d.3
 d.4 <- d.3 + 
   theme_bw()
-# d.4
-d.5 <- d.4 + 
-  theme.kr.HCR
+d.4
+d.5 <- d.4
+#  theme.kr.HCR
 # d.5
 d.6 <- d.5 + 
   ylab("조직명")  
-# d.6
+d.6
 d.7 <- d.6 + 
   theme(axis.text.y = element_text(size = 6)) 
-# d.7
+d.7
 d.8 <- d.7 + 
   theme(panel.grid.major.y = element_blank(), 
         legend.position = c(0.9, 0.55), 
-        legend.justification=c(1, 0.5))
-# d.8
+        legend.justification = c(1, 0.5))
+d.8
 d.9 <- d.8 + 
   ggtitle("공동체상태별 업력") 
 d.9
