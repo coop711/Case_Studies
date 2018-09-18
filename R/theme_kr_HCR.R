@@ -1,4 +1,4 @@
-theme.kr.HCR <-
+theme_kr_HCR <-
 structure(list(axis.title.x = structure(list(family = "HCR Dotum LVT", 
     face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, 
     angle = NULL, lineheight = NULL), .Names = c("family", "face", 

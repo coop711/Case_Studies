@@ -144,3 +144,85 @@ Untracked files:
 
 no changes added to commit (use "git add" and/or "git commit -a")
 ]0;~/Google 드라이브/Works/Class/Data_Science/R.WD/Case_StudiesKee-Wonui-iMac-27:Case_Studies coop2711$ git statuspush -u origin mastercommit -m 'Sys.Date() => "2015-09-28"'add -A .[K
+Saved working directory and index state WIP on master: 11c096f modified
+]0;~/Google 드라이브/Works/Class/Data_Science/R.WD/Case_StudiesKee-Wonui-New-MacBook:Case_Studies coop2711$ git stash[1Ppull
+Updating 11c096f..7927344
+error: The following untracked working tree files would be overwritten by merge:
+	.gitignore
+Please move or remove them before you merge.
+Aborting
+]0;~/Google 드라이브/Works/Class/Data_Science/R.WD/Case_StudiesKee-Wonui-New-MacBook:Case_Studies coop2711$ rm .gitignore 
+]0;~/Google 드라이브/Works/Class/Data_Science/R.WD/Case_StudiesKee-Wonui-New-MacBook:Case_Studies coop2711$ rm .gitignore [6Pgit pull
+Updating 11c096f..7927344
+Fast-forward
+ .Rhistory                                           | 475 [32m+++++++++++++++++++++[m
+ .../1/6DF1EF29871DF334/chunks.json                  |   1 [31m-[m
+ .../1/6DF1EF29871DF334/chunks.json                  |   1 [31m-[m
+ .../1/6DF1EF29871DF334/chunks.json                  |   1 [31m-[m
+ .../notebooks/BB62D99C-Doorae_Data/1/s/chunks.json  |   1 [31m-[m
+ .../1/6DF1EF29871DF334/chunks.json                  |   1 [31m-[m
+ .../1/s/caohxgar18oks/000002.csv                    | 229 [31m----------[m
+ .../notebooks/E355651-Doorae_Report/1/s/chunks.json |   1 [31m-[m
+ .Rproj.user/shared/notebooks/paths                  |   7 [32m+[m[31m-[m
+ .gitignore                                          |   4 [32m+[m
+ R/Doorae_Data.html                                  |   4 [32m+[m[31m-[m
+ R/Doorae_Report.Rmd                                 | 162 [32m++++[m[31m---[m
+ R/Doorae_Report.html                                |  16 [32m+[m[31m-[m
+ R/coord.rda                                         | Bin [31m0[m -> [32m566[m bytes
+ R/doorae_new.RData                                  | Bin [31m284269[m -> [32m285557[m bytes
+ R/doorae_new_data.RData                             | Bin [31m15360[m -> [32m15349[m bytes
+ 16 files changed, 595 insertions(+), 308 deletions(-)
+ delete mode 100644 .Rproj.user/shared/notebooks/5A81FD06-Doorae170517/1/6DF1EF29871DF334/chunks.json
+ delete mode 100644 .Rproj.user/shared/notebooks/9AD5661B-Doorae_Data_lab/1/6DF1EF29871DF334/chunks.json
+ delete mode 100644 .Rproj.user/shared/notebooks/BB62D99C-Doorae_Data/1/6DF1EF29871DF334/chunks.json
+ delete mode 100644 .Rproj.user/shared/notebooks/BB62D99C-Doorae_Data/1/s/chunks.json
+ delete mode 100644 .Rproj.user/shared/notebooks/E355651-Doorae_Report/1/6DF1EF29871DF334/chunks.json
+ delete mode 100644 .Rproj.user/shared/notebooks/E355651-Doorae_Report/1/s/caohxgar18oks/000002.csv
+ delete mode 100644 .Rproj.user/shared/notebooks/E355651-Doorae_Report/1/s/chunks.json
+ create mode 100644 .gitignore
+ create mode 100644 R/coord.rda
+[KKee-Wonui-iMac-27:Case_Studies coop2711$ git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	[31mdeleted:    .Rhistory[m
+	[31mmodified:   .Rproj.user/6DF1EF29/console06/77259F95[m
+	[31mmodified:   .Rproj.user/6DF1EF29/console06/77259F95.env[m
+	[31mmodified:   .Rproj.user/6DF1EF29/console06/INDEX001[m
+	[31mmodified:   .Rproj.user/6DF1EF29/pcs/source-pane.pper[m
+	[31mmodified:   .Rproj.user/6DF1EF29/pcs/windowlayoutstate.pper[m
+	[31mmodified:   .Rproj.user/6DF1EF29/rmd-outputs[m
+	[31mmodified:   .Rproj.user/6DF1EF29/sources/prop/19F50E5A[m
+	[31mmodified:   .Rproj.user/6DF1EF29/sources/prop/INDEX[m
+	[31mdeleted:    .Rproj.user/6DF1EF29/sources/s-871DF334/6405BDE4-contents[m
+	[31mdeleted:    .Rproj.user/6DF1EF29/sources/s-871DF334/8080910A[m
+	[31mdeleted:    .Rproj.user/6DF1EF29/sources/s-871DF334/8080910A-contents[m
+	[31mdeleted:    .Rproj.user/6DF1EF29/sources/s-871DF334/84CD4B58[m
+	[31mdeleted:    .Rproj.user/6DF1EF29/sources/s-871DF334/84CD4B58-contents[m
+	[31mdeleted:    .Rproj.user/6DF1EF29/sources/s-871DF334/D438A5CD-contents[m
+	[31mdeleted:    .Rproj.user/6DF1EF29/sources/s-871DF334/E342A85D[m
+	[31mdeleted:    .Rproj.user/6DF1EF29/sources/s-871DF334/E342A85D-contents[m
+	[31mdeleted:    .Rproj.user/6DF1EF29/sources/s-871DF334/lock_file[m
+	[31mmodified:   .Rproj.user/shared/notebooks/paths[m
+	[31mmodified:   R/Doorae_Data.html[m
+	[31mmodified:   R/doorae_new.RData[m
+	[31mmodified:   R/doorae_new_data.RData[m
+	[31mmodified:   R/theme_kr_HCR.R[m
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	[31mR/Doorae_Data_p.Rmd[m
+	[31mR/Doorae_Data_p.html[m
+	[31mR/Doorae_Report_p.Rmd[m
+	[31mR/Doorae_Report_p.html[m
+	[31mR/coord.R[m
+
+no changes added to commit (use "git add" and/or "git commit -a")
+]0;~/Google 드라이브/Works/Class/Data_Science/R.WD/Case_StudiesKee-Wonui-iMac-27:Case_Studies coop2711$ git pull
+Already up to date.
+]0;~/Google 드라이브/Works/Class/Data_Science/R.WD/Case_StudiesKee-Wonui-iMac-27:Case_Studies coop2711$ git add -A .
