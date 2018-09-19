@@ -253,19 +253,18 @@ doorae$"공동체상태" %>%
 
 ### 교차표
 
-```{r, results='asis', echo=FALSE}
+```{r, results='asis', echo = FALSE}
 doorae$"공동체상태" %>%
-  table(doorae$"법인유형", dnn = c("공동체상태", "조직유형")) %>%
+  table(doorae$"법인유형", 
+        dnn = c("공동체상태", "조직유형")) %>%
   kable(caption = "<공동체상태와 조직유형>")
 ```
 
-```{r, results='asis', echo=FALSE}
-stock_corp <- doorae$"법인유형"  %>%
-  `==`("주식회사") %>%
-  which
+```{r, results='asis', echo = FALSE}
 doorae %>%
-  `[`(stock_corp, c("공동체상태", "조직명")) %>%
-  kable(caption="<주식회사인 공동체사업체>")
+  `[`(doorae$"법인유형" == "주식회사", 
+      c("공동체상태", "조직명")) %>%
+  kable(caption = "<주식회사인 공동체사업체>")
 ```
 
 ### 모자이크 플롯
