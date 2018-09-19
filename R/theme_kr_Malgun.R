@@ -1,4 +1,4 @@
-theme.kr.Malgun <-
+theme_kr_Malgun <-
 structure(list(axis.title.x = structure(list(family = "Malgun Gothic", 
     face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, 
     angle = NULL, lineheight = NULL), .Names = c("family", "face", 

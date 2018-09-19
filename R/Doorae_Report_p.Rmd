@@ -150,10 +150,10 @@ doorae$"공동체상태" %>%
 ## 성장단계 구분에의 시사점
 
 ```{r, echo = FALSE}
-doorae$"사업자등록여부" <- doorae$"사업자등록여부" %>%
+doorae$"사업자등록여부" %<>% 
   factor(levels = c("Yes", "No"), 
          labels = c("등록", "미등록"))
-doorae$"성과_사업착수" <- doorae$"성과_사업착수" %>%
+doorae$"성과_사업착수" %<>%
   factor(levels = c("Yes", "No"), 
          labels = c("착수", "미착수"))
 bi_corp <- doorae$"공동체상태" %>%
@@ -215,12 +215,20 @@ doorae %>%
 
 ```{r, echo=FALSE}
 doorae$"공동체상태" %>%
+<<<<<<< HEAD
   table("공동체상태 :" = ., "조직형태 :" = doorae$"조직형태", "사업자등록여부:" = doorae$사업자등록여부) %>%
+=======
+  table("공동체상태 :" = ., "조직형태 :" = doorae$"조직형태", "사업자등록여부:" = doorae$"사업자등록여부") %>%
+>>>>>>> testing
   ftable %>%
   as.matrix %>%
   kable(caption = "* 공동체상태/조직형태와 사업자등록여부")
 doorae$"공동체상태" %>%
+<<<<<<< HEAD
   table("공동체상태 :" = ., "조직형태 :" = doorae$"조직형태", "사업자등록여부:" = doorae$사업자등록여부) %>%
+=======
+  table("공동체상태 :" = ., "조직형태 :" = doorae$"조직형태", "사업자등록여부:" = doorae$"사업자등록여부") %>%
+>>>>>>> testing
   ftable %>%
   prop.table(margin = 1) %>%
   `*`(100) %>%
