@@ -226,3 +226,30 @@ no changes added to commit (use "git add" and/or "git commit -a")
 ]0;~/Google 드라이브/Works/Class/Data_Science/R.WD/Case_StudiesKee-Wonui-iMac-27:Case_Studies coop2711$ git pull
 Already up to date.
 ]0;~/Google 드라이브/Works/Class/Data_Science/R.WD/Case_StudiesKee-Wonui-iMac-27:Case_Studies coop2711$ git add -A .
+git branch
+* [32mmaster[m
+]0;~/Google 드라이브/Works/Class/Data_Science/R.WD/Case_Studies_oldKee-Wonui-New-MacBook:Case_Studies_old coop2711$ git checkout -b testing
+.Rproj.user/6DF1EF29/console06/77259F95: needs merge
+error: you need to resolve your current index first
+햣 [K[Kgit status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	[31mmodified:   .Rproj.user/6DF1EF29/console06/77259F95[m
+	[31mmodified:   .Rproj.user/6DF1EF29/console06/77259F95.env[m
+	[31mmodified:   .Rproj.user/6DF1EF29/console06/INDEX001[m
+	[31mmodified:   .Rproj.user/6DF1EF29/pcs/files-pane.pper[m
+	[31mmodified:   .Rproj.user/6DF1EF29/pcs/workbench-pane.pper[m
+	[31mmodified:   .Rproj.user/6DF1EF29/rmd-outputs[m
+	[31mmodified:   .Rproj.user/shared/notebooks/paths[m
+	[31mmodified:   R/Doorae_Data_p.html[m
+	[31mmodified:   R/Doorae_Report_p.Rmd[m
+	[31mmodified:   R/Doorae_Report_p.html[m
+	[31mmodified:   R/doorae_new_data.RData[m
+
+no changes added to commit (use "git add" and/or "git commit -a")
+]0;~/Google 드라이브/Works/Class/Data_Science/R.WD/Case_StudiesKee-Wonui-New-MacBook:Case_Studies coop2711$ git add -A .
