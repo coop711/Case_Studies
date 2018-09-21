@@ -2,3 +2,4 @@
 .Rhistory
 R/*.RData
 .Ruserdata
+.Rproj.user
