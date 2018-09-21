@@ -41,6 +41,7 @@ doorae0924$"시도"
 * 전북이 두 개 나옴에 유의. 어떤 사연인가 하면,
 
 ```{r, data cleaning}
+# (id_to_fix <- which(doorae0924$"시도" == "전북 "))
 (id_to_fix <- doorae0924 %>%
   `[`(, "시도") %>%
   `==`("전북 ") %>%
