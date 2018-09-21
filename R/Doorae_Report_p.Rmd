@@ -109,7 +109,7 @@ doorae %$%
 # doorae$"공동체상태" %>%
 #   table(doorae$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
   t %>%
-  mosaic_gg(base_family = "HCR Dotum LVT",
+  mosaic_gg(base_family = "Malgun Gothic",
             ggtitle = "공동체상태와 조직형태",
             xlab = "공동체상태",
             ylab = "조직형태", 
@@ -124,7 +124,7 @@ doorae %$%
   table(.$"공동체상태", .$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
 # doorae$"공동체상태" %>%
 #   table(doorae$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
-  mosaic_gg(base_family = "HCR Dotum LVT",
+  mosaic_gg(base_family = "Malgun Gothic",
             ggtitle = "조직형태와 공동체상태",
             xlab = "조직형태", 
             ylab = "공동체상태",
@@ -284,7 +284,7 @@ doorae %$%
 # doorae$"공동체상태" %>%
 #   table(doorae$"법인유형", dnn = c("공동체상태", "조직유형")) %>%
   t %>%
-  mosaic_gg(base_family = "HCR Dotum LVT",
+  mosaic_gg(base_family = "Malgun Gothic",
             ggtitle = "공동체상태와 조직유형",
             xlab = "공동체상태", 
             ylab = "조직유형",
@@ -332,7 +332,7 @@ doorae %$%
 # doorae$"공동체상태" %>%
 #   table(doorae$"사업아이템", dnn = c("공동체상태", "사업아이템")) %>%
   t %>%
-  mosaic_gg(base_family = "HCR Dotum LVT",
+  mosaic_gg(base_family = "Malgun Gothic",
             ggtitle = "공동체상태와 사업아이템",
             xlab = "공동체상태", 
             ylab = "사업아이템",
@@ -363,7 +363,7 @@ doorae %$%
     * '아름다운인제관광'과 '예그리나'가 예외적으로 오랜 업력
 
 ```{r, echo=FALSE, fig.width=5, fig.height=5}
-source("theme_kr_HCR.R")
+source("theme_kr_Malgun.R")
 box_0 <- ggplot(data = doorae_ys, 
                 mapping = aes(x = status, 
                               y = years))
@@ -371,7 +371,7 @@ box_0 <- ggplot(data = doorae_ys,
 box_1 <- box_0 + 
   geom_boxplot() + 
   theme_bw() +
-  theme_kr_HCR
+  theme_kr_Malgun
 # box_1
 box_2 <- box_1 + 
   ggtitle("공동체상태와 업력") + 
@@ -387,7 +387,7 @@ box_4 <- box_3 +
            y = c(11.7, 12.4), 
            label = c("예그리나", "아름다운인제관광"), 
            size = 3.5, 
-           family = "HCR Dotum LVT")
+           family = "Malgun Gothic")
 box_4
 ```
 
@@ -406,9 +406,9 @@ ecdf_2 <- ecdf_1 +
 # ecdf_2
 ecdf_3 <- ecdf_2 + 
   theme_bw() +
-  theme_kr_HCR
+  theme_kr_Malgun
 # ecdf_3
-ecdf_4 <- ecdf_3 + theme(panel.background=element_rect("white"), panel.border=element_rect(colour="black", fill=NA))
+ecdf_4 <- ecdf_3 + theme(panel.background=element_rect("white"), panel.border=element_rect(colour="black", fill = NA))
 # ecdf_4
 ecdf_5 <- ecdf_3 + 
   ggtitle("공동체상태와 업력") +
@@ -445,7 +445,7 @@ ecdf_13 <- ecdf_12 +
            y = 0.54, 
            label = "중위수의 차이", 
            size = 3, 
-           family = "HCR Dotum LVT")
+           family = "Malgun Gothic")
 # ecdf_13
 ecdf_14 <- ecdf_13 + 
   annotate("text", 
@@ -453,7 +453,7 @@ ecdf_14 <- ecdf_13 +
            y = 0.46, 
            label = "약 3년", 
            size = 3, 
-           family = "HCR Dotum LVT")
+           family = "Malgun Gothic")
 ecdf_14
 ```
 
@@ -489,7 +489,7 @@ poly_2 <- poly_1 +
 # poly_2
 poly_3 <- poly_2 + 
   theme_bw() +
-  theme_kr_HCR
+  theme_kr_Malgun
 # poly_3
 poly_4 <- poly_3 + 
   theme(panel.background = element_rect("white"), 
@@ -524,7 +524,7 @@ poly_12 <- poly_11 +
            label="두 도표 간 면적은\n평균의 차이,\n약 3년", 
            size = 4, 
            angle = 15, 
-           family = "HCR Dotum LVT")
+           family = "Malgun Gothic")
 # poly_12
 poly_13 <- poly_12 + 
   annotate("text", 
@@ -532,14 +532,14 @@ poly_13 <- poly_12 +
            y = 0.6, 
            label = "경영개선", 
            size = 4, 
-           family = "HCR Dotum LVT")
+           family = "Malgun Gothic")
 poly_14 <- poly_13 + 
   annotate("text", 
            x = 1, 
            y = 0.9, 
            label = "창업준비", 
            size = 4, 
-           family = "HCR Dotum LVT")
+           family = "Malgun Gothic")
 poly_14
 ```
 
@@ -571,7 +571,7 @@ d_4 <- d_3 +
   theme_bw()
 # d_4
 d_5 <- d_4 +
-  theme_kr_HCR
+  theme_kr_Malgun
 # d_5
 d_6 <- d_5 + 
   ylab("조직명")  
