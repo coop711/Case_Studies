@@ -11,7 +11,7 @@
 
 <meta name="author" content="coop711" />
 
-<meta name="date" content="2018-09-19" />
+<meta name="date" content="2018-09-21" />
 
 <title>Doorae_data</title>
 
@@ -124,7 +124,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Doorae_data</h1>
 <h4 class="author"><em>coop711</em></h4>
-<h4 class="date"><em>2018-09-19</em></h4>
+<h4 class="date"><em>2018-09-21</em></h4>
 
 </div>
 
@@ -173,7 +173,8 @@ doorae0924 &lt;- data.frame(doorae0924_name, doorae0924_rest)</code></pre>
 <ul>
 <li>전북이 두 개 나옴에 유의. 어떤 사연인가 하면,</li>
 </ul>
-<pre class="r"><code>(id_to_fix &lt;- doorae0924 %&gt;%
+<pre class="r"><code># (id_to_fix &lt;- which(doorae0924$&quot;시도&quot; == &quot;전북 &quot;))
+(id_to_fix &lt;- doorae0924 %&gt;%
   `[`(, &quot;시도&quot;) %&gt;%
   `==`(&quot;전북 &quot;) %&gt;%
   which)</code></pre>
