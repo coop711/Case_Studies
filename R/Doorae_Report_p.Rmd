@@ -16,7 +16,7 @@ library(ggplot2)
 # library(extrafont)
 library(pander)
 library(RColorBrewer)
-# panderOptions("table.split.table", Inf)
+panderOptions("table.split.table", Inf)
 ```
 
 
@@ -24,9 +24,9 @@ library(RColorBrewer)
 doorae <- doorae0924
 doorae_ys <- doorae0924_ys
 doorae %>%
-  `[`(, 1:24) %>%
+#   `[`(, 1:24) %>%
+  `[`(1:24) %>%
   str
-# str(doorae[, 1:24])
 ```
 
 <P style = "page-break-before:always">
@@ -35,9 +35,9 @@ doorae %>%
 
 ```{r, echo = FALSE}
 doorae %>%
-  `[`(, 25:54) %>%
+#   `[`(, 25:54) %>%
+  `[`(25:54) %>%
   str
-# str(doorae[, 25:54])
 ```
 
 <P style = "page-break-before:always">
@@ -50,14 +50,13 @@ options(digits=3)
 ## cols.no.summary.names <-c("설립일", "사업자등록", "업태", "종목", "소재지", "사업명", "아이디어", "대표상품") 
 ## cols.no.summary <- which(names(doorae) %in% # cols.no.summary.names)
 doorae %>%
-  `[`(, c(1:9, 15:17)) %>%
+    `[`(c(1:9, 15:17)) %>%
+#    `[`(, c(1:9, 15:17)) %>%
   sapply(FUN = summary)
 doorae %>%
-  `[`(, c(18, 20:22, 25:54)) %>%
+  `[`(c(18, 20:22, 25:54)) %>%
+#   `[`(, c(18, 20:22, 25:54)) %>%
   sapply(FUN = summary)
-# sapply(doorae[, c(1:9, 15:17)], summary)
-# sapply(doorae[, c(18, 20:22, 25:54)], summary)
-# pander(doorae.summary)
 ```
 
 <P style = "page-break-before:always">
@@ -68,26 +67,32 @@ doorae %>%
 
 ### 교차표
 
-```{r, echo=FALSE, message=FALSE}
-doorae$"공동체상태" %>%
-  table(doorae$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
+```{r, echo = FALSE, message = FALSE}
+doorae %$%
+  table(.$"공동체상태", .$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
+# doorae$"공동체상태" %>%
+#   table(doorae$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
   cbind(., "계" = rowSums(.)) %>%
   rbind(., "계" = colSums(.)) %>%
-  kable(caption = "ㅇ공동체상태와 조직형태(계)")
-doorae$"공동체상태" %>%
-  table(doorae$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
+  kable(caption = "ㅇ공동체상태와 조직형태(계)", align = c("c", "r", "r", "r"))
+doorae %$%
+  table(.$"공동체상태", .$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
+# doorae$"공동체상태" %>%
+#   table(doorae$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
   prop.table(margin = 1) %>%
   `*`(100) %>%
   cbind(., "계" = rowSums(.)) %>%
   round(digits = 1) %>%
-  kable(caption = "ㅇ공동체상태와 조직형태(%, 계)")
-doorae$"공동체상태" %>%
-  table(doorae$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
+  kable(caption = "ㅇ공동체상태와 조직형태(%, 계)", align = c("c", "r", "r", "r"))
+doorae %$%
+  table(.$"공동체상태", .$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
+# doorae$"공동체상태" %>%
+#   table(doorae$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
   prop.table(margin = 2) %>%
   `*`(100) %>%
   rbind(., "계" = colSums(.)) %>%
   round(digits = 1) %>%
-  kable(caption = "ㅇ조직형태와 공동체상태(%, 계)")
+  kable(caption = "ㅇ조직형태와 공동체상태(%, 계)", align = c("c", "r", "r"))
 ```
 
 <P style = "page-break-before:always">
@@ -99,50 +104,31 @@ doorae$"공동체상태" %>%
 
 ```{r, echo=FALSE, fig.width = 6, fig.height = 4.2}
 source("./mosaic_gg.R")
-source("./coord.R")
-doorae$"공동체상태" %>%
-  table(doorae$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
+doorae %$%
+  table(.$"공동체상태", .$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
+# doorae$"공동체상태" %>%
+#   table(doorae$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
   t %>%
   mosaic_gg(base_family = "HCR Dotum LVT",
             ggtitle = "공동체상태와 조직형태",
             xlab = "공동체상태",
             ylab = "조직형태", 
             fill.name = "공동체상태")
-# mosaic_gg(t(status.vs.structure), 
-#           base_family = "",
-#           ggtitle = "공동체상태와 조직형태",
-#           ylab = "조직형태",
-#           xlab = "공동체상태",
-#           fill.name = "공동체상태")
-# mosaicplot(status.vs.structure, 
-#            color = rainbow(2), 
-#            main = "공동체상태와 조직형태")
-# text(coord_text, 
-#      labels = t(status.vs.structure))
 ```
 
 * 조직형태와 공동체상태
     * 이는 거꾸로 법인격을 갖춘 공동체사업체 중에 경영개선 상태에 들어간 비율이 압도적으로 많다는 것으로 이해할 수도 있음.
 
 ```{r, echo=FALSE, fig.width = 6, fig.height = 4.2}
-doorae$"공동체상태" %>%
-  table(doorae$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
+doorae %$%
+  table(.$"공동체상태", .$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
+# doorae$"공동체상태" %>%
+#   table(doorae$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
   mosaic_gg(base_family = "HCR Dotum LVT",
             ggtitle = "조직형태와 공동체상태",
             xlab = "조직형태", 
             ylab = "공동체상태",
             fill.name = "조직형태")
-# mosaic_gg(status.vs.structure, 
-#           base_family = "",
-#           ggtitle = "조직형태와 공동체상태",
-#           xlab = "조직형태",
-#           ylab = "공동체상태",
-#           fill.name = "조직형태")
-# mosaicplot(t(status.vs.structure), 
-#            color = rainbow(2), 
-#            main="조직형태와 공동체상태")
-# text(coord_text.1.2, 
-#      labels=status.vs.structure)
 ```
 
 <P style = "page-break-before:always">
@@ -150,18 +136,25 @@ doorae$"공동체상태" %>%
 ## 성장단계 구분에의 시사점
 
 ```{r, echo = FALSE}
-doorae$regi_kr <- doorae$"사업자등록여부" %>%
-  factor(levels = c("Yes", "No"), labels = c("등록", "미등록"))
-doorae$biz_kr <- doorae$"성과_사업착수" %>%
-  factor(levels = c("Yes", "No"), labels = c("착수", "미착수"))
-bi_corp <- doorae$"공동체상태" %>%
-  `==`("경영개선") %>%
-  `&`(., doorae$"조직형태" %>% `==`("법인")) %>%
+doorae$"사업자등록여부" %<>%
+  factor(levels = c("Yes", "No"), 
+         labels = c("등록", "미등록"))
+doorae$"성과_사업착수" %<>%
+  factor(levels = c("Yes", "No"), 
+         labels = c("착수", "미착수"))
+bi_corp <- doorae %$%
+  `&`(.$"공동체상태" == "경영개선", .$"조직형태" == "법인") %>%
   which
-bi_noncorp <- which(doorae$"공동체상태" == "경영개선" & doorae$"조직형태" == "임의단체")
-bp_corp <- which(doorae$"공동체상태" == "창업준비" & doorae$"조직형태" == "법인")
-bp_noncorp <- which(doorae$"공동체상태" == "창업준비" & doorae$"조직형태" == "임의단체")
-v_names <- c("공동체상태", "조직명", "biz_kr", "regi_kr", "성과_매출_2014", "성과_매출_2015_3개월")
+bi_noncorp <- doorae %$%
+  `&`(.$"공동체상태" == "경영개선", .$"조직형태" == "임의단체") %>%
+  which
+bp_corp <- doorae %$%
+  `&`(.$"공동체상태" == "창업준비", .$"조직형태" == "법인") %>%
+  which
+bp_noncorp <- doorae %$%
+  `&`(.$"공동체상태" == "창업준비", .$"조직형태" == "임의단체") %>%
+  which
+v_names <- c("공동체상태", "조직명", "성과_사업착수", "사업자등록여부", "성과_매출_2014", "성과_매출_2015_3개월")
 c_names <- c("공동체상태", "조직명", "사업착수여부", "사업자등록여부", "2014년매출", "2015년(3개월)매출")
 ```
 
@@ -171,7 +164,8 @@ c_names <- c("공동체상태", "조직명", "사업착수여부", "사업자등
 ```{r, results='asis', echo=FALSE}
 doorae %>%
   `[`(bi_corp, v_names) %>%
-  kable(row.names = FALSE, col.names = c_names)
+  format(big.mark = ",") %>%
+  kable(row.names = FALSE, col.names = c_names, align = c("c", "c", "c", "c", "r", "r"))
 ```
 
 <P style = "page-break-before:always">
@@ -182,7 +176,8 @@ doorae %>%
 ```{r, results = 'asis', echo = FALSE}
 doorae %>%
   `[`(bi_noncorp, v_names) %>%
-  kable(row.names = FALSE, col.names = c_names)
+  format(big.mark = ",") %>%
+  kable(row.names = FALSE, col.names = c_names, align = c("c", "c", "c", "c", "r", "r"))
 ```
 
 * 창업준비 상태의 법인 조직
@@ -191,7 +186,8 @@ doorae %>%
 ```{r, results='asis', echo=FALSE}
 doorae %>%
   `[`(bp_corp, v_names) %>%
-  kable(row.names = FALSE, col.names = c_names)
+  format(big.mark = ",") %>%
+  kable(row.names = FALSE, col.names = c_names, align = c("c", "c", "c", "c", "r", "r"))
 ```
 
 <!--
@@ -204,34 +200,51 @@ doorae %>%
 ```{r, results='asis', echo=FALSE}
 doorae %>%
   `[`(bp_noncorp, v_names) %>%
-  kable(row.names = FALSE, col.names = c_names)
+  format(big.mark = ",") %>%
+  kable(row.names = FALSE, col.names = c_names, align = c("c", "c", "c", "c", "r", "r"))
 ```
 
 <P style = "page-break-before:always">
 
 ### 3원 교차분석
 
-```{r, echo=FALSE}
-doorae$"공동체상태" %>%
-  table("공동체상태 :" = ., "조직형태 :" = doorae$"조직형태", "사업자등록여부:" = doorae$regi_kr) %>%
+```{r, echo = FALSE}
+doorae %$%
+  table("공동체상태 :" = .$"공동체상태", 
+        "조직형태 :" = .$"조직형태", 
+        "사업자등록여부:" = .$"사업자등록여부") %>%
+# doorae$"공동체상태" %>%
+#   table("공동체상태 :" = ., "조직형태 :" = doorae$"조직형태", "사업자등록여부:" = doorae$"사업자등록여부") %>%
   ftable %>%
   as.matrix %>%
   kable(caption = "* 공동체상태/조직형태와 사업자등록여부")
-doorae$"공동체상태" %>%
-  table("공동체상태 :" = ., "조직형태 :" = doorae$"조직형태", "사업자등록여부:" = doorae$regi_kr) %>%
+doorae %$%
+  table("공동체상태 :" = .$"공동체상태", 
+        "조직형태 :" = .$"조직형태", 
+        "사업자등록여부:" = .$"사업자등록여부") %>%
+# doorae$"공동체상태" %>%
+#   table("공동체상태 :" = ., "조직형태 :" = doorae$"조직형태", "사업자등록여부:" = doorae$"사업자등록여부") %>%
   ftable %>%
   prop.table(margin = 1) %>%
   `*`(100) %>%
   round(digits = 1) %>%
   as.matrix %>%
   kable(caption = "* 공동체상태/조직형태와 사업자등록여부(%)")
-doorae$"공동체상태" %>%
-  table("공동체상태 :" = ., "조직형태 :" = doorae$"조직형태", "사업착수여부 :" = doorae$biz_kr) %>%
+doorae %$%
+  table("공동체상태 :" = .$"공동체상태", 
+        "조직형태 :" = .$"조직형태", 
+        "사업자등록여부:" = .$"사업자등록여부") %>%
+# doorae$"공동체상태" %>%
+#   table("공동체상태 :" = ., "조직형태 :" = doorae$"조직형태", "사업착수여부 :" = doorae$"성과_사업착수") %>%
   ftable %>%
   as.matrix %>%
   kable(caption = "* 공동체상태/조직형태와 사업착수여부")
-doorae$"공동체상태" %>%
-  table("공동체상태 :" = ., "조직형태 :" = doorae$"조직형태", "사업착수여부 :" = doorae$biz_kr) %>%
+doorae %$%
+  table("공동체상태 :" = .$"공동체상태", 
+        "조직형태 :" = .$"조직형태", 
+        "사업자등록여부:" = .$"사업자등록여부") %>%
+# doorae$"공동체상태" %>%
+#   table("공동체상태 :" = ., "조직형태 :" = doorae$"조직형태", "사업착수여부 :" = doorae$"성과_사업착수") %>%
   ftable %>%
   prop.table(margin = 1) %>%
   `*`(100) %>%
@@ -246,45 +259,35 @@ doorae$"공동체상태" %>%
 
 ### 교차표
 
-```{r, results='asis', echo=FALSE}
-doorae$"공동체상태" %>%
-  table(doorae$"법인유형", dnn = c("공동체상태", "조직유형")) %>%
+```{r, results = 'asis', echo = FALSE}
+doorae %$%
+  table(.$"공동체상태", .$"법인유형", dnn = c("공동체상태", "조직유형")) %>%
+# doorae$"공동체상태" %>%
+#   table(doorae$"법인유형", dnn = c("공동체상태", "조직유형")) %>%
+  cbind(., "계" = rowSums(.)) %>%
+  rbind(., "계" = colSums(.)) %>%
   kable(caption = "<공동체상태와 조직유형>")
 ```
 
 ```{r, results='asis', echo=FALSE}
-stock_corp <- doorae$"법인유형"  %>%
-  `==`("주식회사") %>%
-  which
 doorae %>%
-  `[`(stock_corp, c("공동체상태", "조직명")) %>%
-  kable(caption="<주식회사인 공동체사업체>")
+  `[`(.$"법인유형" == "주식회사", c("공동체상태", "조직명")) %>%
+  kable(caption = "<주식회사인 공동체사업체>")
 ```
 
 ### 모자이크 플롯
 
 ```{r, echo=FALSE, fig.width = 6, fig.height = 4.5}
-doorae$"공동체상태" %>%
-  table(doorae$"법인유형", dnn = c("공동체상태", "조직유형")) %>%
+doorae %$%
+  table(.$"공동체상태", .$"법인유형", dnn = c("공동체상태", "조직유형")) %>%
+# doorae$"공동체상태" %>%
+#   table(doorae$"법인유형", dnn = c("공동체상태", "조직유형")) %>%
   t %>%
   mosaic_gg(base_family = "HCR Dotum LVT",
             ggtitle = "공동체상태와 조직유형",
             xlab = "공동체상태", 
             ylab = "조직유형",
             fill.name = "조직유형")
-# mosaic_gg(t(status.vs.corporate_type), 
-#           base_family = "",
-#           ggtitle = "공동체상태와 조직유형",
-#           ylab = "조직유형",
-#           xlab = "공동체상태",
-#           fill.name = "조직유형")
-# mosaicplot(status.vs.corporate_type, 
-#            color=rainbow(7), 
-#            main="공동체상태와 조직유형", 
-#            las=1)
-# text(coord_text.2, 
-#      labels=t(status.vs.corporate_type), 
-#      cex=0.8)
 ```
 
 <P style = "page-break-before:always">
@@ -296,8 +299,10 @@ doorae$"공동체상태" %>%
 * 경영개선 상태에서는 '식음'과 '체험', 창업준비 상태에서는 '식음'과 '관광기념품'이 많이 있음.
 
 ```{r, results='asis', echo = FALSE}
-doorae$"공동체상태" %>%
-  table(doorae$"사업아이템", dnn = c("공동체상태", "사업아이템")) %>%
+doorae %$%
+  table(.$"공동체상태", .$"사업아이템", dnn = c("공동체상태", "사업아이템")) %>%
+# doorae$"공동체상태" %>%
+#   table(doorae$"사업아이템", dnn = c("공동체상태", "사업아이템")) %>%
   cbind(., "계" = rowSums(.)) %>%
   kable(caption = "<공동체상태와 사업아이템>")
 ```
@@ -307,8 +312,10 @@ doorae$"공동체상태" %>%
 * 창업준비 상태에서 '관광기념품'의 비중이 매우 높음.
 
 ```{r, results='asis', echo = FALSE}
-doorae$"공동체상태" %>%
-  table(doorae$"사업아이템", dnn = c("공동체상태", "사업아이템")) %>%
+doorae %$%
+  table(.$"공동체상태", .$"사업아이템", dnn = c("공동체상태", "사업아이템")) %>%
+# doorae$"공동체상태" %>%
+#   table(doorae$"사업아이템", dnn = c("공동체상태", "사업아이템")) %>%
   prop.table(margin = 1) %>%
   `*`(100) %>%
   cbind(., "계" = rowSums(.)) %>%
@@ -319,27 +326,16 @@ doorae$"공동체상태" %>%
 ### 모자이크 플롯
 
 ```{r, echo=FALSE, fig.width = 6, fig.height = 4.5}
-doorae$"공동체상태" %>%
-  table(doorae$"사업아이템", dnn = c("공동체상태", "사업아이템")) %>%
+doorae %$%
+  table(.$"공동체상태", .$"사업아이템", dnn = c("공동체상태", "사업아이템")) %>%
+# doorae$"공동체상태" %>%
+#   table(doorae$"사업아이템", dnn = c("공동체상태", "사업아이템")) %>%
   t %>%
   mosaic_gg(base_family = "HCR Dotum LVT",
             ggtitle = "공동체상태와 사업아이템",
             xlab = "공동체상태", 
             ylab = "사업아이템",
             fill.name = "사업아이템")
-# mosaic_gg(t(status.vs.business_item), 
-#           base_family = "",
-#           ggtitle = "공동체상태와 사업아이템",
-#           xlab = "공동체상태",
-#           ylab = "사업아이템",
-#           fill.name = "사업아이템")
-# mosaicplot(status.vs.business_item, 
-#            color=rainbow(7), 
-#            main="공동체상태와 사업아이템", 
-#            las=1)
-# text(coord_text.3, 
-#      labels=t(status.vs.business_item), 
-#      cex=0.8)
 ```
 
 <P style = "page-break-before:always">
@@ -353,9 +349,11 @@ doorae$"공동체상태" %>%
 ### 요약표
 
 ```{r, echo = FALSE, results = 'markup'}
-doorae$"공동체상태" %>%
-  tapply(doorae$"업력", ., FUN = summary)
-pander(tapply(doorae$"업력", doorae$"공동체상태", summary))
+doorae %$%
+  tapply(.$"업력", .$"공동체상태", 
+         FUN = { . %>% summary %>% round(digits = 1) }) %>%
+#         FUN = function(x) round(summary(x), digits = 1)) %>%
+  pander
 ```
 
 ### Box Plot
@@ -465,9 +463,9 @@ n_post <- length(x_post)
 y_pre <- (1:n_pre)/n_pre
 y_post <- (1:n_post)/n_post
 ecdf_x_pre <- c(0, rep(x_pre, each=2))
-ecdf_y_pre <- c(rep(c(0, head(y_pre, -1)), each=2), 1)
+ecdf_y_pre <- c(rep(c(0, head(y_pre, -1)), each = 2), 1)
 ecdf_x_post <- c(0, rep(x_post, each=2))
-ecdf_y_post <- c(rep(c(0, head(y_post, -1)), each=2), 1)
+ecdf_y_post <- c(rep(c(0, head(y_post, -1)), each = 2), 1)
 years_x <- c(ecdf_x_pre, rev(ecdf_x_post))
 years_y <- c(ecdf_y_pre, rev(ecdf_y_post))
 years_df <- data.frame(years = years_x, ecdf_years = years_y)
@@ -595,7 +593,7 @@ d_9
 ```{r, echo = FALSE}
 v_vs_names <- c("공동체상태", "방문객(2014)", "방문객(2015, 3개월)", "매출(2014)", "매출(2015, 3개월)")
 doorae %>%
-  `[`(, c("성과_방문객_2014", "성과_방문객_2015_3개월", "성과_매출_2014", "성과_매출_2015_3개월")) %>%
+  `[`(c("성과_방문객_2014", "성과_방문객_2015_3개월", "성과_매출_2014", "성과_매출_2015_3개월")) %>%
   aggregate(list("공동체상태" = doorae$"공동체상태"), FUN = mean) %>%
   format(big.mark = ",") %>%
   kable(col.names = v_vs_names, align = c("c", rep("r", 4)))
@@ -605,7 +603,7 @@ doorae %>%
 
 ```{r, echo = FALSE}
 doorae %>%
-  `[`(, c("성과_방문객_2014", "성과_방문객_2015_3개월", "성과_매출_2014", "성과_매출_2015_3개월")) %>%
+  `[`(c("성과_방문객_2014", "성과_방문객_2015_3개월", "성과_매출_2014", "성과_매출_2015_3개월")) %>%
   aggregate(list("공동체상태" = doorae$"공동체상태"), FUN = median) %>%
   format(big.mark = ",") %>%
   kable(col.names = v_vs_names, align = c("c", rep("r", 4)))
@@ -635,44 +633,44 @@ c_names_s_15 <- c("공동체상태", "조직명", "매출(2015, 3개월)")
 
 ### 방문객(2014)
 
-```{r, results='asis', echo=FALSE}
+```{r, results = 'asis', echo = FALSE}
 doorae %>%
   `[`(o_visitors_14, v_names_v_14) %>%
   `[`(1:20, ) %>%
-    format(big.mark = ",") %>%
-  kable(row.names = FALSE, col.names = c_names_v_14, align = c("c", "c", "r"))
+  format(big.mark = ",") %>%
+  kable(row.names = FALSE, col.names = c_names_v_14, align = c("l", "l", "r"))
 ```
 
 ### 방문객(2015, 3개월)
 
-```{r, results='asis', echo=FALSE}
+```{r, results = 'asis', echo = FALSE}
 doorae %>%
   `[`(o_visitors_15, v_names_v_15) %>%
   `[`(1:20, ) %>%
   format(big.mark = ",") %>%
-  kable(row.names = FALSE, col.names = c_names_v_15, align = c("c", "c", "r"))
+  kable(row.names = FALSE, col.names = c_names_v_15, align = c("l", "l", "r"))
 ```
 
 <P style = "page-break-before:always">
 
 ### 매출(2014)
 
-```{r, results='asis', echo = FALSE}
+```{r, results = 'asis', echo = FALSE}
 doorae %>%
   `[`(o_sales_14, v_names_s_14) %>%
   `[`(1:20, ) %>%
   format(big.mark = ",") %>%
-  kable(row.names = FALSE, col.names = c_names_s_14, align = c("c", "c", "r"))
+  kable(row.names = FALSE, col.names = c_names_s_14, align = c("l", "l", "r"))
 ```
 
 ### 매출(2015, 3개월)
 
-```{r, results='asis', echo=FALSE}
+```{r, results = 'asis', echo = FALSE}
 doorae %>%
   `[`(o_sales_15, v_names_s_15) %>%
   `[`(1:20, ) %>%
   format(big.mark = ",") %>%
-  kable(row.names = FALSE, col.names = c_names_s_15, align = c("c", "c", "r"))
+  kable(row.names = FALSE, col.names = c_names_s_15, align = c("l", "l", "r"))
 ```
 
 ### 자료 갈무리
