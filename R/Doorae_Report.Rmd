@@ -9,13 +9,13 @@ output: html_document
 ### 기초자료
 
 ```{r, echo=FALSE, message=FALSE}
-load("doorae_new_data.RData")
+load("doorae_data.RData")
 library(knitr)
 library(ggplot2)
-# library(extrafont)
-# library(pander)
+library(extrafont)
+library(pander)
 library(RColorBrewer)
-# panderOptions("table.split.table", Inf)
+panderOptions("table.split.table", Inf)
 ```
 
 
@@ -40,11 +40,11 @@ str(doorae[, 25:54])
 ```{r echo=FALSE}
 options(width=132)
 options(digits=3)
-# cols.no.summary.names <-c("설립일", "사업자등록", "업태", "종목", "소재지", "사업명", "아이디어", "대표상품") 
-# cols.no.summary <- which(names(doorae) %in% # cols.no.summary.names)
+## summary가 무의미한 변수들 : 
+# cols_no_summary_names <- c("설립일", "사업자등록", "업태", "종목", "소재지", "사업명", "아이디어", "대표상품") 
+# cols_no_summary <- which(names(doorae) %in% cols_no_summary_names)
 sapply(doorae[, c(1:9, 15:17)], summary)
 sapply(doorae[, c(18, 20:22, 25:54)], summary)
-# pander(doorae.summary)
 ```
 
 <P style = "page-break-before:always">
