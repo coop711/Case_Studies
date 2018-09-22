@@ -1,4 +1,4 @@
----
+f(---
 title: "Doorae_data"
 author: "coop711"
 date: "`r Sys.Date()`"
@@ -77,8 +77,8 @@ doorae0924 %>%
 ```{r, difftime}
 doorae0924 %>%
   str
-doorae0924$"업력" <- doorae0924 %>%
-  `[`(, "설립일") %>%
+doorae0924$"업력" <- doorae0924$"설립일" %>%
+#  `[`(, "설립일") %>%
   difftime("2015-09-24", ., units = "days") %>%
   `/`(365) %>%
   as.numeric %>%
