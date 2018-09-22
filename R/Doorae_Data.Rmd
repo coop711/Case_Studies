@@ -66,5 +66,5 @@ doorae0924.ys <- data.frame(status = factor(doorae0924$"공동체상태", levels
 ### Save data
 
 ```{r save_image}
-save.image("./doorae_new_data.RData")
+save.image("./doorae_data.RData")
 ```                        
