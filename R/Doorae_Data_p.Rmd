@@ -1,4 +1,4 @@
----
+f(---
 title: "Doorae_data"
 author: "coop711"
 date: "`r Sys.Date()`"
@@ -41,6 +41,7 @@ doorae0924$"시도"
 * 전북이 두 개 나옴에 유의. 어떤 사연인가 하면,
 
 ```{r, data cleaning}
+# (id_to_fix <- which(doorae0924$"시도" == "전북 "))
 (id_to_fix <- doorae0924 %>%
   `[`(, "시도") %>%
   `==`("전북 ") %>%
@@ -76,8 +77,8 @@ doorae0924 %>%
 ```{r, difftime}
 doorae0924 %>%
   str
-doorae0924$"업력" <- doorae0924 %>%
-  `[`(, "설립일") %>%
+doorae0924$"업력" <- doorae0924$"설립일" %>%
+#  `[`(, "설립일") %>%
   difftime("2015-09-24", ., units = "days") %>%
   `/`(365) %>%
   as.numeric %>%
