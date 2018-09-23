@@ -4,6 +4,5 @@
 R/*.RData
 R/*.html
 docs/*.pdf
-pics/*.png
 .Ruserdata
 .Rproj.user

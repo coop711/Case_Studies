@@ -8,7 +8,7 @@ output: html_document
 
 ### 기초자료
 
-```{r, echo=FALSE, message=FALSE}
+```{r, echo = FALSE, message = FALSE}
 load("doorae_new_data.RData")
 library(magrittr)
 library(knitr)
@@ -69,30 +69,30 @@ doorae %>%
 
 ```{r, echo = FALSE, message = FALSE}
 doorae %$%
-  table(.$"공동체상태", .$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
-# doorae$"공동체상태" %>%
-#   table(doorae$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
+  table(.$"공동체상태", .$"조직형태",
+        dnn = c("공동체상태", "조직형태")) %>%
   cbind(., "계" = rowSums(.)) %>%
   rbind(., "계" = colSums(.)) %>%
-  kable(caption = "ㅇ공동체상태와 조직형태(계)", align = c("c", "r", "r", "r"))
+  kable(caption = "ㅇ공동체상태와 조직형태(계)", 
+        align = c("c", "r", "r", "r"))
 doorae %$%
-  table(.$"공동체상태", .$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
-# doorae$"공동체상태" %>%
-#   table(doorae$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
+  table(.$"공동체상태", .$"조직형태", 
+        dnn = c("공동체상태", "조직형태")) %>%
   prop.table(margin = 1) %>%
   `*`(100) %>%
   cbind(., "계" = rowSums(.)) %>%
   round(digits = 1) %>%
-  kable(caption = "ㅇ공동체상태와 조직형태(%, 계)", align = c("c", "r", "r", "r"))
+  kable(caption = "ㅇ공동체상태와 조직형태(%, 계)", 
+        align = c("c", "r", "r", "r"))
 doorae %$%
-  table(.$"공동체상태", .$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
-# doorae$"공동체상태" %>%
-#   table(doorae$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
+  table(.$"공동체상태", .$"조직형태", 
+        dnn = c("공동체상태", "조직형태")) %>%
   prop.table(margin = 2) %>%
   `*`(100) %>%
   rbind(., "계" = colSums(.)) %>%
   round(digits = 1) %>%
-  kable(caption = "ㅇ조직형태와 공동체상태(%, 계)", align = c("c", "r", "r"))
+  kable(caption = "ㅇ조직형태와 공동체상태(%, 계)", 
+        align = c("c", "r", "r"))
 ```
 
 <P style = "page-break-before:always">
@@ -102,12 +102,12 @@ doorae %$%
 * 공동체상태와 조직형태
     * 경영개선 상태에서 법인격을 갖춘 공동체사업의 비율이 창업준비 상태에서 법인격을 갖춘 공동체사업의 비율보다 압도적으로 많다는 점에 유의.
 
-```{r, echo=FALSE, fig.width = 6, fig.height = 4.2}
+```{r, echo = FALSE, fig.width = 6, fig.height = 4.2}
+source("theme_kr_HCR.R")
 source("./mosaic_gg.R")
 doorae %$%
-  table(.$"공동체상태", .$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
-# doorae$"공동체상태" %>%
-#   table(doorae$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
+  table(.$"공동체상태", .$"조직형태", 
+        dnn = c("공동체상태", "조직형태")) %>%
   t %>%
   mosaic_gg(base_family = "HCR Dotum LVT",
             ggtitle = "공동체상태와 조직형태",
@@ -119,11 +119,10 @@ doorae %$%
 * 조직형태와 공동체상태
     * 이는 거꾸로 법인격을 갖춘 공동체사업체 중에 경영개선 상태에 들어간 비율이 압도적으로 많다는 것으로 이해할 수도 있음.
 
-```{r, echo=FALSE, fig.width = 6, fig.height = 4.2}
+```{r, echo = FALSE, fig.width = 6, fig.height = 4.2}
 doorae %$%
-  table(.$"공동체상태", .$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
-# doorae$"공동체상태" %>%
-#   table(doorae$"조직형태", dnn = c("공동체상태", "조직형태")) %>%
+  table(.$"공동체상태", .$"조직형태", 
+        dnn = c("공동체상태", "조직형태")) %>%
   mosaic_gg(base_family = "HCR Dotum LVT",
             ggtitle = "조직형태와 공동체상태",
             xlab = "조직형태", 
@@ -165,7 +164,9 @@ c_names <- c("공동체상태", "조직명", "사업착수여부", "사업자등
 doorae %>%
   `[`(bi_corp, v_names) %>%
   format(big.mark = ",") %>%
-  kable(row.names = FALSE, col.names = c_names, align = c("c", "c", "c", "c", "r", "r"))
+  kable(row.names = FALSE, 
+        col.names = c_names, 
+        align = c("c", "c", "c", "c", "r", "r"))
 ```
 
 <P style = "page-break-before:always">
@@ -177,7 +178,9 @@ doorae %>%
 doorae %>%
   `[`(bi_noncorp, v_names) %>%
   format(big.mark = ",") %>%
-  kable(row.names = FALSE, col.names = c_names, align = c("c", "c", "c", "c", "r", "r"))
+  kable(row.names = FALSE, 
+        col.names = c_names, 
+        align = c("c", "c", "c", "c", "r", "r"))
 ```
 
 * 창업준비 상태의 법인 조직
@@ -187,7 +190,9 @@ doorae %>%
 doorae %>%
   `[`(bp_corp, v_names) %>%
   format(big.mark = ",") %>%
-  kable(row.names = FALSE, col.names = c_names, align = c("c", "c", "c", "c", "r", "r"))
+  kable(row.names = FALSE, 
+        col.names = c_names, 
+        align = c("c", "c", "c", "c", "r", "r"))
 ```
 
 <!--
@@ -201,7 +206,9 @@ doorae %>%
 doorae %>%
   `[`(bp_noncorp, v_names) %>%
   format(big.mark = ",") %>%
-  kable(row.names = FALSE, col.names = c_names, align = c("c", "c", "c", "c", "r", "r"))
+  kable(row.names = FALSE, 
+        col.names = c_names, 
+        align = c("c", "c", "c", "c", "r", "r"))
 ```
 
 <P style = "page-break-before:always">
@@ -213,8 +220,6 @@ doorae %$%
   table("공동체상태 :" = .$"공동체상태", 
         "조직형태 :" = .$"조직형태", 
         "사업자등록여부:" = .$"사업자등록여부") %>%
-# doorae$"공동체상태" %>%
-#   table("공동체상태 :" = ., "조직형태 :" = doorae$"조직형태", "사업자등록여부:" = doorae$"사업자등록여부") %>%
   ftable %>%
   as.matrix %>%
   kable(caption = "* 공동체상태/조직형태와 사업자등록여부")
@@ -222,8 +227,6 @@ doorae %$%
   table("공동체상태 :" = .$"공동체상태", 
         "조직형태 :" = .$"조직형태", 
         "사업자등록여부:" = .$"사업자등록여부") %>%
-# doorae$"공동체상태" %>%
-#   table("공동체상태 :" = ., "조직형태 :" = doorae$"조직형태", "사업자등록여부:" = doorae$"사업자등록여부") %>%
   ftable %>%
   prop.table(margin = 1) %>%
   `*`(100) %>%
@@ -233,18 +236,14 @@ doorae %$%
 doorae %$%
   table("공동체상태 :" = .$"공동체상태", 
         "조직형태 :" = .$"조직형태", 
-        "사업자등록여부:" = .$"사업자등록여부") %>%
-# doorae$"공동체상태" %>%
-#   table("공동체상태 :" = ., "조직형태 :" = doorae$"조직형태", "사업착수여부 :" = doorae$"성과_사업착수") %>%
+        "사업착수여부:" = .$"성과_사업착수") %>%
   ftable %>%
   as.matrix %>%
   kable(caption = "* 공동체상태/조직형태와 사업착수여부")
 doorae %$%
   table("공동체상태 :" = .$"공동체상태", 
         "조직형태 :" = .$"조직형태", 
-        "사업자등록여부:" = .$"사업자등록여부") %>%
-# doorae$"공동체상태" %>%
-#   table("공동체상태 :" = ., "조직형태 :" = doorae$"조직형태", "사업착수여부 :" = doorae$"성과_사업착수") %>%
+        "사업착수여부:" = .$"성과_사업착수") %>%
   ftable %>%
   prop.table(margin = 1) %>%
   `*`(100) %>%
@@ -261,9 +260,8 @@ doorae %$%
 
 ```{r, results = 'asis', echo = FALSE}
 doorae %$%
-  table(.$"공동체상태", .$"법인유형", dnn = c("공동체상태", "조직유형")) %>%
-# doorae$"공동체상태" %>%
-#   table(doorae$"법인유형", dnn = c("공동체상태", "조직유형")) %>%
+  table(.$"공동체상태", .$"법인유형", 
+        dnn = c("공동체상태", "조직유형")) %>%
   cbind(., "계" = rowSums(.)) %>%
   rbind(., "계" = colSums(.)) %>%
   kable(caption = "<공동체상태와 조직유형>")
@@ -281,8 +279,6 @@ doorae %>%
 ```{r, echo=FALSE, fig.width = 6, fig.height = 4.5}
 doorae %$%
   table(.$"공동체상태", .$"법인유형", dnn = c("공동체상태", "조직유형")) %>%
-# doorae$"공동체상태" %>%
-#   table(doorae$"법인유형", dnn = c("공동체상태", "조직유형")) %>%
   t %>%
   mosaic_gg(base_family = "HCR Dotum LVT",
             ggtitle = "공동체상태와 조직유형",
@@ -301,10 +297,10 @@ doorae %$%
 
 ```{r, results='asis', echo = FALSE}
 doorae %$%
-  table(.$"공동체상태", .$"사업아이템", dnn = c("공동체상태", "사업아이템")) %>%
-# doorae$"공동체상태" %>%
-#   table(doorae$"사업아이템", dnn = c("공동체상태", "사업아이템")) %>%
+  table(.$"공동체상태", .$"사업아이템", 
+        dnn = c("공동체상태", "사업아이템")) %>%
   cbind(., "계" = rowSums(.)) %>%
+  rbind(., "계" = colSums(.)) %>%
   kable(caption = "<공동체상태와 사업아이템>")
 ```
 
@@ -314,9 +310,8 @@ doorae %$%
 
 ```{r, results='asis', echo = FALSE}
 doorae %$%
-  table(.$"공동체상태", .$"사업아이템", dnn = c("공동체상태", "사업아이템")) %>%
-# doorae$"공동체상태" %>%
-#   table(doorae$"사업아이템", dnn = c("공동체상태", "사업아이템")) %>%
+  table(.$"공동체상태", .$"사업아이템", 
+        dnn = c("공동체상태", "사업아이템")) %>%
   prop.table(margin = 1) %>%
   `*`(100) %>%
   cbind(., "계" = rowSums(.)) %>%
@@ -328,9 +323,8 @@ doorae %$%
 
 ```{r, echo=FALSE, fig.width = 6, fig.height = 4.5}
 doorae %$%
-  table(.$"공동체상태", .$"사업아이템", dnn = c("공동체상태", "사업아이템")) %>%
-# doorae$"공동체상태" %>%
-#   table(doorae$"사업아이템", dnn = c("공동체상태", "사업아이템")) %>%
+  table(.$"공동체상태", .$"사업아이템", 
+        dnn = c("공동체상태", "사업아이템")) %>%
   t %>%
   mosaic_gg(base_family = "HCR Dotum LVT",
             ggtitle = "공동체상태와 사업아이템",
@@ -363,7 +357,6 @@ doorae %$%
     * '아름다운인제관광'과 '예그리나'가 예외적으로 오랜 업력
 
 ```{r, echo=FALSE, fig.width=5, fig.height=5}
-source("theme_kr_HCR.R")
 box_0 <- ggplot(data = doorae_ys, 
                 mapping = aes(x = status, 
                               y = years))
@@ -408,7 +401,7 @@ ecdf_3 <- ecdf_2 +
   theme_bw() +
   theme_kr_HCR
 # ecdf_3
-ecdf_4 <- ecdf_3 + theme(panel.background=element_rect("white"), panel.border=element_rect(colour="black", fill=NA))
+ecdf_4 <- ecdf_3 + theme(panel.background=element_rect("white"), panel.border=element_rect(colour="black", fill = NA))
 # ecdf_4
 ecdf_5 <- ecdf_3 + 
   ggtitle("공동체상태와 업력") +
@@ -599,7 +592,8 @@ d_9
 v_vs_names <- c("공동체상태", "방문객(2014)", "방문객(2015, 3개월)", "매출(2014)", "매출(2015, 3개월)")
 doorae %>%
   `[`(c("성과_방문객_2014", "성과_방문객_2015_3개월", "성과_매출_2014", "성과_매출_2015_3개월")) %>%
-  aggregate(list("공동체상태" = doorae$"공동체상태"), FUN = mean) %>%
+  aggregate(list("공동체상태" = doorae$"공동체상태"), 
+            FUN = mean) %>%
   format(big.mark = ",") %>%
   kable(col.names = v_vs_names, 
         align = c("c", rep("r", 4)))
@@ -610,7 +604,8 @@ doorae %>%
 ```{r, echo = FALSE}
 doorae %>%
   `[`(c("성과_방문객_2014", "성과_방문객_2015_3개월", "성과_매출_2014", "성과_매출_2015_3개월")) %>%
-  aggregate(list("공동체상태" = doorae$"공동체상태"), FUN = median) %>%
+  aggregate(list("공동체상태" = doorae$"공동체상태"), 
+            FUN = median) %>%
   format(big.mark = ",") %>%
   kable(col.names = v_vs_names, 
         align = c("c", rep("r", 4)))
