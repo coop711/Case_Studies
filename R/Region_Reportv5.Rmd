@@ -1,0 +1,721 @@
+---
+title: "2017 생활 및 경제계정사업 실적평가 분석"
+author: "coop711"
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE, echo = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 시군구
+
+## Data
+
+```{r, message = FALSE, echo = FALSE}
+library(xlsx)
+library(printr)
+library(knitr)
+library(pander)
+panderOptions("table.split.table", Inf)
+options("digits" = 3, "width" = 132)
+scores <- read.xlsx("../data/scores.xlsx", 
+                    sheetIndex = 2,
+                    colIndex = 1:6,
+                    startRow = 1,
+                    endRow = 477,
+                    stringsAsFactors = FALSE)
+# str(scores)
+names(scores) <- c("name", "project", "self", "first_eval", "diff", "grade")
+scores$project <- factor(scores$project, 
+                         levels = c("일반농산어촌개발", 
+                                    "도시활력증진지역개발",
+                                    "특수상황지역개발",
+                                    "성장촉진지역개발",
+                                    "소하천정비"))
+scores$grade <- factor(scores$grade,
+                       levels = c("우수", "보통", "미흡", "재평가"),
+                       ordered = TRUE)
+# str(scores)
+scores$sido <- sapply(X = strsplit(scores$name, split = " "), 
+                      FUN = `[`, 1)
+scores$sido <- factor(scores$sido, 
+                      levels = unique(scores$sido))
+scores <- scores[, c(7, 1:6)]
+kable(scores)
+```
+
+<P style = "page-break-before: always">
+
+## 시도별 사업 분포
+
+```{r, echo = FALSE}
+sido_project_tbl <- table(scores$sido, scores$project)
+sido_tbl_project_tbl_a <- addmargins(sido_project_tbl)
+colnames(sido_tbl_project_tbl_a)[6] <- "계"
+rownames(sido_tbl_project_tbl_a)[18] <- "계"
+kable(sido_tbl_project_tbl_a)
+```
+
+<P style = "page-break-before: always">
+
+## 시도별 사업 비중(%)
+
+```{r, echo = FALSE}
+kable(prop.table(sido_tbl_project_tbl_a[, -6], margin = 1) * 100)
+```
+
+## 시도별 사업 분포 막대그래프
+
+```{r, echo = FALSE, fig.width = 12, fig.height = 6}
+library(RColorBrewer)
+proj_pal <- brewer.pal(5, "Set2")
+barplot(t(sido_project_tbl), 
+        col = proj_pal)
+legend("top", legend = levels(scores$project), fill = proj_pal)
+```
+
+<P style = "page-break-before: always">
+
+## 시도별 등급 분포
+
+```{r, echo = FALSE}
+sido_grade_tbl <- table(scores$sido, scores$grade)
+sido_tbl_grade_tbl_a <- addmargins(sido_grade_tbl)
+colnames(sido_tbl_grade_tbl_a)[5] <- "계"
+rownames(sido_tbl_grade_tbl_a)[18] <- "계"
+kable(sido_tbl_grade_tbl_a[, ])
+```
+
+<P style = "page-break-before: always">
+
+### 시도별 등급 분포(%)
+
+```{r, echo = FALSE}
+kable(prop.table(sido_tbl_grade_tbl_a[, -5], margin = 1) * 100)
+```
+
+## 시도별 등급 분포 막대그래프
+
+```{r, echo = FALSE, fig.width = 12, fig.height = 6}
+grade_pal <- brewer.pal(5, "Blues")
+barplot(t(sido_grade_tbl), 
+        col = grade_pal)
+legend("top", legend = levels(scores$grade), fill = grade_pal)
+```
+
+<P style = "page-break-before: always">
+
+## 시도별 사업별 평균 점수 분포
+
+```{r, echo = FALSE}
+kable(tapply(scores$first_eval, list(scores$sido, scores$project), mean))
+```
+
+### 시도별 평균점수
+
+```{r, echo = FALSE}
+pander(tapply(scores$first_eval, scores$sido, mean))
+```
+
+### 사업별 평균점수
+
+```{r, echo = FALSE}
+pander(tapply(scores$first_eval, scores$project, mean))
+```
+
+<P style = "page-break-before: always">
+
+## 자체평가와 1차평가 (시도별, 사업별)
+
+```{r, echo = FALSE}
+kable(tapply(scores$diff, list(scores$sido, scores$project), mean))
+```
+
+### 시도별 평균점수
+
+```{r, echo = FALSE}
+pander(tapply(scores$diff, scores$sido, mean))
+```
+
+### 사업별 평균점수
+
+```{r, echo = FALSE}
+pander(tapply(scores$diff, scores$project, mean))
+```
+
+<P style = "page-break-before: always">
+
+## 자체평가와 1차평가 (시도별, 등급별)
+
+```{r, echo = FALSE}
+kable(tapply(scores$diff, list(scores$sido, scores$grade), mean))
+```
+
+### 시도별 평균 차이
+
+```{r, echo = FALSE}
+pander(tapply(scores$diff, scores$sido, mean))
+```
+
+### 사업별 평균 차이
+
+```{r, echo = FALSE}
+pander(tapply(scores$diff, scores$grade, mean))
+```
+
+<P style = "page-break-before: always">
+
+## 산점도 
+
+### 시도와 등급
+
+```{r, echo = FALSE, fig.width = 9, fig.height = 9}
+par(family = "HCR Dotum LVT")
+plot(first_eval ~ self, 
+     data = scores, 
+     pch = as.numeric(sido), 
+     col = grade,
+     xlab = "자체평가",
+     ylab = "1차평가",
+     main = "자체평가와 1차평가",
+     xlim = c(-5, 100),
+     ylim = c(-5, 100))
+legend(x = 5, y = 100, 
+       legend = levels(factor(scores$sido)), 
+       pch = unique(as.numeric(scores$sido)))
+legend(x = 20, y = 100,
+       legend = levels(scores$grade),
+       fill = unique(scores$grade))
+```
+
+<P style = "page-break-before: always">
+
+### 시도와 사업
+
+```{r, echo = FALSE, fig.width = 9, fig.height = 9}
+par(family = "HCR Dotum LVT")
+plot(first_eval ~ self, 
+     data = scores, 
+     pch = as.numeric(sido), 
+     col = project,
+     xlab = "자체평가",
+     ylab = "1차평가",
+     main = "자체평가와 1차평가",
+     xlim = c(-5, 100),
+     ylim = c(-5, 100))
+legend(x = 5, y = 100, 
+       legend = levels(factor(scores$sido)), 
+       pch = unique(as.numeric(scores$sido)))
+legend(x = 20, y = 100,
+       legend = levels(scores$project),
+       fill = 1:length(levels(scores$project)))
+```
+
+<P style = "page-break-before: always">
+
+대구 재평가 사업 일부 제외시,
+
+### 시도와 등급
+
+```{r, echo = FALSE, fig.width = 9, fig.height = 9}
+par(family = "HCR Dotum LVT")
+scores_2 <- scores[-(231:233), ]
+plot(first_eval ~ self, 
+     data = scores_2, 
+     pch = as.numeric(sido), 
+     col = grade,
+     xlab = "자체평가",
+     ylab = "1차평가",
+     main = "자체평가와 1차평가",
+     xlim = c(-5, 100),
+     ylim = c(-5, 100))
+legend("topleft", 
+       legend = levels(factor(scores_2$sido)), 
+       pch = unique(as.numeric(scores_2$sido)),
+       inset = 0.05)
+legend("topleft",
+       legend = levels(scores_2$grade),
+       fill = unique(scores_2$grade),
+       inset = 0.15)
+```
+
+<P style = "page-break-before: always">
+
+### 시도와 사업
+
+```{r, echo = FALSE, fig.width = 9, fig.height = 9}
+par(family = "HCR Dotum LVT")
+plot(first_eval ~ self, 
+     data = scores_2, 
+     pch = as.numeric(sido), 
+     col = project,
+     xlab = "자체평가",
+     ylab = "1차평가",
+     main = "자체평가와 1차평가",
+     xlim = c(-5, 100),
+     ylim = c(-5, 100))
+legend(x = 5, y = 100, 
+       legend = levels(factor(scores_2$sido)), 
+       pch = unique(as.numeric(scores_2$sido)))
+legend(x = 20, y = 100,
+       legend = levels(scores_2$project),
+       fill = unique(scores_2$project))
+```
+
+<P style = "page-break-before: always">
+
+# 시도 자율 편성
+
+## Data
+
+```{r, echo = FALSE}
+scores_sido <- read.xlsx("../data/scores_sido.xlsx", 
+                  sheetIndex = 1,
+                  colIndex = 1:11,
+                  startRow = 1,
+                  endRow = 18,
+                  stringsAsFactors = FALSE)
+# str(scores)
+scores_sido[is.na(scores_sido)] <- 0
+names(scores_sido) <- c("시도", "위원회구성", "위원회운영", "성과지표설정", "평가등급부여", "등급과의견부합", "등급배분기준", "지출구조조정", "사업구조조정", "감점", "합계")
+scores_sido_data <- 
+kable(scores_sido)
+o_total <- order(scores_sido$"합계", decreasing = TRUE)
+kable(scores_sido[o_total, ])
+```
+
+<P style = "page-break-before: always">
+
+### Barplot
+
+#### 감점 제외 
+
+```{r, fig.width = 12, fig.height = 9, echo = FALSE}
+par(family = "HCR Dotum LVT")
+indices_pal <- brewer.pal(8, "Set1")
+barplot(t(as.matrix(scores_sido[o_total, -c(1, 10:11)])), 
+        names.arg = scores_sido[, 1][o_total], 
+        col = indices_pal,
+        horiz = TRUE,
+        las = 2)
+legend("topright", legend = names(scores_sido)[2:9], fill = indices_pal)
+```
+
+<P style = "page-break-before: always">
+
+#### 감점 감안
+
+```{r, fig.width = 6, fig.height = 11, echo = FALSE}
+par(mar = c(5.1, 4.1, 0.1, 2.1),
+    family = "HCR Dotum LVT")
+indices_pal <- brewer.pal(9, "Set1")
+barplot(t(as.matrix(scores_sido[o_total, -c(1, 11)])), 
+        beside = TRUE,
+        names.arg = scores_sido[, 1][o_total], 
+        col = indices_pal,
+        horiz = TRUE,
+        xaxt = "n",
+        las = 2)
+axis(side = 1,
+     at = seq(-5, 30, by = 5),
+     labels = seq(-5, 30, by = 5),
+     las = 1)
+legend(x = 17, y = 140, 
+       legend = names(scores_sido)[2:10], 
+       fill = indices_pal)
+```
+
+<P style = "page-break-before: always">
+
+## 경제계정 (부처 직접 편성)
+
+```{r, echo = FALSE, results = 'hide'}
+results <- read.xlsx("../data/results_econv3.xlsx", 
+                  sheetIndex = 1,
+                  colIndex = c(1:13, 21:31, 41:51),
+                  startRow = 2,
+                  endRow = 78,
+                  stringsAsFactors = FALSE)
+names(results) <- c("div", "no", "name_1", "dept", "name_2", "Q1_1", "Q2_1", "Q3_1", "Q4_1", "Q5_1", "Q6_1", "total_1", "grade_1", "Q1_2", "Q2_2", "Q3_2", "Q4_2", "Q5_2", "Q6_2", "total_2", "grade_2", "changes", "appeal", "prez", "budget", "range", "Q1_3", "Q2_3", "Q3_3", "Q4_3", "Q5_3", "Q6_3", "total_3", "grade_3", "rearrange")
+names(results) <- c("분과", "연번", "단위사업명", "부처", "세부사업명", "지표1_1", "지표2_1", "지표3_1", "지표4_1", "지표5_1", "지표6_1", "총점_1", "등급_1", "지표1_2", "지표2_2", "지표3_2", "지표4_2", "지표5_2", "지표6_2", "총점_2", "등급_2", "점수변동_1", "이의신청", "발표여부", "예산", "예산범위", "지표1_3", "지표2_3", "지표3_3", "지표4_3", "지표5_3", "지표6_3", "총점_3", "등급_3", "조정여부")
+results$"분과" <- factor(results$"분과", 
+                       levels = paste0(1:5, "분과"),
+                       labels = 1:5)
+results$"부처" <- factor(results$"부처")
+results$"등급_1" <- factor(results$"등급_1",
+                         levels = c("매우우수", "우수", "보통", "미흡", "매우미흡"),
+                         ordered = TRUE)
+results$"등급_2" <- factor(results$"등급_2",
+                         levels = c("매우우수", "우수", "보통", "미흡", "매우미흡"),
+                         ordered = TRUE)
+results$"등급_3" <- factor(results$"등급_3",
+                         levels = c("매우우수", "우수", "보통", "미흡", "매우미흡"),
+                         ordered = TRUE)
+str(results)
+results[, -2]
+o_total_dept_1 <- order(results$"총점_1", rev(results$"분과"), 
+                        decreasing = TRUE)
+o_total_dept_2 <- order(results$"총점_2", rev(results$"분과"), 
+                        decreasing = TRUE)
+o_total_dept_3 <- order(results$"총점_3", rev(results$"분과"), 
+                        decreasing = TRUE)
+kable(results[o_total_dept_3, ])
+```
+
+#### 부처별 등급분포(1차 평가)
+
+```{r, echo = FALSE}
+tbl_a_1 <- addmargins(table(results$"부처", results$"등급_1"))
+colnames(tbl_a_1)[length(colnames(tbl_a_1))] <- "계"
+rownames(tbl_a_1)[nrow(tbl_a_1)] <- "계"
+kable(tbl_a_1)
+```
+
+#### 분과별 등급분포(1차 평가)
+
+```{r, echo = FALSE}
+tbl_a_div_1 <- addmargins(table(results$"분과", results$"등급_1"))
+colnames(tbl_a_div_1)[length(colnames(tbl_a_div_1))] <- "계"
+rownames(tbl_a_div_1) <- c(paste(1:5, "분과"), "계")
+kable(tbl_a_div_1)
+```
+
+<P style = "page-break-before: always">
+
+### Barplot
+
+#### 경제계정 1차 평가결과
+
+```{r, fig.width = 12, fig.height = 15, echo = FALSE}
+par(mar = c(5.1, 33.1, 4.1, 2.1), 
+    family = "HCR Dotum LVT")
+index_names <- c("사업기획 타당성", "사업내용 구체성", "예산집행 효율성", "환류 적절성", "목표달성도", "균형발전/사회가치")
+index_pal <- brewer.pal(6, "Set1")
+barplot(t(as.matrix(results[o_total_dept_1, 6:11])), 
+        names.arg = paste0(results$"분과", 
+                           "분과: ", 
+                           results$"부처", 
+                           ", ", 
+                           results$"세부사업명")[o_total_dept_1], 
+        horiz = TRUE,
+        col = index_pal,
+        xlim = c(0, 100),
+        xaxt = "n",
+        las = 2)
+abline(v = c(40, seq(60, 100, by = 10)), lty = 3, lwd = 2)
+axis(side = 1, 
+     at = c(0, 40, seq(60, 100, by = 10)),
+     labels = c(0, 40, seq(60, 100, by = 10)))
+mtext(text = rev(levels(results$"등급_1")), 
+      side = 1, 
+      line = -2,
+      at = c(50, 65, 75, 85, 95))
+legend("topright", 
+       inset = 0.05,
+       legend = index_names, 
+       fill = index_pal)
+# title(main = "경제계정 평가결과", cex.main = 2.0)
+```
+
+<P style = "page-break-before: always">
+
+#### 부처별 등급분포(2차 평가 결과)
+
+```{r, echo = FALSE}
+tbl_a_2 <- addmargins(table(results$"부처", results$"등급_2"))
+colnames(tbl_a_2)[length(colnames(tbl_a_2))] <- "계"
+rownames(tbl_a_2)[nrow(tbl_a_2)] <- "계"
+kable(tbl_a_2)
+```
+
+#### 분과별 등급분포(2차 평가 결과)
+
+```{r, echo = FALSE}
+tbl_a_div_2 <- addmargins(table(results$"분과", results$"등급_2"))
+colnames(tbl_a_div_2)[length(colnames(tbl_a_div_2))] <- "계"
+rownames(tbl_a_div_2) <- c(paste(1:5, "분과"), "계")
+kable(tbl_a_div_2)
+```
+
+<P style = "page-break-before: always">
+
+### Barplot
+
+#### 경제계정 2차 평가 결과
+
+```{r, fig.width = 12, fig.height = 15, echo = FALSE}
+par(mar = c(5.1, 33.1, 4.1, 2.1), 
+    family = "HCR Dotum LVT")
+index_names <- c("사업기획 타당성", "사업내용 구체성", "예산집행 효율성", "환류 적절성", "목표달성도", "균형발전/사회가치")
+index_pal <- brewer.pal(6, "Set1")
+barplot(t(as.matrix(results[o_total_dept_2, 14:19])), 
+        names.arg = paste0(results$"분과", 
+                           "분과: ", 
+                           results$"부처", 
+                           ", ", 
+                           results$"세부사업명")[o_total_dept_2], 
+        horiz = TRUE,
+        col = index_pal,
+        xlim = c(0, 100),
+        xaxt = "n",
+        las = 2)
+abline(v = c(40, seq(60, 100, by = 10)), lty = 3, lwd = 2)
+axis(side = 1, 
+     at = c(0, 40, seq(60, 100, by = 10)),
+     labels = c(0, 40, seq(60, 100, by = 10)))
+mtext(text = rev(levels(results$"등급_2")), 
+      side = 1, 
+      line = -2,
+      at = c(50, 65, 75, 85, 95))
+legend("topright", 
+#       inset = 0.01,
+       legend = index_names, 
+       fill = index_pal)
+# title(main = "경제계정 평가결과", cex.main = 2.0)
+```
+
+<P style = "page-break-before: always">
+
+### 변동분석
+
+#### 등급 변동
+
+```{r, echo = FALSE}
+table("1차" = results$"등급_1", "2차" = results$"등급_2")
+```
+
+<P style = "page-break-before: always">
+
+#### 점수 변동
+
+```{r, fig.width = 12, fig.height = 15, echo = FALSE}
+# results$"점수변동" <- results$"총점_2" - results$"총점_1"
+o_changes <- order(results$"점수변동_1", results$"분과")
+par(mar = c(5.1, 33.1, 4.1, 2.1), 
+    family = "HCR Dotum LVT")
+barplot(t(as.matrix(results[o_changes, "점수변동_1"])), 
+          names.arg = paste0(results$"분과", 
+                             "분과: ", 
+                             results$"부처", 
+                             ", ", 
+                             results$"세부사업명")[o_changes], 
+
+          horiz = TRUE,
+          col = "grey",
+          xlim = c(0, 40),
+          xaxt = "n",
+          las = 2)
+abline(v = seq(0, 40, by = 5), lty = 3, lwd = 2)
+axis(side = 1, 
+     at = seq(0, 40, by = 5),
+     labels = seq(0, 40, by = 5))
+# mtext(text = rev(levels(results$"등급_2")), 
+#       side = 1, 
+#       line = -2,
+#       at = c(50, 65, 75, 85, 95))
+# legend("topright", 
+#       inset = 0.01,
+#       legend = index_names[i], 
+#       fill = index_pal[i])
+title(main = "총점 변동", 
+      adj = 0, 
+      cex.main = 2.0)
+```
+
+<P style = "page-break-before: always">
+
+#### 지표별 점수 변동 (총점 변동 순)
+
+```{r, fig.width = 12, fig.height = 16.5, echo = FALSE}
+par(mar = c(5.1, 33.1, 4.1, 2.1), 
+    family = "HCR Dotum LVT" )
+results$"지표1_차" <- results$"지표1_2" - results$"지표1_1"
+results$"지표2_차" <- results$"지표2_2" - results$"지표2_1"
+results$"지표3_차" <- results$"지표3_2" - results$"지표3_1"
+results$"지표4_차" <- results$"지표4_2" - results$"지표4_1"
+results$"지표5_차" <- results$"지표5_2" - results$"지표5_1"
+results$"지표6_차" <- results$"지표6_2" - results$"지표6_1"
+index_names <- c("사업기획 타당성", "사업내용 구체성", "예산집행 효율성", "환류 적절성", "목표달성도", "균형발전/사회가치")
+index_pal <- brewer.pal(6, "Set1")
+for(i in 1:6){
+  barplot(t(as.matrix(results[o_changes, 35 + i])), 
+          names.arg = paste0(results$"분과", 
+                             "분과: ",
+                             results$"부처", 
+                             ", ", 
+                             results$"세부사업명")[o_changes], 
+
+          horiz = TRUE,
+          col = index_pal[i],
+          xlim = c(0, 30),
+          xaxt = "n",
+          offset = 10,
+          las = 2)
+abline(v = seq(0, 30, by = 5), lty = 3, lwd = 2)
+axis(side = 1, 
+     at = seq(0, 30, by = 5),
+     labels = seq(-10, 20, by = 5))
+# mtext(text = rev(levels(results$"등급_2")), 
+#       side = 1, 
+#       line = -2,
+#       at = c(50, 65, 75, 85, 95))
+# legend("topright", 
+#       inset = 0.01,
+#       legend = index_names[i], 
+#       fill = index_pal[i])
+title(main = index_names[i], adj = 0, cex.main = 2.0)
+}
+```
+
+<P style = "page-break-before: always">
+
+#### 부처별 등급분포(2차 평가 조정 결과)
+
+```{r, echo = FALSE}
+tbl_a_3 <- addmargins(table(results$"부처", results$"등급_3"))
+colnames(tbl_a_3)[length(colnames(tbl_a_3))] <- "계"
+rownames(tbl_a_3)[nrow(tbl_a_3)] <- "계"
+kable(tbl_a_3)
+```
+
+#### 분과별 등급분포(2차 평가 조정결과)
+
+```{r, echo = FALSE}
+tbl_a_div_3 <- addmargins(table(results$"분과", results$"등급_3"))
+colnames(tbl_a_div_3)[length(colnames(tbl_a_div_3))] <- "계"
+rownames(tbl_a_div_3) <- c(paste(1:5, "분과"), "계")
+kable(tbl_a_div_3)
+```
+
+<P style = "page-break-before: always">
+
+#### 경제계정 2차 평가 조정결과
+
+```{r, fig.width = 12, fig.height = 15, echo = FALSE}
+par(mar = c(5.1, 33.1, 4.1, 2.1), 
+    family = "HCR Dotum LVT")
+index_names <- c("사업기획 타당성", "사업내용 구체성", "예산집행 효율성", "환류 적절성", "목표달성도", "균형발전/사회가치")
+index_pal <- brewer.pal(6, "Set1")
+barplot(t(as.matrix(results[o_total_dept_3, 27:32])), 
+        names.arg = paste0(results$"분과", 
+                           "분과: ", 
+                           results$"부처", 
+                           ", ", 
+                           results$"세부사업명")[o_total_dept_3], 
+        horiz = TRUE,
+        col = index_pal,
+        xlim = c(0, 100),
+        xaxt = "n",
+        las = 2)
+abline(v = c(40, seq(60, 100, by = 10)), lty = 3, lwd = 2)
+axis(side = 1, 
+     at = c(0, 40, seq(60, 100, by = 10)),
+     labels = c(0, 40, seq(60, 100, by = 10)))
+mtext(text = rev(levels(results$"등급_3")), 
+      side = 1, 
+      line = -2,
+      at = c(50, 65, 75, 85, 95))
+legend("topright", 
+#       inset = 0.01,
+       legend = index_names, 
+       fill = index_pal)
+# title(main = "경제계정 평가결과", cex.main = 2.0)
+```
+
+<P style = "page-break-before: always">
+
+### 변동분석
+
+#### 등급 변동
+
+```{r, echo = FALSE}
+table("1차" = results$"등급_1", "2차" = results$"등급_3")
+```
+
+<P style = "page-break-before: always">
+
+#### 점수 변동
+
+```{r, fig.width = 12, fig.height = 15, echo = FALSE}
+results$"점수변동_2" <- results$"총점_3" - results$"총점_1"
+o_changes <- order(results$"점수변동_2", results$"분과")
+par(mar = c(5.1, 33.1, 4.1, 2.1), 
+    family = "HCR Dotum LVT")
+barplot(t(as.matrix(results[o_changes, "점수변동_2"])), 
+          names.arg = paste0(results$"분과", 
+                             "분과: ", 
+                             results$"부처", 
+                             ", ", 
+                             results$"세부사업명")[o_changes], 
+
+          horiz = TRUE,
+          col = "grey",
+          xlim = c(0, 40),
+          xaxt = "n",
+          las = 2)
+abline(v = seq(0, 40, by = 5), lty = 3, lwd = 2)
+axis(side = 1, 
+     at = seq(0, 40, by = 5),
+     labels = seq(0, 40, by = 5))
+# mtext(text = rev(levels(results$"등급_2")), 
+#       side = 1, 
+#       line = -2,
+#       at = c(50, 65, 75, 85, 95))
+# legend("topright", 
+#       inset = 0.01,
+#       legend = index_names[i], 
+#       fill = index_pal[i])
+title(main = "총점 변동", 
+      adj = 0, 
+      cex.main = 2.0)
+```
+
+<P style = "page-break-before: always">
+
+#### 지표별 점수 변동 (총점 변동 순)
+
+```{r, fig.width = 12, fig.height = 16.5, echo = FALSE}
+par(mar = c(5.1, 33.1, 4.1, 2.1), 
+    family = "HCR Dotum LVT" )
+results$"지표1_차_2" <- results$"지표1_3" - results$"지표1_1"
+results$"지표2_차_2" <- results$"지표2_3" - results$"지표2_1"
+results$"지표3_차_2" <- results$"지표3_3" - results$"지표3_1"
+results$"지표4_차_2" <- results$"지표4_3" - results$"지표4_1"
+results$"지표5_차_2" <- results$"지표5_3" - results$"지표5_1"
+results$"지표6_차_2" <- results$"지표6_3" - results$"지표6_1"
+index_names <- c("사업기획 타당성", "사업내용 구체성", "예산집행 효율성", "환류 적절성", "목표달성도", "균형발전/사회가치")
+index_pal <- brewer.pal(6, "Set1")
+for(i in 1:6){
+  barplot(t(as.matrix(results[o_changes, 42 + i])), 
+          names.arg = paste0(results$"분과", 
+                             "분과: ",
+                             results$"부처", 
+                             ", ", 
+                             results$"세부사업명")[o_changes], 
+
+          horiz = TRUE,
+          col = index_pal[i],
+          xlim = c(0, 30),
+          xaxt = "n",
+          offset = 10,
+          las = 2)
+abline(v = seq(0, 30, by = 5), lty = 3, lwd = 2)
+axis(side = 1, 
+     at = seq(0, 30, by = 5),
+     labels = seq(-10, 20, by = 5))
+# mtext(text = rev(levels(results$"등급_2")), 
+#       side = 1, 
+#       line = -2,
+#       at = c(50, 65, 75, 85, 95))
+# legend("topright", 
+#       inset = 0.01,
+#       legend = index_names[i], 
+#       fill = index_pal[i])
+title(main = index_names[i], adj = 0, cex.main = 2.0)
+}
+```
+
