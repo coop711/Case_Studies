@@ -16,6 +16,7 @@ library(xlsx)
 library(knitr)
 library(pander)
 library(magrittr)
+library(extrafont)
 panderOptions("table.split.table", Inf)
 options("digits" = 3)
 scores <- read.xlsx("../data/scores.xlsx", 
@@ -23,6 +24,7 @@ scores <- read.xlsx("../data/scores.xlsx",
                   colIndex = 1:6,
                   startRow = 1,
                   endRow = 477,
+                  encoding = "UTF-8",
                   stringsAsFactors = FALSE)
 str(scores)
 names(scores) <- c("name", "project", "self", "first_eval", "diff", "grade")
@@ -36,14 +38,10 @@ scores$grade <- factor(scores$grade,
                        levels = c("우수", "보통", "미흡", "재평가"),
                        ordered = TRUE)
 str(scores)
-scores$sido <- sapply(strsplit(scores$name, split = " "), `[`, 1)
+scores$sido <- sapply(strsplit(scores$name, 
+                               split = " "), `[`, 1)
 scores <- scores[, c(7, 1:6)]
 kable(scores)
-```
-
-### tidy
-
-```{r, melt}
 ```
 
 ## 시도별 사업 분포
@@ -60,7 +58,7 @@ kable(prop.table(sido_tbl_project_tbl_a[, -6], margin = 1) * 100)
 ## 시도별 사업 분포 막대그래프
 
 ```{r, fig.width = 12, fig.height = 6}
-par(family = "HCR Dotum LVT")
+par(family = "Malgun Gothic")
 library(RColorBrewer)
 proj_pal <- brewer.pal(5, "Set2")
 barplot(t(sido_project_tbl), 
@@ -72,12 +70,13 @@ legend("top", legend = levels(scores$project), fill = proj_pal)
 
 ```{r, fig.width = 12, fig.height = 6}
 library(ggplot2)
-source("theme_kr_HCR.R")
+source("theme_kr_Malgun.R")
 ggplot(data = scores,
        mapping = aes(x = sido, fill = project)) +
-  geom_bar(stat = "Count", colour = "black", position = position_stack(reverse = TRUE)) +
+  geom_bar(stat = "Count", colour = "black",
+           position = position_stack(reverse = TRUE)) +
   theme_classic() +
-  theme_kr_HCR + 
+  theme_kr_Malgun + 
   scale_fill_manual(name = "", values = proj_pal) +
   labs(x = "", y = "") +
   theme(axis.line.x = element_blank(), 
@@ -101,7 +100,7 @@ kable(prop.table(sido_tbl_grade_tbl_a[, -5], margin = 1) * 100)
 ## 시도별 등급 분포 막대그래프
 
 ```{r, fig.width = 12, fig.height = 6}
-par(family = "HCR Dotum LVT")
+par(family = "Malgun Gothic")
 grade_pal <- brewer.pal(5, "Blues")
 barplot(t(sido_grade_tbl), 
         col = grade_pal)
@@ -112,14 +111,14 @@ legend("top", legend = levels(scores$grade), fill = grade_pal)
 
 ```{r, fig.width = 12, fig.height = 6}
 library(ggplot2)
-source("theme_kr_HCR.R")
+source("theme_kr_Malgun.R")
 ggplot(data = scores,
        mapping = aes(x = sido, fill = grade)) +
   geom_bar(stat = "Count",
            colour = "black", 
            position = position_stack(reverse = TRUE)) +
   theme_classic() +
-  theme_kr_HCR + 
+  theme_kr_Malgun + 
   scale_fill_manual(name = "", values = grade_pal) +
   labs(x = "", y = "") +
   theme(axis.line.x = element_blank(), 
