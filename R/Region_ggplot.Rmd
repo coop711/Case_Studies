@@ -79,8 +79,9 @@ ggplot(data = scores,
   theme_classic() +
   theme_kr_HCR + 
   scale_fill_manual(name = "", values = proj_pal) +
-  labs(x = "시도", y = "사업 개수") +
+  labs(x = "", y = "") +
   theme(axis.line.x = element_blank(), 
+        legend.text = element_text(margin = margin(l = 10, unit = "pt")),
         legend.title = element_blank(), 
         legend.box.background = element_rect(), 
         legend.position = c(0.5, 0.7))
@@ -120,8 +121,9 @@ ggplot(data = scores,
   theme_classic() +
   theme_kr_HCR + 
   scale_fill_manual(name = "", values = grade_pal) +
-  labs(x = "시도", y = "개수") +
+  labs(x = "", y = "") +
   theme(axis.line.x = element_blank(), 
+        legend.text = element_text(margin = margin(l = 10, unit = "pt")),
         legend.title = element_blank(), 
         legend.box.background = element_rect(), 
         legend.position = c(0.5, 0.7))
