@@ -68,6 +68,24 @@ barplot(t(sido_project_tbl),
 legend("top", legend = levels(scores$project), fill = proj_pal)
 ```
 
+### ggplot
+
+```{r, fig.width = 12, fig.height = 6}
+library(ggplot2)
+source("theme_kr_HCR.R")
+ggplot(data = scores,
+       mapping = aes(x = sido, fill = project)) +
+  geom_bar(stat = "Count", colour = "black", position = position_stack(reverse = TRUE)) +
+  theme_classic() +
+  theme_kr_HCR + 
+  scale_fill_manual(name = "", values = proj_pal) +
+  labs(x = "시도", y = "사업 개수") +
+  theme(axis.line.x = element_blank(), 
+        legend.title = element_blank(), 
+        legend.box.background = element_rect(), 
+        legend.position = c(0.5, 0.7))
+```
+
 ## 시도별 등급 분포
 
 ```{r}
@@ -87,6 +105,26 @@ grade_pal <- brewer.pal(5, "Blues")
 barplot(t(sido_grade_tbl), 
         col = grade_pal)
 legend("top", legend = levels(scores$grade), fill = grade_pal)
+```
+
+### ggplot
+
+```{r, fig.width = 12, fig.height = 6}
+library(ggplot2)
+source("theme_kr_HCR.R")
+ggplot(data = scores,
+       mapping = aes(x = sido, fill = grade)) +
+  geom_bar(stat = "Count",
+           colour = "black", 
+           position = position_stack(reverse = TRUE)) +
+  theme_classic() +
+  theme_kr_HCR + 
+  scale_fill_manual(name = "", values = grade_pal) +
+  labs(x = "시도", y = "개수") +
+  theme(axis.line.x = element_blank(), 
+        legend.title = element_blank(), 
+        legend.box.background = element_rect(), 
+        legend.position = c(0.5, 0.7))
 ```
 
 ## 시도별 사업별 평균 점수 분포
