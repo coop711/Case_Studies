@@ -1,0 +1,340 @@
+---
+title: "Korea Census Data"
+author: "coop711"
+date: '2017 9 29 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data
+
+[인구, 가구 및 주택 - 시군구](http://kosis.kr/statisticsList/statisticsList_01List.jsp?vwcd=MT_ZTITLE&parentId=A)
+
+```{r, kosis data}
+options(width = 180)
+library(tidyverse)
+census_data <- read.csv("../data/101_DT_1IN1502_Y_2015.csv",
+                        header = TRUE, #> 한글 변수명 그대로 읽어들일 예정
+                        na.strings = "X",  #> 통계청 데이터에서 NA는 "X"로 표시되어 있음.
+                        skip = 2,
+                        stringsAsFactors = FALSE,
+                        # encoding = "CP949") Invaild multibyte string Error
+                        fileEncoding = "euc-kr") #> `encoding = "CP949"` 과의 차이 숙지.
+str(census_data) #> 지역 code 와 이름 외에는 모두 숫자로 읽어들임.
+census_data[1:100, 1:6]
+```
+
+<P style = "page-break-before:always">
+
+## Data Cleaning
+
+### 변수명
+
+```{r, names}
+names(census_data) #> 변수명에 "..", "."를 "_"로 바꿔 주어야 함.
+# gsub("\\.$", "", names(census_data))
+# names_census <- gsub("\\.$", "", names(census_data))
+# gsub("\\.+", "_", names_census)
+# names(census_data) <- gsub("\\.+", "_", names_census)
+# names(census_data)
+#> piping 으로 흘러가면, data holder "." 을 활용하여
+# names(census_data) <- names(census_data) %>%
+# {gsub("\\.$", "", .)} %>%
+# {gsub("\\.+", "_", .)}
+#> {}는 없어도 무방
+names(census_data) <- names(census_data) %>% 
+  gsub("\\.$", "", .) %>% 
+  gsub("\\.+", "_", .)
+names(census_data) #> 바뀐 변수명 확인
+```
+
+<P style = "page-break-before:always">
+
+### 지역명 코드 앞 자리 특수기호와 지역명 앞 빈 공간
+
+```{r, code}
+census_data %>%
+  .[, 1] %>%
+  head()
+# head(census_data$C행정구역별_읍면동) #> code 앞 자리에 "`" 제거 필요
+census_data$C행정구역별_읍면동 <- census_data$C행정구역별_읍면동 %>%
+  sub("^\\'", "", .)
+# head(census_data$C행정구역별_읍면동) #> 처리 결과 확인
+census_data %>%
+  .[, 1] %>%
+  head()
+census_data %>%  #> 읍면동 명 앞에 빈 공간 존재 확인
+  .[, 2] %>%
+  head(10)
+census_data$행정구역별_읍면동 <- census_data$행정구역별_읍면동 %>%
+  gsub("^\\s+", "", .)
+census_data %>%  #> 읍면동 명 앞에 빈 공간 존재 확인
+  .[, 2] %>%
+  head(20)
+```
+
+<P style = "page-break-before:always">
+
+## 시도 데이터
+
+```{r, filter sido}
+census_data[1:10, 1:6] #> 다음 "%>%"를 이용하는 방법들은 모두 동일한 결과
+census_data %>%
+  "["(., 1:10, 1:6) 
+census_data %>%
+  `[`(., 1:10, ) %>%
+  select(C행정구역별_읍면동:여자_명)
+census_data %>%
+  slice(1:10) %>%
+  select(C행정구역별_읍면동:여자_명)
+census_data %>%
+  .[1:10, 1:6]
+#> 세종특별자치시의 특수성, 광역으로 분류되면서 시군구에도 동시 분류
+# census_data %>% 
+#   subset({
+#     census_data %>%  #> `{}`의 용법에 유의.
+##   select(C행정구역별_읍면동) %>% #> 작동하지 않음. list 추출
+#       .[, 1] %>%  #> 작동함. atomic vector 추출
+#       substr(1, 2) %>% 
+#        `==`("29")}) %>%
+#         select(C행정구역별_읍면동:여자_명)
+#> piping 을 최소화하면, filter 대신 subset 을 써도 무방한 듯.
+census_data %>%
+  filter(substr(census_data$C행정구역별_읍면동, 1, 2) == "29") %>%
+  select(C행정구역별_읍면동:여자_명)
+#> 시도 코드는 두 자리이고 11(서울)부터 매겨짐. 00은 전체, 03은 동, 04는 읍, 05는 면부의 총계임.
+data_sido <- census_data %>%   
+        filter(nchar(C행정구역별_읍면동) == 2 & C행정구역별_읍면동 >= 11) 
+
+census_data %>%
+  names()
+# names(census_data) 
+# data_sido %>%
+#   mutate(code = C행정구역별_읍면동)
+data_sido$code <- data_sido$C행정구역별_읍면동 #> `map_id` 설정
+#> 춘천시의 코드 추출 filter 대신 subset 을 쓰면 작동됨.
+code_chuncheon <- census_data %>%
+  select(C행정구역별_읍면동) %>%
+  subset({
+    census_data %>%
+      .[, 2] %>%
+      `==`("춘천시")
+  }) 
+#  select(C행정구역별_읍면동) #> 앞에서 `select()`하고 `filter()`를 수행하거나 앞에서 `filter()` 를 수행하고 뒤에서 `select()`를 해도 결과는 같음. => filter 는 에러 나옴.
+#  .[, 1]  #> 값만 추출하고자 할 때는 이 방법이 적절함
+code_chuncheon <- 
+        census_data$C행정구역별_읍면동[census_data$행정구역별_읍면동 == "춘천시"]
+# code_chuncheon <- census_data %>%
+#         .[, 1] %>%
+#         `[`(`==`(census_data$행정행정구역별_읍면동, "춘천시"))
+##        `[`(census_data$행정행정구역별_읍면동 == "춘천시")
+str(code_chuncheon)
+code_chuncheon == "32010"  
+code_chuncheon <- unname(unlist(code_chuncheon))
+code_chuncheon
+code_inje <- 
+        census_data$C행정구역별_읍면동[census_data$행정구역별_읍면동 == "인제군"]
+# code_inje <- census_data %>%
+#    select(C행정구역별_읍면동) %>%
+#    subset({
+#      census_data %>%
+#        .[, 2] %>%
+#        `==`("인제군")
+#    }) 
+code_inje <- unname(unlist(code_inje))
+code_inje
+data_sido %>%
+  .[ , 1:6] %>%
+  head(10)
+data_sido %>%
+  nrow()
+data_sido %>%
+  .[, 1:6]
+```
+
+<P style = "page-break-before:always">
+
+## 시군구 데이터
+
+```{r, sigungu}
+#> 5자리 코드를 시군구로 걸러냄.
+data_sigungu <- census_data %>% 
+#         filter(nchar(C행정구역별_읍면동) == 5)
+  subset(
+     {census_data %>%
+        .[, 1] %>%
+        nchar() %>%
+        `==`(5)})
+#> 첫 여섯 변수 
+data_sigungu %>%
+  .[, 1:6]
+#> 데이터 레코드 갯수
+data_sigungu %>%
+  nrow()
+# nrow(data_sigungu)
+data_sigungu %>%
+  .[1:10, 1:6]
+#> 시군구로 분류되어 있는 세종시 통계에 읍부, 면부, 동부 통계 포함
+data_sigungu %>% 
+#        filter(substr(data_sigungu$C행정구역별_읍면동, 1, 2) == "29") %>%
+#        .[ , 1:6] 
+  subset({
+     data_sigungu %>%
+      .[, 1] %>%
+      substr(1, 2) %>%
+      `==`("29")}) %>%
+  .[, 1:6]
+substr(data_sigungu[, 1], 3, 5) %in% c("003", "004", "005")
+data_sigungu %>%
+  .[, 1] %>%
+  substr(3, 5) %>%
+  `%in%`(c("003", "004", "005")) %>%
+  `!`
+data_sgg <- data_sigungu %>%
+        filter(!(substr(data_sigungu[, 1], 3, 5) %in% c("003", "004", "005")))
+#   filter({
+#     data_sigungu %>%
+#       .[, 1] %>%
+#       substr(3, 5) %>%
+#       `%in%`(c("003", "004", "005")) %>%
+#       `!` 
+#     })
+data_sgg %>%
+  nrow()
+# nrow(data_sgg)
+data_sigungu %>%
+  nrow()
+# nrow(data_sigungu)
+nrow(data_sigungu) - nrow(data_sgg)
+data_sido %>%
+  .[, 1:6]
+data_sgg %>%
+  .[, 1:6]
+```
+
+<P style = "page-break-before:always">
+
+### 읍면동 데이터
+
+```{r, emd}
+#> 7자리 코드를 읍면동으로 걸러냄
+data_emd <- census_data %>% 
+        filter(nchar(C행정구역별_읍면동) == 7)
+#   filter({
+#     census_data %>%
+#       .[, 1] %>%
+#       nchar() %>%
+#       `==`(7)
+#   })
+data_emd %>%
+  .[, 1:6] %>%
+  head()
+# head(data_emd[, 1:6])
+data_emd %>%
+  nrow()
+data_chuncheon <- 
+        data_emd[substr(data_emd$C행정구역별_읍면동, 1, 5) == code_chuncheon, ]
+# data_chuncheon <- data_emd %>%
+#   subset({
+#     data_emd %>%
+#       .[, 1] %>%
+#       substr(1, 5) %>%
+#       `==`(code_chuncheon)    
+#   }) 
+data_chuncheon %>%
+  .[, 1:6]
+data_inje <- data_emd %>%
+  subset({
+    data_emd %>%
+      .[, 1] %>%
+      substr(1, 5) %>%
+      `==`(code_inje)    
+  }) 
+data_inje %>%
+  .[, 1:6]
+```
+
+<P style = "page-break-before:always">
+
+## 시도 인구 단계구분도 그리기
+
+### 옛 `map_df`와 `data_sido`의 코드 불일치 문제 해결
+
+gis developer 에서 다운로드 받은 shape 파일의 지역 코드가 다른 점을 해결하는 코드.
+`map_df`의 `code` 항목으로 남아 있고, shape 파일의 `code`와 `data` 파일의 `code`를 일치시키지 않으면 `code`가 맞지 않는 곳들은 지도에 나타나지 않게 되므로 반드시 맞춰 주어야 함. 이 문제는 통계청 shape 파일을 사용하면서부터는 필요없게 됨. 
+
+```{r}
+map1_df <- readRDS("./map_df.RDS")
+str(map1_df)
+table(map1_df$code)
+str(data_sido$code)
+table(data_sido$code)
+# data_sido$code <- factor(data_sido$C행정구역별_읍면동)
+# levels(data_sido$code)
+# str(data_sido$code)
+# map1_df$code_bak <- map1_df$code
+# map1_df$code <- factor(map1_df$code, labels = levels(data_sido$code))
+map1_df$region <- map1_df$code
+# str(map1_df$code)
+table(map1_df$code)
+str(map1_df)
+```
+
+<P style = "page-break-before:always">
+
+### `ggplot` 첫번 째 방법
+
+```{r, choroplethmap}
+library(viridis)
+library(RColorBrewer)
+load("./korea_map.RData")
+fill.pal <- colorRampPalette(brewer.pal(9, "YlGnBu"))(17)
+ggplot(data = data_sido, 
+       mapping = aes(map_id = code, 
+                     fill = 총인구_명)) + 
+        geom_map(map = map1_df) +
+        expand_limits(x = map1_df$long,
+                      y = map1_df$lat) +
+        theme(plot.title = element_text(family = "HCR Dotum LVT"),
+        legend.title = element_text(family = "HCR Dotum LVT")) +
+        ggtitle("시도 인구 단계구분도") + 
+#  scale_fill_gradientn(name = "인구(명)", colours = c("white", "orange", "red")) 
+        scale_fill_viridis(name = "인구(명)", begin = 0.5, option = "C", direction = -1) +
+#  scale_fill_distiller(name = "인구(명)", palette = "OrRd", trans = "reverse") +
+#  coord_quickmap()
+        coord_map()
+```
+
+<P style = "page-break-before:always">
+
+### `ggplot` 두번째 방법
+
+```{r, choroplethmap2, eval = TRUE}
+library(dplyr)
+shp1_84@data <- data.frame(shp1_84@data, data_sido[match(shp1_84$region, data_sido$code), ])
+map1_data_df <- left_join(shp1_84_df, shp1_84@data, by = c("id" = "id"))
+ggplot(data = map1_data_df, 
+       mapping = aes(x = long,
+                     y = lat,
+                     group = group, 
+                     fill = 총인구_명)) + 
+        geom_polygon(colour = "black", size = 0.1) +
+        theme(plot.title = element_text(family = "HCR Dotum LVT"),
+              legend.title = element_text(family = "HCR Dotum LVT")) +
+        ggtitle("시도 인구 단계구분도") + 
+#  scale_fill_gradientn(name = "인구(명)", colours = c("white", "orange", "red")) +
+        scale_fill_distiller(name = "인구(명)", palette = "OrRd", direction = 1) +
+        coord_map()
+```
+
+## Save
+
+```{r, save, echo = FALSE}
+saveRDS(census_data, "./census_data.RDS")
+saveRDS(data_sido, "./data_sido.RDS")
+saveRDS(data_sgg, "./data_sgg.RDS")
+saveRDS(data_emd, "./data_emd.RDS")
+```
