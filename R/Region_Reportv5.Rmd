@@ -20,6 +20,7 @@ library(xlsx)
 library(printr)
 library(knitr)
 library(pander)
+library(extrafont)
 panderOptions("table.split.table", Inf)
 options("digits" = 3, "width" = 132)
 scores <- read.xlsx("../data/scores.xlsx", 
@@ -27,6 +28,7 @@ scores <- read.xlsx("../data/scores.xlsx",
                     colIndex = 1:6,
                     startRow = 1,
                     endRow = 477,
+                    encoding = "UTF-8",
                     stringsAsFactors = FALSE)
 # str(scores)
 names(scores) <- c("name", "project", "self", "first_eval", "diff", "grade")
@@ -174,7 +176,7 @@ pander(tapply(scores$diff, scores$grade, mean))
 ### 시도와 등급
 
 ```{r, echo = FALSE, fig.width = 9, fig.height = 9}
-par(family = "HCR Dotum LVT")
+par(family = "Malgun Gothic")
 plot(first_eval ~ self, 
      data = scores, 
      pch = as.numeric(sido), 
@@ -197,7 +199,7 @@ legend(x = 20, y = 100,
 ### 시도와 사업
 
 ```{r, echo = FALSE, fig.width = 9, fig.height = 9}
-par(family = "HCR Dotum LVT")
+par(family = "Malgun Gothic")
 plot(first_eval ~ self, 
      data = scores, 
      pch = as.numeric(sido), 
@@ -222,7 +224,7 @@ legend(x = 20, y = 100,
 ### 시도와 등급
 
 ```{r, echo = FALSE, fig.width = 9, fig.height = 9}
-par(family = "HCR Dotum LVT")
+par(family = "Malgun Gothic")
 scores_2 <- scores[-(231:233), ]
 plot(first_eval ~ self, 
      data = scores_2, 
@@ -248,7 +250,7 @@ legend("topleft",
 ### 시도와 사업
 
 ```{r, echo = FALSE, fig.width = 9, fig.height = 9}
-par(family = "HCR Dotum LVT")
+par(family = "Malgun Gothic")
 plot(first_eval ~ self, 
      data = scores_2, 
      pch = as.numeric(sido), 
@@ -278,6 +280,7 @@ scores_sido <- read.xlsx("../data/scores_sido.xlsx",
                   colIndex = 1:11,
                   startRow = 1,
                   endRow = 18,
+                  encoding = "UTF-8",
                   stringsAsFactors = FALSE)
 # str(scores)
 scores_sido[is.na(scores_sido)] <- 0
@@ -294,7 +297,7 @@ kable(scores_sido[o_total, ])
 #### 감점 제외 
 
 ```{r, fig.width = 12, fig.height = 9, echo = FALSE}
-par(family = "HCR Dotum LVT")
+par(family = "Malgun Gothic")
 indices_pal <- brewer.pal(8, "Set1")
 barplot(t(as.matrix(scores_sido[o_total, -c(1, 10:11)])), 
         names.arg = scores_sido[, 1][o_total], 
@@ -310,7 +313,7 @@ legend("topright", legend = names(scores_sido)[2:9], fill = indices_pal)
 
 ```{r, fig.width = 6, fig.height = 11, echo = FALSE}
 par(mar = c(5.1, 4.1, 0.1, 2.1),
-    family = "HCR Dotum LVT")
+    family = "Malgun Gothic")
 indices_pal <- brewer.pal(9, "Set1")
 barplot(t(as.matrix(scores_sido[o_total, -c(1, 11)])), 
         beside = TRUE,
@@ -338,6 +341,7 @@ results <- read.xlsx("../data/results_econv3.xlsx",
                   colIndex = c(1:13, 21:31, 41:51),
                   startRow = 2,
                   endRow = 78,
+                  encoding = "UTF-8",
                   stringsAsFactors = FALSE)
 names(results) <- c("div", "no", "name_1", "dept", "name_2", "Q1_1", "Q2_1", "Q3_1", "Q4_1", "Q5_1", "Q6_1", "total_1", "grade_1", "Q1_2", "Q2_2", "Q3_2", "Q4_2", "Q5_2", "Q6_2", "total_2", "grade_2", "changes", "appeal", "prez", "budget", "range", "Q1_3", "Q2_3", "Q3_3", "Q4_3", "Q5_3", "Q6_3", "total_3", "grade_3", "rearrange")
 names(results) <- c("분과", "연번", "단위사업명", "부처", "세부사업명", "지표1_1", "지표2_1", "지표3_1", "지표4_1", "지표5_1", "지표6_1", "총점_1", "등급_1", "지표1_2", "지표2_2", "지표3_2", "지표4_2", "지표5_2", "지표6_2", "총점_2", "등급_2", "점수변동_1", "이의신청", "발표여부", "예산", "예산범위", "지표1_3", "지표2_3", "지표3_3", "지표4_3", "지표5_3", "지표6_3", "총점_3", "등급_3", "조정여부")
@@ -391,7 +395,7 @@ kable(tbl_a_div_1)
 
 ```{r, fig.width = 12, fig.height = 15, echo = FALSE}
 par(mar = c(5.1, 33.1, 4.1, 2.1), 
-    family = "HCR Dotum LVT")
+    family = "Malgun Gothic")
 index_names <- c("사업기획 타당성", "사업내용 구체성", "예산집행 효율성", "환류 적절성", "목표달성도", "균형발전/사회가치")
 index_pal <- brewer.pal(6, "Set1")
 barplot(t(as.matrix(results[o_total_dept_1, 6:11])), 
@@ -448,7 +452,7 @@ kable(tbl_a_div_2)
 
 ```{r, fig.width = 12, fig.height = 15, echo = FALSE}
 par(mar = c(5.1, 33.1, 4.1, 2.1), 
-    family = "HCR Dotum LVT")
+    family = "Malgun Gothic")
 index_names <- c("사업기획 타당성", "사업내용 구체성", "예산집행 효율성", "환류 적절성", "목표달성도", "균형발전/사회가치")
 index_pal <- brewer.pal(6, "Set1")
 barplot(t(as.matrix(results[o_total_dept_2, 14:19])), 
@@ -495,7 +499,7 @@ table("1차" = results$"등급_1", "2차" = results$"등급_2")
 # results$"점수변동" <- results$"총점_2" - results$"총점_1"
 o_changes <- order(results$"점수변동_1", results$"분과")
 par(mar = c(5.1, 33.1, 4.1, 2.1), 
-    family = "HCR Dotum LVT")
+    family = "Malgun Gothic")
 barplot(t(as.matrix(results[o_changes, "점수변동_1"])), 
           names.arg = paste0(results$"분과", 
                              "분과: ", 
@@ -531,7 +535,7 @@ title(main = "총점 변동",
 
 ```{r, fig.width = 12, fig.height = 16.5, echo = FALSE}
 par(mar = c(5.1, 33.1, 4.1, 2.1), 
-    family = "HCR Dotum LVT" )
+    family = "Malgun Gothic" )
 results$"지표1_차" <- results$"지표1_2" - results$"지표1_1"
 results$"지표2_차" <- results$"지표2_2" - results$"지표2_1"
 results$"지표3_차" <- results$"지표3_2" - results$"지표3_1"
@@ -596,7 +600,7 @@ kable(tbl_a_div_3)
 
 ```{r, fig.width = 12, fig.height = 15, echo = FALSE}
 par(mar = c(5.1, 33.1, 4.1, 2.1), 
-    family = "HCR Dotum LVT")
+    family = "Malgun Gothic")
 index_names <- c("사업기획 타당성", "사업내용 구체성", "예산집행 효율성", "환류 적절성", "목표달성도", "균형발전/사회가치")
 index_pal <- brewer.pal(6, "Set1")
 barplot(t(as.matrix(results[o_total_dept_3, 27:32])), 
@@ -643,7 +647,7 @@ table("1차" = results$"등급_1", "2차" = results$"등급_3")
 results$"점수변동_2" <- results$"총점_3" - results$"총점_1"
 o_changes <- order(results$"점수변동_2", results$"분과")
 par(mar = c(5.1, 33.1, 4.1, 2.1), 
-    family = "HCR Dotum LVT")
+    family = "Malgun Gothic")
 barplot(t(as.matrix(results[o_changes, "점수변동_2"])), 
           names.arg = paste0(results$"분과", 
                              "분과: ", 
@@ -679,7 +683,7 @@ title(main = "총점 변동",
 
 ```{r, fig.width = 12, fig.height = 16.5, echo = FALSE}
 par(mar = c(5.1, 33.1, 4.1, 2.1), 
-    family = "HCR Dotum LVT" )
+    family = "Malgun Gothic" )
 results$"지표1_차_2" <- results$"지표1_3" - results$"지표1_1"
 results$"지표2_차_2" <- results$"지표2_3" - results$"지표2_1"
 results$"지표3_차_2" <- results$"지표3_3" - results$"지표3_1"
