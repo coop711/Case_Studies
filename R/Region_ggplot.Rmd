@@ -1,0 +1,183 @@
+---
+title: "2018_Region"
+author: "coop711"
+date: '2018 3 15 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data
+
+```{r}
+library(xlsx)
+library(knitr)
+library(pander)
+library(magrittr)
+library(extrafont)
+panderOptions("table.split.table", Inf)
+options("digits" = 3)
+scores <- read.xlsx("../data/scores.xlsx", 
+                  sheetIndex = 2,
+                  colIndex = 1:6,
+                  startRow = 1,
+                  endRow = 477,
+                  encoding = "UTF-8",
+                  stringsAsFactors = FALSE)
+str(scores)
+names(scores) <- c("name", "project", "self", "first_eval", "diff", "grade")
+scores$project <- factor(scores$project, 
+                         levels = c("일반농산어촌개발", 
+                                    "도시활력증진지역개발",
+                                    "특수상황지역개발",
+                                    "성장촉진지역개발",
+                                    "소하천정비"))
+scores$grade <- factor(scores$grade,
+                       levels = c("우수", "보통", "미흡", "재평가"),
+                       ordered = TRUE)
+str(scores)
+scores$sido <- sapply(strsplit(scores$name, 
+                               split = " "), `[`, 1)
+scores <- scores[, c(7, 1:6)]
+kable(scores)
+```
+
+## 시도별 사업 분포
+
+```{r}
+sido_project_tbl <- table(scores$sido, scores$project)
+sido_tbl_project_tbl_a <- addmargins(sido_project_tbl)
+colnames(sido_tbl_project_tbl_a)[6] <- "계"
+rownames(sido_tbl_project_tbl_a)[18] <- "계"
+kable(sido_tbl_project_tbl_a)
+kable(prop.table(sido_tbl_project_tbl_a[, -6], margin = 1) * 100)
+```
+
+## 시도별 사업 분포 막대그래프
+
+```{r, fig.width = 12, fig.height = 6}
+par(family = "Malgun Gothic")
+library(RColorBrewer)
+proj_pal <- brewer.pal(5, "Set2")
+barplot(t(sido_project_tbl), 
+        col = proj_pal)
+legend("top", legend = levels(scores$project), fill = proj_pal)
+```
+
+### ggplot
+
+```{r, fig.width = 12, fig.height = 6}
+library(ggplot2)
+source("theme_kr_Malgun.R")
+ggplot(data = scores,
+       mapping = aes(x = sido, fill = project)) +
+  geom_bar(stat = "Count", colour = "black",
+           position = position_stack(reverse = TRUE)) +
+  theme_classic() +
+  theme_kr_Malgun + 
+  scale_fill_manual(name = "", values = proj_pal) +
+  labs(x = "", y = "") +
+  theme(axis.line.x = element_blank(), 
+        legend.text = element_text(margin = margin(l = 10, unit = "pt")),
+        legend.title = element_blank(), 
+        legend.box.background = element_rect(), 
+        legend.position = c(0.5, 0.7))
+```
+
+## 시도별 등급 분포
+
+```{r}
+sido_grade_tbl <- table(scores$sido, scores$grade)
+sido_tbl_grade_tbl_a <- addmargins(sido_grade_tbl)
+colnames(sido_tbl_grade_tbl_a)[5] <- "계"
+rownames(sido_tbl_grade_tbl_a)[18] <- "계"
+kable(sido_tbl_grade_tbl_a[, ])
+kable(prop.table(sido_tbl_grade_tbl_a[, -5], margin = 1) * 100)
+```
+
+## 시도별 등급 분포 막대그래프
+
+```{r, fig.width = 12, fig.height = 6}
+par(family = "Malgun Gothic")
+grade_pal <- brewer.pal(5, "Blues")
+barplot(t(sido_grade_tbl), 
+        col = grade_pal)
+legend("top", legend = levels(scores$grade), fill = grade_pal)
+```
+
+### ggplot
+
+```{r, fig.width = 12, fig.height = 6}
+library(ggplot2)
+source("theme_kr_Malgun.R")
+ggplot(data = scores,
+       mapping = aes(x = sido, fill = grade)) +
+  geom_bar(stat = "Count",
+           colour = "black", 
+           position = position_stack(reverse = TRUE)) +
+  theme_classic() +
+  theme_kr_Malgun + 
+  scale_fill_manual(name = "", values = grade_pal) +
+  labs(x = "", y = "") +
+  theme(axis.line.x = element_blank(), 
+        legend.text = element_text(margin = margin(l = 10, unit = "pt")),
+        legend.title = element_blank(), 
+        legend.box.background = element_rect(), 
+        legend.position = c(0.5, 0.7))
+```
+
+## 시도별 사업별 평균 점수 분포
+
+```{r}
+kable(tapply(scores$first_eval, list(scores$sido, scores$project), mean))
+```
+
+### 시도별 평균점수
+
+```{r}
+pander(tapply(scores$first_eval, scores$sido, mean))
+```
+
+### 사업별 평균점수
+
+```{r}
+pander(tapply(scores$first_eval, scores$project, mean))
+```
+
+## 자체평가와 2차평가 (시도별, 사업별)
+
+```{r}
+kable(tapply(scores$diff, list(scores$sido, scores$project), mean))
+```
+
+### 시도별 평균점수
+
+```{r}
+pander(tapply(scores$diff, scores$sido, mean))
+```
+
+### 사업별 평균점수
+
+```{r}
+pander(tapply(scores$diff, scores$project, mean))
+```
+
+## 자체평가와 1차평가 (시도별, 등급별)
+
+```{r}
+kable(tapply(scores$diff, list(scores$sido, scores$grade), mean))
+```
+
+### 시도별 평균 차이
+
+```{r}
+pander(tapply(scores$diff, scores$sido, mean))
+```
+
+### 사업별 평균 차이
+
+```{r}
+pander(tapply(scores$diff, scores$grade, mean))
+```

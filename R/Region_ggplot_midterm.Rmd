@@ -1,0 +1,28 @@
+
+(@) 시도별 사업 분포를 `ggplot`으로 그리기 위하여 작성한 다음 코드 블럭에서 (괄호) 자리에 적합한 `R` 함수는?
+
+```
+library(ggplot2)
+source("theme_kr_HCR.R")
+ggplot(data = scores,
+       mapping = aes(x = sido, fill = project)) +
+  geom_bar(stat = "Count", colour = "black", position = (괄호)(reverse = TRUE)) +
+  theme_classic() +
+  theme_kr_HCR + 
+  scale_fill_manual(name = "", values = proj_pal) +
+  labs(x = "", y = "") +
+  theme(axis.line.x = element_blank(), 
+        legend.text = element_text(margin = margin(l = 10, unit = "pt")),
+        legend.title = element_blank(), 
+        legend.box.background = element_rect(), 
+        legend.position = c(0.5, 0.7))
+```
+
+가. `position_dodge`
+
+나. `position_stack`
+
+다. `position_fill`
+
+라. `position_identity`
+
