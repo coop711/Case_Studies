@@ -298,8 +298,8 @@ ggplot(data = data_sido,
         geom_map(map = map1_df) +
         expand_limits(x = map1_df$long,
                       y = map1_df$lat) +
-        theme(plot.title = element_text(family = "HCR Dotum LVT"),
-        legend.title = element_text(family = "HCR Dotum LVT")) +
+        theme(plot.title = element_text(family = ""),
+        legend.title = element_text(family = "")) +
         ggtitle("시도 인구 단계구분도") + 
 #  scale_fill_gradientn(name = "인구(명)", colours = c("white", "orange", "red")) 
         scale_fill_viridis(name = "인구(명)", begin = 0.5, option = "C", direction = -1) +
@@ -322,8 +322,8 @@ ggplot(data = map1_data_df,
                      group = group, 
                      fill = 총인구_명)) + 
         geom_polygon(colour = "black", size = 0.1) +
-        theme(plot.title = element_text(family = "HCR Dotum LVT"),
-              legend.title = element_text(family = "HCR Dotum LVT")) +
+        theme(plot.title = element_text(family = ""),
+              legend.title = element_text(family = "")) +
         ggtitle("시도 인구 단계구분도") + 
 #  scale_fill_gradientn(name = "인구(명)", colours = c("white", "orange", "red")) +
         scale_fill_distiller(name = "인구(명)", palette = "OrRd", direction = 1) +
