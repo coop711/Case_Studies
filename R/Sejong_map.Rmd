@@ -40,22 +40,24 @@ from [mapshaper](https://mapshaper.org)
 ```{r, results = 'hide'}
 shp_S <- readOGR(dsn = "../data/KOR_adm", 
                 layer = "KOR_adm1",
+                encoding = "UTF-8",
                 stringsAsFactors = FALSE)
 shp_N <- readOGR(dsn = "../data/PRK_adm", 
                 layer = "PRK_adm1",
+                encoding = "UTF-8",
                 stringsAsFactors = FALSE)
 ogrInfo(dsn = "../data/KOR_adm1",  #> `ogrInfo()`
         layer = "KOR_adm1")
 shp_S_1 <- readOGR(dsn = "../data/KOR_adm1", 
                 layer = "KOR_adm1",
+                encoding = "UTF-8",
                 stringsAsFactors = FALSE)
-#                 encoding = "CP949")
 ogrInfo(dsn = "../data/PRK_adm1",  #> `ogrInfo()`
         layer = "PRK_adm1")
 shp_N_1 <- readOGR(dsn = "../data/PRK_adm", 
                 layer = "PRK_adm1",
+                encoding = "UTF-8",
                 stringsAsFactors = FALSE)
-#                 encoding = "CP949")
 ```
 
 ### Data

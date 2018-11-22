@@ -12,7 +12,7 @@ output: html_document
 ```{r}
 library(knitr)
 library(magrittr)
-library(printr)
+# library(printr)
 Gini_b_tax <- read.table(file = "../data/Gini_before_tax.txt", 
                          header = FALSE, 
                          sep = "\t")
