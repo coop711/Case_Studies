@@ -113,20 +113,17 @@ cholera_coords <- as.data.frame(coordinates(CholeraDeaths))
 ```{r, get_map}
 # install.packages("ggmap", repos = "https://cran.rstudio.com")
 library(ggmap)
-#> source = "dsk" server is down.
-# John_Snow_code <- geocode("John Snow, London, England", source = "dsk")
-#> Google Maps => "John Snow, London" => "이곳이 궁금한가요?" => c(lat = , lon = ) (순서에 유의)
-John_Snow_code <- c(lon = -0.136560, lat = 51.513368)
+#> 소스 코드 외부에서 API 등록 필요함.
+John_Snow_code <- geocode("John Snow, London, England", source = "google")
 m <- get_map(John_Snow_code, 
              zoom = 17, 
              source = "google",
              maptype = "roadmap")
-#> mdsr 텍스트에서 bbox 좌표 추출
 # bbox <- c(-0.140, 51.509, -0.133, 51.518)
 # m <- get_map(bbox, 
-#             zoom = 17, 
-#             source = "google",
-#             maptype = "roadmap")
+#              zoom = 17, 
+#              source = "google",
+#              maptype = "roadmap")
 class(m)
 plot(m)
 ```
