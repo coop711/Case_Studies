@@ -14,9 +14,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, data, message = FALSE, warning = FALSE}
 # install.packages("mdsr", repos = "https://cran.rstudio.com")
-library(mdsr) 
-# install.packages("sp", repos = "https://cran.rstudio.com")
+# library(mdsr) 
+install.packages("sp", repos = "https://cran.rstudio.com")
 library(sp) 
+load("./CholeraDeaths.rda")
+load("./CholeraPumps.rda")
 head(CholeraDeaths)
 str(CholeraDeaths)
 ```
@@ -96,6 +98,7 @@ spplot(CholeraDeaths)
 ### geom_point, coord_quickmap
 
 ```{r, quickmap}
+library(ggplot2)
 head(coordinates(CholeraDeaths), n = 20)
 data.frame(CholeraDeaths)[1:10, ]
 cholera_coords <- as.data.frame(coordinates(CholeraDeaths))

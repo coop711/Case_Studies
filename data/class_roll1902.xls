@@ -1,0 +1,588 @@
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+
+<script language=javascript>
+
+	var commonResultMessage = "null";
+	if(commonResultMessage=="" || commonResultMessage=="null") {
+		commonResultMessage = "null";
+	}
+	var localeKey = "ko";
+</script>
+
+<html>
+	<head>
+		<title>Learner_File_Save</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</head>
+<body>
+<form name="learnerForm" method="post" action="/Learner.do">
+<table border="1" cellspacing="0" cellpadding="0" width="900">
+
+	<tr>
+		<td colspan="9" class="search-title">
+			과목명 :
+			캡스톤디자인:데이터분석사례연구-01(505519)
+		</td>
+	</tr>
+	<tr>
+		<td width="40">No</td>
+		<td width="60">과정</td>
+		<td width="90">학과</td>
+		<td width="80">학(직)번</td>
+		<td width="100">이름</td>
+		<td width="80">학년</td>
+		<td width="200">E-Mail</td>
+		<td width="70">학적상태</td>
+		<td width="140">핸드폰번호</td>
+	</tr>
+	
+		
+			<tr>
+				<td>1</td>
+				<td></td>
+				<td>소프트웨어융합대학</td>
+				<td>20145106</td>
+				<td>김경민
+					
+				</td>
+				<td>4</td>
+				<td>kkm5022@naver.com</td>
+				<td></td>
+				<td>010-5022-9905</td>
+			</tr>
+		
+			<tr>
+				<td>2</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20183205</td>
+				<td>김민아
+					
+				</td>
+				<td>2</td>
+				<td>alsdk0987@naver.com</td>
+				<td></td>
+				<td>010-5763-5558</td>
+			</tr>
+		
+			<tr>
+				<td>3</td>
+				<td></td>
+				<td>금융정보통계학과</td>
+				<td>20157096</td>
+				<td>김우택
+					
+				</td>
+				<td>4</td>
+				<td>ahskdlf123@naver.com</td>
+				<td></td>
+				<td>010-6420-5387</td>
+			</tr>
+		
+			<tr>
+				<td>4</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20153307</td>
+				<td>김원진
+					
+				</td>
+				<td>3</td>
+				<td>1dnjswls1@naver.com</td>
+				<td></td>
+				<td>010-9203-7710</td>
+			</tr>
+		
+			<tr>
+				<td>5</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20153408</td>
+				<td>김정현
+					
+				</td>
+				<td>3</td>
+				<td>junghyun1278@naver.com</td>
+				<td></td>
+				<td>010-8435-5489</td>
+			</tr>
+		
+			<tr>
+				<td>6</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20173221</td>
+				<td>김지은
+					
+				</td>
+				<td>3</td>
+				<td>em6008904@naver.com</td>
+				<td></td>
+				<td>010-2395-6894</td>
+			</tr>
+		
+			<tr>
+				<td>7</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20173222</td>
+				<td>김지혜
+					
+				</td>
+				<td>3</td>
+				<td>il7174@naver.com</td>
+				<td></td>
+				<td>010-3346-2428</td>
+			</tr>
+		
+			<tr>
+				<td>8</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20183214</td>
+				<td>김지혜
+					
+				</td>
+				<td>2</td>
+				<td>hello9598@naver.com</td>
+				<td></td>
+				<td>010-4914-9598</td>
+			</tr>
+		
+			<tr>
+				<td>9</td>
+				<td></td>
+				<td>금융정보통계학과</td>
+				<td>20163210</td>
+				<td>김현섭
+					
+				</td>
+				<td>2</td>
+				<td>rlagustjqdl11@naver.com</td>
+				<td></td>
+				<td>010-2623-0578</td>
+			</tr>
+		
+			<tr>
+				<td>10</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20173228</td>
+				<td>남혜령
+					
+				</td>
+				<td>3</td>
+				<td>gpfud3925@naver.com</td>
+				<td></td>
+				<td>010-8781-3925</td>
+			</tr>
+		
+			<tr>
+				<td>11</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20163215</td>
+				<td>박민재
+					
+				</td>
+				<td>2</td>
+				<td>tmvkzmalswo@naver.com</td>
+				<td></td>
+				<td>010-4075-4626</td>
+			</tr>
+		
+			<tr>
+				<td>12</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20153414</td>
+				<td>박새길
+					
+				</td>
+				<td>3</td>
+				<td>torlf1118@hanmail.net</td>
+				<td></td>
+				<td>010-8752-6240</td>
+			</tr>
+		
+			<tr>
+				<td>13</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20173261</td>
+				<td>박종일
+					
+				</td>
+				<td>3</td>
+				<td>12291234@naver.com</td>
+				<td></td>
+				<td>010-6827-5219</td>
+			</tr>
+		
+			<tr>
+				<td>14</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20153418</td>
+				<td>박효준
+					
+				</td>
+				<td>3</td>
+				<td>qkrgywns99@naver.com</td>
+				<td></td>
+				<td>010-4139-0974</td>
+			</tr>
+		
+			<tr>
+				<td>15</td>
+				<td></td>
+				<td>금융정보통계학과</td>
+				<td>20163222</td>
+				<td>방재훈
+					
+				</td>
+				<td>2</td>
+				<td>wogns0944@nate.com</td>
+				<td></td>
+				<td>010-3436-2109</td>
+			</tr>
+		
+			<tr>
+				<td>16</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20173232</td>
+				<td>백수민
+					
+				</td>
+				<td>3</td>
+				<td>qortnals7788@naver.com</td>
+				<td></td>
+				<td>010-8365-6645</td>
+			</tr>
+		
+			<tr>
+				<td>17</td>
+				<td></td>
+				<td>소프트웨어융합대학</td>
+				<td>20165317</td>
+				<td>백지연
+					
+				</td>
+				<td>3</td>
+				<td>bjy9060@nate.com</td>
+				<td></td>
+				<td>010-4951-7262</td>
+			</tr>
+		
+			<tr>
+				<td>18</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20153319</td>
+				<td>손상민
+					
+				</td>
+				<td>3</td>
+				<td>sangm1nz_zz@naver.com</td>
+				<td></td>
+				<td>010-8996-1924</td>
+			</tr>
+		
+			<tr>
+				<td>19</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20133316</td>
+				<td>송명석
+					
+				</td>
+				<td>4</td>
+				<td>audtjr714@naver.com</td>
+				<td></td>
+				<td>010-2747-3283</td>
+			</tr>
+		
+			<tr>
+				<td>20</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20163226</td>
+				<td>송준호
+					
+				</td>
+				<td>2</td>
+				<td>damda3@daum.net</td>
+				<td></td>
+				<td>010-4144-1524</td>
+			</tr>
+		
+			<tr>
+				<td>21</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20177094</td>
+				<td>유시은
+					
+				</td>
+				<td>3</td>
+				<td>usieun1207@naver.com</td>
+				<td></td>
+				<td>010-9473-1998</td>
+			</tr>
+		
+			<tr>
+				<td>22</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20153423</td>
+				<td>유영찬
+					
+				</td>
+				<td>3</td>
+				<td>yyk7009@naver.com</td>
+				<td></td>
+				<td>010-2052-1996</td>
+			</tr>
+		
+			<tr>
+				<td>23</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20173240</td>
+				<td>윤현아
+					
+				</td>
+				<td>3</td>
+				<td>yunvely0920@naver.com</td>
+				<td></td>
+				<td>010-3573-9431</td>
+			</tr>
+		
+			<tr>
+				<td>24</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20183238</td>
+				<td>이예진
+					
+				</td>
+				<td>2</td>
+				<td>yejin3388@naver.com</td>
+				<td></td>
+				<td>010-4311-9671</td>
+			</tr>
+		
+			<tr>
+				<td>25</td>
+				<td></td>
+				<td>소프트웨어융합대학</td>
+				<td>20165325</td>
+				<td>이유미
+					
+				</td>
+				<td>4</td>
+				<td>sjatjd@naver.com</td>
+				<td></td>
+				<td>010-4157-2518</td>
+			</tr>
+		
+			<tr>
+				<td>26</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20183240</td>
+				<td>이주영
+					
+				</td>
+				<td>2</td>
+				<td>wndud3016@naver.com</td>
+				<td></td>
+				<td>010-7616-2677</td>
+			</tr>
+		
+			<tr>
+				<td>27</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20173244</td>
+				<td>이주현
+					
+				</td>
+				<td>2</td>
+				<td>ljh980714@naver.com</td>
+				<td></td>
+				<td>01090767267</td>
+			</tr>
+		
+			<tr>
+				<td>28</td>
+				<td></td>
+				<td>광고홍보학과</td>
+				<td>20172628</td>
+				<td>이지윤
+					
+				</td>
+				<td>3</td>
+				<td>wldbs777@naver.com</td>
+				<td></td>
+				<td>010-5645-0790</td>
+			</tr>
+		
+			<tr>
+				<td>29</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20173246</td>
+				<td>임유빈
+					
+				</td>
+				<td>3</td>
+				<td>lyb4881@naver.com</td>
+				<td></td>
+				<td>010-3912-4881</td>
+			</tr>
+		
+			<tr>
+				<td>30</td>
+				<td></td>
+				<td>금융정보통계학과</td>
+				<td>20153427</td>
+				<td>장성재
+					
+				</td>
+				<td>3</td>
+				<td>zzzyj1021@naver.com</td>
+				<td></td>
+				<td>010-2618-2175</td>
+			</tr>
+		
+			<tr>
+				<td>31</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20183246</td>
+				<td>정수빈
+					
+				</td>
+				<td>2</td>
+				<td>rhdwn7186@naver.com</td>
+				<td></td>
+				<td>010-7116-6940</td>
+			</tr>
+		
+			<tr>
+				<td>32</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20173251</td>
+				<td>정조호
+					
+				</td>
+				<td>3</td>
+				<td>zzzzz367@naver.com</td>
+				<td></td>
+				<td>010-7742-0528</td>
+			</tr>
+		
+			<tr>
+				<td>33</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20183249</td>
+				<td>정혜정
+					
+				</td>
+				<td>2</td>
+				<td>fullmoon328@naver.com</td>
+				<td></td>
+				<td>010-2549-1095</td>
+			</tr>
+		
+			<tr>
+				<td>34</td>
+				<td></td>
+				<td>금융정보통계학과</td>
+				<td>20143432</td>
+				<td>주혜린
+					
+				</td>
+				<td>3</td>
+				<td>joohye96@naver.com</td>
+				<td></td>
+				<td>010-6880-9403</td>
+			</tr>
+		
+			<tr>
+				<td>35</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20153433</td>
+				<td>진상우
+					
+				</td>
+				<td>3</td>
+				<td>sangw1215@naver.com</td>
+				<td></td>
+				<td>010-5038-1146</td>
+			</tr>
+		
+			<tr>
+				<td>36</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20183253</td>
+				<td>최민선
+					
+				</td>
+				<td>2</td>
+				<td>totoring9158@hanmail.net</td>
+				<td></td>
+				<td>010-2415-7853</td>
+			</tr>
+		
+			<tr>
+				<td>37</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20163257</td>
+				<td>최용찬
+					
+				</td>
+				<td>2</td>
+				<td>tlsdn262@naver.com</td>
+				<td></td>
+				<td>010-4907-5321</td>
+			</tr>
+		
+			<tr>
+				<td>38</td>
+				<td></td>
+				<td>데이터과학융합스쿨</td>
+				<td>20183262</td>
+				<td>홍예은
+					
+				</td>
+				<td>2</td>
+				<td>drm06006@naver.com</td>
+				<td></td>
+				<td>010-6318-9063</td>
+			</tr>
+		
+	
+	
+</table>
+</form>
+</body>
+</html>
