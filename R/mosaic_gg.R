@@ -20,9 +20,10 @@ tbl.p.2 <- prop.table(tbl, margin = 2)
 tbl.p.df <- as.data.frame(tbl.p)
 tbl.p.df$width <- tbl.p.m[match(tbl.p.df[, 2], names(tbl.p.m))]
 tbl.p.df$height <- as.data.frame(tbl.p.2)$Freq
-tbl.p.df$label.height <- unlist(tapply(tbl.p.df$height, tbl.p.df[, 2], function(x) x / 2 + c(0, cumsum(head(x, -1)))))
+tbl.p.df$label.height <- unlist(tapply(tbl.p.df$height, tbl.p.df[, 2], function(x) cumsum(x) - x / 2))
 tbl.p.df$y.breaks <- unlist(tapply(tbl.p.df$height, tbl.p.df[, 2], cumsum))
-x.center <- tbl.p.m / 2 + c(0, cumsum(head(tbl.p.m, -1)))
+x.center <- cumsum(tbl.p.m) - tbl.p.m / 2 
+# x.center <- tbl.p.m / 2 + c(0, cumsum(head(tbl.p.m, -1)))
 # x.center <- (cumsum(tbl.p.m) + c(0, head(cumsum(tbl.p.m), -1)))/2
 tbl.p.df$center <- x.center[match(tbl.p.df[, 2], names(x.center))]
 m1 <- ggplot(tbl.p.df, aes(x = center, y = height, width = width)) + 
@@ -62,7 +63,7 @@ m5 <- m4 +
                      breaks = y.breaks,
                      label = y.label) + 
   scale_fill_manual(name = fill.name, 
-                    values = Set1[N:1], 
+                    values = Set2[N:1], 
                     labels = tbl.df[[1]], 
                     guide = guide_legend()) +
   ggtitle(ggtitle) +

@@ -30,9 +30,9 @@ class_roll %<>%
 class_roll$ID %<>%
   as.character
 str(class_roll)
-BFI <- "../data/BFI_CS1902.xlsx" %>% 
+BFI <- "../data/BFI_CS1902v2.xlsx" %>% 
   read.xlsx(sheetIndex = 1, 
-            startRow = 2, endRow = 33, 
+            startRow = 1, endRow = 39, 
             colIndex = 3:16, 
             header = TRUE, 
             encoding = "UTF-8",
@@ -50,11 +50,11 @@ BFI %>%
   kable
 # pander(head(BFI))
 duplicated(BFI$ID)
-# BFI <- BFI[-7, ]
+BFI <- BFI[-1, ]
 str(BFI)
-MI <- "../data/MI_CS1902.xlsx" %>%
+MI <- "../data/MI_CS1902v2.xlsx" %>%
   read.xlsx(sheetIndex = 1, 
-            startRow = 2, endRow = 34, 
+            startRow = 1, endRow = 39, 
             colIndex = 3:60, 
             header = TRUE, 
             encoding = "UTF-8",
@@ -72,8 +72,13 @@ kable(head(MI[c(1, 31:44)]))
 kable(head(MI[c(1, 45:58)]))
 setdiff(class_roll$Name, BFI$Name)
 setdiff(class_roll$Name, MI$Name)
+BFI$Name
 MI$Name
 class_roll$Name
+# is.na(MI)
+MI[10, "Q36"]
+table(MI$Q36)
+MI[10, "Q36"] <- 4
 # MI[MI$Name == "이예진 ", "Name"] <- "이예진"
 str(MI)
 MI <- MI[, -2]

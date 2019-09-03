@@ -103,7 +103,7 @@ doorae %$%
     * 경영개선 상태에서 법인격을 갖춘 공동체사업의 비율이 창업준비 상태에서 법인격을 갖춘 공동체사업의 비율보다 압도적으로 많다는 점에 유의.
 
 ```{r, echo = FALSE, fig.width = 6, fig.height = 4.2}
-source("theme_kr_HCR.R")
+# source("theme_kr_HCR.R")
 source("./mosaic_gg.R")
 doorae %$%
   table(.$"공동체상태", .$"조직형태", 
@@ -363,13 +363,16 @@ box_0 <- ggplot(data = doorae_ys,
 # box_0
 box_1 <- box_0 + 
   geom_boxplot() + 
-  theme_bw() +
-  theme_kr_HCR
+  theme_bw()
+# theme_kr_HCR
 # box_1
 box_2 <- box_1 + 
   ggtitle("공동체상태와 업력") + 
   xlab("공동체상태") + 
-  ylab("업력(년)") 
+  ylab("업력(년)") +
+  theme(plot.title = element_text(family = "HCR Dotum LVT"),
+        axis.title.x = element_text(family = "HCR Dotum LVT"),
+        axis.title.y = element_text(family = "HCR Dotum LVT"))
 # box_2
 box_3 <- box_2 + 
   scale_x_discrete(labels = c("창업준비", "경영개선")) 
@@ -398,21 +401,27 @@ ecdf_2 <- ecdf_1 +
   stat_ecdf()
 # ecdf_2
 ecdf_3 <- ecdf_2 + 
-  theme_bw() +
-  theme_kr_HCR
+  theme_bw()
+# theme_kr_HCR
 # ecdf_3
-ecdf_4 <- ecdf_3 + theme(panel.background=element_rect("white"), panel.border=element_rect(colour="black", fill = NA))
+ecdf_4 <- ecdf_3 + 
+  theme(panel.background=element_rect("white"), panel.border=element_rect(colour="black", fill = NA))
 # ecdf_4
 ecdf_5 <- ecdf_3 + 
   ggtitle("공동체상태와 업력") +
   xlab("업력(년)") +
-  ylab("분위") 
+  ylab("분위") +
+  theme(plot.title = element_text(family = "HCR Dotum LVT"),
+        axis.title.x = element_text(family = "HCR Dotum LVT"),
+        axis.title.y = element_text(family = "HCR Dotum LVT"),
+        legend.title = element_text(family = "HCR Dotum LVT"),
+        legend.text = element_text(family = "HCR Dotum LVT"))
 # ecdf_5
 ecdf_8 <- ecdf_5 + 
   labs(colour = "공동체상태") 
 # ecdf_8
 ecdf_9 <- ecdf_8 + 
-  scale_colour_brewer(palette = "Set1", 
+  scale_colour_brewer(palette = "Set2", 
                       labels = c("창업준비", "경영개선")) 
 # ecdf_9
 ecdf_10 <- ecdf_9 + 
@@ -457,8 +466,8 @@ x_post <- tapply(doorae_ys$years,
                  doorae_ys$status, sort)$"경영개선"
 n_pre <- length(x_pre)
 n_post <- length(x_post)
-y_pre <- (1:n_pre)/n_pre
-y_post <- (1:n_post)/n_post
+y_pre <- (1:n_pre) / n_pre
+y_post <- (1:n_post) / n_post
 ecdf_x_pre <- c(0, rep(x_pre, each = 2))
 ecdf_y_pre <- c(rep(c(0, head(y_pre, -1)), each = 2), 1)
 ecdf_x_post <- c(0, rep(x_post, each=2))
@@ -481,21 +490,24 @@ poly_2 <- poly_1 +
                fill = "red") 
 # poly_2
 poly_3 <- poly_2 + 
-  theme_bw() +
-  theme_kr_HCR
+  theme_bw() 
+# theme_kr_HCR
 # poly_3
 poly_4 <- poly_3 + 
   theme(panel.background = element_rect("white"), 
         panel.border = element_rect(colour = "black", fill = NA))
 # poly_4
 poly_5 <- poly_4 + 
-  ggtitle("공동체상태와 업력")
+  ggtitle("공동체상태와 업력") +
+  theme(plot.title = element_text(family = "HCR Dotum LVT"))
 # poly_5
 poly_6 <- poly_5 + 
-  xlab("업력(년)")
+  xlab("업력(년)") +
+  theme(axis.title.x = element_text(family = "HCR Dotum LVT"))
 # poly_6
 poly_7 <- poly_6 + 
-  ylab("분위") 
+  ylab("분위") +
+  theme(axis.title.y = element_text(family = "HCR Dotum LVT"))
 # poly_7
 poly_8 <- poly_7 + 
   labs(colour = "공동체상태") 
@@ -563,8 +575,8 @@ d_3 <- d_2 +
 d_4 <- d_3 + 
   theme_bw()
 # d_4
-d_5 <- d_4 +
-  theme_kr_HCR
+d_5 <- d_4
+# theme_kr_HCR
 # d_5
 d_6 <- d_5 + 
   ylab("조직명")  
@@ -578,7 +590,12 @@ d_8 <- d_7 +
         legend.justification = c(1, 0.5))
 # d_8
 d_9 <- d_8 + 
-  ggtitle("공동체상태별 업력") 
+  ggtitle("공동체상태별 업력") +
+  theme(plot.title = element_text(family = "HCR Dotum LVT"),
+        axis.title.x = element_text(family = "HCR Dotum LVT"),
+        axis.title.y = element_text(family = "HCR Dotum LVT"),
+        legend.title = element_text(family = "HCR Dotum LVT"),
+        legend.text = element_text(family = "HCR Dotum LVT"))
 d_9
 ```
 
