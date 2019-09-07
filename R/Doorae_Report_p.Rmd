@@ -109,7 +109,7 @@ doorae %$%
   table(.$"공동체상태", .$"조직형태", 
         dnn = c("공동체상태", "조직형태")) %>%
   t %>%
-  mosaic_gg(base_family = "HCR Dotum LVT",
+  mosaic_gg(base_family = "Malgun Gothic",
             ggtitle = "공동체상태와 조직형태",
             xlab = "공동체상태",
             ylab = "조직형태", 
@@ -124,7 +124,7 @@ doorae %$%
 doorae %$%
   table(.$"공동체상태", .$"조직형태", 
         dnn = c("공동체상태", "조직형태")) %>%
-  mosaic_gg(base_family = "HCR Dotum LVT",
+  mosaic_gg(base_family = "Malgun Gothic",
             ggtitle = "조직형태와 공동체상태",
             xlab = "조직형태", 
             ylab = "공동체상태",
@@ -282,7 +282,7 @@ doorae %>%
 doorae %$%
   table(.$"공동체상태", .$"법인유형", dnn = c("공동체상태", "조직유형")) %>%
   t %>%
-  mosaic_gg(base_family = "HCR Dotum LVT",
+  mosaic_gg(base_family = "Malgun Gothic",
             ggtitle = "공동체상태와 조직유형",
             xlab = "공동체상태", 
             ylab = "조직유형",
@@ -329,7 +329,7 @@ doorae %$%
   table(.$"공동체상태", .$"사업아이템", 
         dnn = c("공동체상태", "사업아이템")) %>%
   t %>%
-  mosaic_gg(base_family = "HCR Dotum LVT",
+  mosaic_gg(base_family = "Malgun Gothic",
             ggtitle = "공동체상태와 사업아이템",
             xlab = "공동체상태", 
             ylab = "사업아이템",
@@ -374,10 +374,10 @@ box_2 <- box_1 +
   ggtitle("공동체상태와 업력") + 
   xlab("공동체상태") + 
   ylab("업력(년)") +
-  theme(plot.title = element_text(family = "HCR Dotum LVT"),
-        axis.text.x = element_text(family = "HCR Dotum LVT"),
-        axis.title.x = element_text(family = "HCR Dotum LVT"),
-        axis.title.y = element_text(family = "HCR Dotum LVT"))
+  theme(plot.title = element_text(family = "Malgun Gothic"),
+        axis.text.x = element_text(family = "Malgun Gothic"),
+        axis.title.x = element_text(family = "Malgun Gothic"),
+        axis.title.y = element_text(family = "Malgun Gothic"))
 # box_2
 box_3 <- box_2 + 
   scale_x_discrete(labels = c("창업준비", "경영개선")) 
@@ -388,7 +388,7 @@ box_4 <- box_3 +
            y = c(11.7, 12.4), 
            label = c("예그리나", "아름다운인제관광"), 
            size = 3.5, 
-           family = "HCR Dotum LVT")
+           family = "Malgun Gothic")
 box_4
 ```
 
@@ -416,11 +416,11 @@ ecdf_5 <- ecdf_3 +
   ggtitle("공동체상태와 업력") +
   xlab("업력(년)") +
   ylab("분위") +
-  theme(plot.title = element_text(family = "HCR Dotum LVT"),
-        axis.title.x = element_text(family = "HCR Dotum LVT"),
-        axis.title.y = element_text(family = "HCR Dotum LVT"),
-        legend.title = element_text(family = "HCR Dotum LVT"),
-        legend.text = element_text(family = "HCR Dotum LVT"))
+  theme(plot.title = element_text(family = "Malgun Gothic"),
+        axis.title.x = element_text(family = "Malgun Gothic"),
+        axis.title.y = element_text(family = "Malgun Gothic"),
+        legend.title = element_text(family = "Malgun Gothic"),
+        legend.text = element_text(family = "Malgun Gothic"))
 # ecdf_5
 ecdf_8 <- ecdf_5 + 
   labs(colour = "공동체상태") 
@@ -452,7 +452,7 @@ ecdf_13 <- ecdf_12 +
            y = 0.54, 
            label = "중위수의 차이", 
            size = 3, 
-           family = "HCR Dotum LVT")
+           family = "Malgun Gothic")
 # ecdf_13
 ecdf_14 <- ecdf_13 + 
   annotate("text", 
@@ -460,7 +460,7 @@ ecdf_14 <- ecdf_13 +
            y = 0.46, 
            label = "약 3년", 
            size = 3, 
-           family = "HCR Dotum LVT")
+           family = "Malgun Gothic")
 ecdf_14
 ```
 
@@ -504,15 +504,15 @@ poly_4 <- poly_3 +
 # poly_4
 poly_5 <- poly_4 + 
   ggtitle("공동체상태와 업력") +
-  theme(plot.title = element_text(family = "HCR Dotum LVT"))
+  theme(plot.title = element_text(family = "Malgun Gothic"))
 # poly_5
 poly_6 <- poly_5 + 
   xlab("업력(년)") +
-  theme(axis.title.x = element_text(family = "HCR Dotum LVT"))
+  theme(axis.title.x = element_text(family = "Malgun Gothic"))
 # poly_6
 poly_7 <- poly_6 + 
   ylab("분위") +
-  theme(axis.title.y = element_text(family = "HCR Dotum LVT"))
+  theme(axis.title.y = element_text(family = "Malgun Gothic"))
 # poly_7
 poly_8 <- poly_7 + 
   labs(colour = "공동체상태") 
@@ -534,7 +534,7 @@ poly_12 <- poly_11 +
            label="두 도표 간 면적은\n평균의 차이,\n약 3년", 
            size = 4, 
            angle = 15, 
-           family = "HCR Dotum LVT")
+           family = "Malgun Gothic")
 # poly_12
 poly_13 <- poly_12 + 
   annotate("text", 
@@ -542,14 +542,14 @@ poly_13 <- poly_12 +
            y = 0.6, 
            label = "경영개선", 
            size = 4, 
-           family = "HCR Dotum LVT")
+           family = "Malgun Gothic")
 poly_14 <- poly_13 + 
   annotate("text", 
            x = 1, 
            y = 0.9, 
            label = "창업준비", 
            size = 4, 
-           family = "HCR Dotum LVT")
+           family = "Malgun Gothic")
 poly_14
 ```
 
@@ -596,11 +596,11 @@ d_8 <- d_7 +
 # d_8
 d_9 <- d_8 + 
   ggtitle("공동체상태별 업력") +
-  theme(plot.title = element_text(family = "HCR Dotum LVT"),
-        axis.title.x = element_text(family = "HCR Dotum LVT"),
-        axis.title.y = element_text(family = "HCR Dotum LVT"),
-        legend.title = element_text(family = "HCR Dotum LVT"),
-        legend.text = element_text(family = "HCR Dotum LVT"))
+  theme(plot.title = element_text(family = "Malgun Gothic"),
+        axis.title.x = element_text(family = "Malgun Gothic"),
+        axis.title.y = element_text(family = "Malgun Gothic"),
+        legend.title = element_text(family = "Malgun Gothic"),
+        legend.text = element_text(family = "Malgun Gothic"))
 d_9
 ```
 
