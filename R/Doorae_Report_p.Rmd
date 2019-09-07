@@ -113,7 +113,7 @@ doorae %$%
             ggtitle = "공동체상태와 조직형태",
             xlab = "공동체상태",
             ylab = "조직형태", 
-            fill.name = "공동체상태")
+            fill_name = "공동체상태")
 ```
 
 * 조직형태와 공동체상태
@@ -127,7 +127,7 @@ doorae %$%
             ggtitle = "조직형태와 공동체상태",
             xlab = "조직형태", 
             ylab = "공동체상태",
-            fill.name = "조직형태")
+            fill_name = "조직형태")
 ```
 
 <P style = "page-break-before:always">
@@ -284,7 +284,7 @@ doorae %$%
             ggtitle = "공동체상태와 조직유형",
             xlab = "공동체상태", 
             ylab = "조직유형",
-            fill.name = "조직유형")
+            fill_name = "조직유형")
 ```
 
 <P style = "page-break-before:always">
@@ -330,7 +330,7 @@ doorae %$%
             ggtitle = "공동체상태와 사업아이템",
             xlab = "공동체상태", 
             ylab = "사업아이템",
-            fill.name = "사업아이템")
+            fill_name = "사업아이템")
 ```
 
 <P style = "page-break-before:always">
@@ -371,6 +371,7 @@ box_2 <- box_1 +
   xlab("공동체상태") + 
   ylab("업력(년)") +
   theme(plot.title = element_text(family = "HCR Dotum LVT"),
+        axis.text.x = element_text(family = "HCR Dotum LVT"),
         axis.title.x = element_text(family = "HCR Dotum LVT"),
         axis.title.y = element_text(family = "HCR Dotum LVT"))
 # box_2
