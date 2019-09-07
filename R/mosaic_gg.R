@@ -4,32 +4,37 @@ function(tbl, base_family = "KoPubWorldDotum Medium",
                       xlab = "", 
                       ylab = "", 
                       fill_name = ""){
-tbl_df <- tbl %>%
+tbl_df <- tbl %>%    #> (깔끔한) 데이터 프레임으로 전환.
   as.data.frame
-N <- length(levels(tbl_df[, 1]))
-tbl_p_df <- tbl %>%
+N <- length(levels(tbl_df[, 1])) #> fill 로 표현할 factor의 level 수효
+tbl_p_df <- tbl %>%   #> 각 조합의 비율 계산 
   prop.table %>%
   as.data.frame
-tbl_p_m <- tbl_df %>%
+tbl_p_m <- tbl_df %>%  #> x 축에 표시할 factor 비율의 주변 합 계산
   `[`(, 3) %>%
   tapply(tbl_df[, 2], sum) %>%
   prop.table
-tbl_p_df$width <- tbl_p_m[match(tbl_p_df[, 2], names(tbl_p_m))]
-tbl_p_df$height <- tbl %>%
+tbl_p_df$width <- tbl_p_m[match(tbl_p_df[, 2], names(tbl_p_m))] #> tbl_p_df 에 폭 벡터 추가
+tbl_p_df$height <- tbl %>%       #> tbl_p_df 에 높이 벡터 추가
   prop.table(margin = 2) %>%
   as.data.frame %>%
   `[`(, 3)
+#> 추가 정보로 표시할 라벨의 좌표 계산
 tbl_p_df$label_height <- unlist(tapply(tbl_p_df$height, 
                                        tbl_p_df[, 2], 
                                        function(x) cumsum(x) - x / 2))
 #                                        function(x) x / 2 + c(0, cumsum(head(x, -1)))))
+#> y축에 표시할 눈금의 좌표 계산
 tbl_p_df$y_breaks <- unlist(tapply(tbl_p_df$height, 
                                    tbl_p_df[, 2], 
                                    cumsum))
+#> x 축에 표시할 눈금의 좌표 계산
 x_center <- cumsum(tbl_p_m) - tbl_p_m / 2
 # x_center <- tbl_p_m / 2 + c(0, cumsum(head(tbl_p_m, -1)))
 # x_center <- (cumsum(tbl_p_m) + c(0, head(cumsum(tbl_p_m), -1)))/2
+#> x 축에 표시할 눈금의 좌표를 tbl_p_df  데이터 프레임에 벡터로 추가
 tbl_p_df$center <- x_center[match(tbl_p_df[, 2], names(x_center))]
+#> ggeom_bar  로 그리기
 m1 <- ggplot(tbl_p_df, 
              aes(x = center, y = height, width = width)) + 
   geom_bar(aes(fill = tbl_df[, 1]), 
@@ -53,6 +58,7 @@ x_label <- format(x_breaks * 100,
                   digits = 3, 
                   nsmall = 1)
 y_breaks <- tbl_p_df$y_breaks
+## y 축 눈금 갯수 조절
 delta <- (max(y_breaks) - min(y_breaks)) / 20
 y_breaks_sort <- sort(y_breaks)
 diff(y_breaks_sort) < delta 

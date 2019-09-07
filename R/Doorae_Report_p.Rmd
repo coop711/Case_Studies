@@ -113,7 +113,8 @@ doorae %$%
             ggtitle = "공동체상태와 조직형태",
             xlab = "공동체상태",
             ylab = "조직형태", 
-            fill_name = "공동체상태")
+            fill_name = "공동체상태") +
+  scale_fill_brewer(name = "공동체상태", type = "qual")
 ```
 
 * 조직형태와 공동체상태
@@ -127,7 +128,8 @@ doorae %$%
             ggtitle = "조직형태와 공동체상태",
             xlab = "조직형태", 
             ylab = "공동체상태",
-            fill_name = "조직형태")
+            fill_name = "조직형태") +
+  scale_fill_brewer(name = "조직형태", type = "div")
 ```
 
 <P style = "page-break-before:always">
@@ -284,7 +286,8 @@ doorae %$%
             ggtitle = "공동체상태와 조직유형",
             xlab = "공동체상태", 
             ylab = "조직유형",
-            fill_name = "조직유형")
+            fill_name = "조직유형") +
+  scale_fill_brewer(name = "조직유형", type = "qual")
 ```
 
 <P style = "page-break-before:always">
@@ -330,7 +333,8 @@ doorae %$%
             ggtitle = "공동체상태와 사업아이템",
             xlab = "공동체상태", 
             ylab = "사업아이템",
-            fill_name = "사업아이템")
+            fill_name = "사업아이템") +
+  scale_fill_viridis_d(name = "사업아이템")
 ```
 
 <P style = "page-break-before:always">
