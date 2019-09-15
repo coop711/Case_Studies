@@ -34,7 +34,7 @@ x_center <- cumsum(tbl_p_m) - tbl_p_m / 2
 # x_center <- (cumsum(tbl_p_m) + c(0, head(cumsum(tbl_p_m), -1)))/2
 #> x 축에 표시할 눈금의 좌표를 tbl_p_df  데이터 프레임에 벡터로 추가
 tbl_p_df$center <- x_center[match(tbl_p_df[, 2], names(x_center))]
-#> ggeom_bar  로 그리기
+#> geom_bar로 그리기
 m1 <- ggplot(tbl_p_df, 
              aes(x = center, y = height, width = width)) + 
   geom_bar(aes(fill = tbl_df[, 1]), 
