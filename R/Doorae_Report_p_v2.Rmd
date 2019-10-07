@@ -161,7 +161,7 @@ x_breaks <- c(0, ifelse(cumsum(tbl_p_m) < 0.1, 0.0, cumsum(tbl_p_m)))
 x_label <- format(x_breaks * 100, 
                   digits = 3, 
                   nsmall = 1)
-y_breaks <- tbl_p_df$y_breaks
+y_breaks <- c(0, tbl_p_df$y_breaks)
 y_label <- format(y_breaks * 100,
                   digits = 2,
                   nsmall = 1)
@@ -340,8 +340,8 @@ doorae %$%
 doorae %$%
   table(.$"공동체상태", .$"법인유형", 
         dnn = c("공동체상태", "조직유형")) %>%
-  cbind(., "계" = rowSums(.)) %>%
-  rbind(., "계" = colSums(.)) %>%
+  cbind("계" = rowSums(.)) %>%
+  rbind("계" = colSums(.)) %>%
   kable(caption = "<공동체상태와 조직유형>")
 ```
 
@@ -378,8 +378,8 @@ doorae %$%
 doorae %$%
   table(.$"공동체상태", .$"사업아이템", 
         dnn = c("공동체상태", "사업아이템")) %>%
-  cbind(., "계" = rowSums(.)) %>%
-  rbind(., "계" = colSums(.)) %>%
+  cbind("계" = rowSums(.)) %>%
+  rbind("계" = colSums(.)) %>%
   kable(caption = "<공동체상태와 사업아이템>")
 ```
 
@@ -393,7 +393,7 @@ doorae %$%
         dnn = c("공동체상태", "사업아이템")) %>%
   prop.table(margin = 1) %>%
   `*`(100) %>%
-  cbind(., "계" = rowSums(.)) %>%
+  cbind("계" = rowSums(.)) %>%
   round(digits = 1) %>%
   kable(caption= "<공동체상태와 사업아이템(%)>")  
 ```
@@ -483,10 +483,10 @@ ecdf_2 <- ecdf_1 +
 # ecdf_2
 ecdf_3 <- ecdf_2 + 
   theme_bw()
-# theme_kr_HCR
 # ecdf_3
 ecdf_4 <- ecdf_3 + 
-  theme(panel.background=element_rect("white"), panel.border=element_rect(colour="black", fill = NA))
+  theme(panel.background = element_rect("white"), 
+        panel.border = element_rect(colour = "black", fill = NA))
 # ecdf_4
 ecdf_5 <- ecdf_3 + 
   ggtitle("공동체상태와 업력") +

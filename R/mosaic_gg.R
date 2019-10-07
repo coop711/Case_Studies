@@ -57,7 +57,7 @@ x_breaks <- c(0, ifelse(cumsum(tbl_p_m) < 0.1, 0.0, cumsum(tbl_p_m)))
 x_label <- format(x_breaks * 100, 
                   digits = 3, 
                   nsmall = 1)
-y_breaks <- tbl_p_df$y_breaks
+y_breaks <- c(0, tbl_p_df$y_breaks)
 ## y 축 눈금 갯수 조절
 delta <- (max(y_breaks) - min(y_breaks)) / 20
 y_breaks_sort <- sort(y_breaks)
