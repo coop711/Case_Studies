@@ -1,0 +1,248 @@
+---
+title: "J. Snow Cholera Deaths (1854)"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data
+
+`mdsr`(Modern Data Science with R) 패키지와 공간 데이터 분석 전용 `sp` 패키지 설치.
+`sp`는 공간 객체에 대한 `class` 정의 포함.
+
+```{r, data, message = FALSE, warning = FALSE}
+# install.packages("sp", repos = "https://cran.rstudio.com")
+library(sp) 
+load("./CholeraDeaths.rda")
+load("./CholeraPumps.rda")
+head(CholeraDeaths)
+str(CholeraDeaths)
+```
+
+<P style = "page-break-before:always">
+
+### John Snow의 콜레라 데이터 지도 (사망자)(1854년, 127명 사망)
+
+```{r}
+knitr::include_graphics("../pics/Snow-cholera-map-1.jpg", dpi = 96)
+```
+
+<P style = "page-break-before:always">
+
+### 산점도
+
+```{r, plot}
+plot(CholeraDeaths) 
+```
+
+공간 데이터 분석 전용 라이브러리를 담고 있는 `rgdal` 설치. 
+다운로드한 압축 파일을 data 폴더에 압축을 풀어 둠.
+`CholeraDeaths` 와 `Pumps`의 두 공간정보 데이터 읽어들임.
+shapefiles 는 벡터 형식의 공간자료 저장 
+
+* GDAL : Geospatial Data Abstraction Library
+* OGR : OpenGIS Simple Features Reference Implementation
+* dsn : data source name
+* SHP : shape file format
+* KML : Keyhole Markup Language
+* ESRI : Environmental Systems Research Institute, ArcView 개발 
+
+`list.files()`는 현재 워킹 폴더의 내용물 확인. 
+
+`ogrListLayers` 는 `layer` 열거용. `ogrInfo`는 특정 `layer`의 지리 정보 확인용
+
+`Cholera_Deaths`와 `Pumps`의 두 `layer` 확인 후 `readOGR()`로 읽어들임.
+
+`str`로 특정 `layer`내의 데이터 구조 확인. `str`로 data 요소의 데이터 구조 파악.
+
+`download.file()`의 용법 익히기. dsn 설정에서 "../data/SnowGIS_SHp/"로 설정하면 linux나 MacOS에서는 작동하지만 Windows에서는 "Cannot open data source" 에러가 나오게 됨. folder를 의미하는 마지막 "/" 를 쓰지 않아야 함.
+
+```{r, GDAL}
+# install.packages("rgdal", repos = "https://cran.rstudio.com")
+library(rgdal) 
+# download.file("http://rtwilson.com/downloads/SnowGIS_SHP.zip", "../data/SnowGIS_SHP.zip")
+dsn <- "../data/SnowGIS_SHP"  
+#> dsn의 파일 리스트
+list.files(dsn) 
+ogrListLayers(dsn)
+ogrInfo(dsn, layer = "Cholera_Deaths")
+# readOGR(dsn, "Pumps")
+CholeraDeaths <- readOGR(dsn, layer = "Cholera_Deaths")
+Pumps <- readOGR(dsn, layer = "Pumps")
+summary(CholeraDeaths)
+summary(Pumps)
+str(CholeraDeaths@data)
+str(Pumps@data)
+```
+
+<P style = "page-break-before:always">
+
+## ggplot
+
+id와 Count의 산점도에서 출발.  
+
+### spplot
+
+```{r spplot}
+# install.packages("mapproj", repos = "https://cran.rstudio.com")
+library(mapproj)
+spplot(CholeraDeaths) 
+```
+
+<P style = "page-break-before:always">
+
+### geom_point, coord_quickmap
+
+```{r, quickmap}
+library(ggplot2)
+head(coordinates(CholeraDeaths), n = 20)
+data.frame(CholeraDeaths)[1:10, ]
+cholera_coords <- as.data.frame(coordinates(CholeraDeaths))
+m0 <- ggplot(data = cholera_coords) + 
+  geom_point(aes(x = coords.x1,  ## figure 14.2 를 그리기 위한 전 단계
+                 y = coords.x2)) 
+m1 <- m0 +  
+  coord_quickmap()  ## Figure 14.2 
+m2 <- m0 + 
+  coord_map() ## Not working
+```
+
+### get_map, plot
+
+```{r, get_map}
+# install.packages("ggmap", repos = "https://cran.rstudio.com")
+library(ggmap)
+#> 소스 코드 외부에서 API 등록 필요함.
+John_Snow_code <- geocode("John Snow, London, England", source = "google")
+m <- get_map(John_Snow_code, 
+             zoom = 17, 
+             source = "stamen",
+             maptype = "toner")
+# bbox <- c(-0.140, 51.509, -0.133, 51.518)
+# m <- get_map(bbox, 
+#              zoom = 17, 
+#              source = "google",
+#              maptype = "roadmap")
+class(m)
+plot(m)
+```
+
+<P style = "page-break-before:always">
+
+### ggmap
+
+```{r, ggmap}
+ggmap(m, extent = "device")
+```
+
+<P style = "page-break-before:always">
+
+### Add Deaths Points
+
+```{r, cholera deaths added}
+ggmap(m) +
+  geom_point(data = as.data.frame(CholeraDeaths), 
+             aes(x = coords.x1,
+                 y = coords.x2,
+                 size = Count))
+#> All the points are out of bounds
+```
+
+### "bbox"
+
+```{r bbox}
+head(as.data.frame(CholeraDeaths))
+str(m)
+attr(m, "bb") # coordinates are at different units, bounding box. 
+```
+
+## Terms
+
+* tmerc : Transverse Mercator projectiotn
+* CRS : Coordinate Reference System
+* EPSG : European Petroleum Survey Group
+
+### proj4string, CRS
+
+```{r, proj}
+proj4string(CholeraDeaths) %>% 
+  strwrap() 
+CRS("+init=epsg:4326") 
+CRS("+init=epsg:3857")
+CRS("+init=epsg:27700")
+cholera_latlong <- CholeraDeaths %>% 
+  spTransform(CRS("+init=epsg:4326"))
+help("spTransform-methods", package = "rgdal")
+bbox(cholera_latlong)
+ggmap(m) +
+  geom_point(data = as.data.frame(cholera_latlong),
+             aes(x = coords.x1, 
+                 y = coords.x2,
+                 size = Count))
+```
+
+<P style = "page-break-before:always">
+
+## Snow data on the map
+
+### proj4string, showEPSG
+
+```{r, Cholera Deaths}
+CholeraDeaths %>% 
+  proj4string() %>% 
+  showEPSG()
+proj4string(CholeraDeaths) <- CRS("+init=epsg:27700")
+```
+
+### spTransform
+
+```{r, spTransform}
+cholera_latlong <- CholeraDeaths %>%
+  spTransform(CRS("+init=epsg:4326"))
+```
+
+<P style = "page-break-before:always">
+
+## Places of Deaths, Points by Size
+
+```{r, snow}
+snow <- ggmap(m) +
+  geom_point(data = as.data.frame(cholera_latlong),
+             aes(x = coords.x1,
+                 y = coords.x2,
+                 size = Count),
+             colour = "red",
+             fill = "red",
+             shape = 19,
+             na.rm = TRUE)
+snow
+```
+
+## Pumps added
+
+```{r, Pumps, fig.width = 10.5, fig.height = 10.5}
+pumps <- readOGR(dsn, 
+                 layer = "Pumps")
+proj4string(pumps) <- CRS("+init=epsg:27700")
+pumps_latlong <- pumps %>% 
+  spTransform(CRS("+init=epsg:4326"))
+snow + 
+  geom_point(data = as.data.frame(pumps_latlong),
+             aes(x = coords.x1,
+                 y = coords.x2),
+             size = 12,
+             shape = "#",
+             colour = "blue",
+             na.rm = TRUE) +
+#  scale_colour_manual(guide = NULL)
+  guides(colour = "none", shape = "none")
+```
+
+## Save
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+ggsave(file = "../pics/Snow.png", device = "png", dpi = 320)
+save.image("./Snow.RData")
+```
