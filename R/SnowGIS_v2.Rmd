@@ -111,7 +111,7 @@ m2 <- m0 +
 
 ### get_map, plot
 
-```{r, get_map}
+```{r, get_map, message = FALSE}
 # install.packages("ggmap", repos = "https://cran.rstudio.com")
 library(ggmap)
 #> 소스 코드 외부에서 API 등록 필요함.
@@ -174,7 +174,7 @@ CRS("+init=epsg:3857")
 CRS("+init=epsg:27700")
 cholera_latlong <- CholeraDeaths %>% 
   spTransform(CRS("+init=epsg:4326"))
-help("spTransform-methods", package = "rgdal")
+# help("spTransform-methods", package = "rgdal")
 bbox(cholera_latlong)
 ggmap(m) +
   geom_point(data = as.data.frame(cholera_latlong),

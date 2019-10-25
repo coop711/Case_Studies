@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r, data, message = FALSE, warning = FALSE}
 # install.packages("mdsr", repos = "https://cran.rstudio.com")
 # library(mdsr) 
-install.packages("sp", repos = "https://cran.rstudio.com")
+# install.packages("sp", repos = "https://cran.rstudio.com")
 library(sp) 
 load("./CholeraDeaths.rda")
 load("./CholeraPumps.rda")
@@ -176,7 +176,7 @@ CRS("+init=epsg:3857")
 CRS("+init=epsg:27700")
 cholera_latlong <- CholeraDeaths %>% 
   spTransform(CRS("+init=epsg:4326"))
-help("spTransform-methods", package = "rgdal")
+# help("spTransform-methods", package = "rgdal")
 bbox(cholera_latlong)
 ggmap(m) +
   geom_point(data = as.data.frame(cholera_latlong),
