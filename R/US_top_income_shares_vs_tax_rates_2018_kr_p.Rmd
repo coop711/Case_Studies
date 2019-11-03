@@ -25,7 +25,7 @@ load("US_top_income_shares_vs_tax_rates_2018.RData")
 # png(file = "../pics/US_Top_Income_Share_vs_MTR_300dpi_en.png", width = 1280, height = 720)
 #> 왼쪽, 오른쪽 수직 축의 축 눈금을 수평하게 놓을 수 있도록 공간 조정
 par(mar = c(5, 6, 4, 6) + 0.1,
-    family = "HCR Dotum LVT")
+    family = "")
 #> 점과 선을 함께 사용하여 소득 상위 1%의 점유율 표시.
 top_income_tax %>%
   plot(P99_100_z ~ Year, data = ., 
@@ -87,7 +87,7 @@ dev.off()
 # png(file = "../pics/US_Top_Income_Share_vs_MTR_72dpi_en.png", width = 864, height = 486)
 # png(file = "../pics/US_Top_Income_Share_vs_MTR_300dpi_en.png", width = 1280, height = 720)
 par(mar = c(5, 6, 4, 6) + 0.1,
-    family = "HCR Dotum LVT")
+    family = "")
 plot(P99_100_z ~ Year, data = top_income_tax, 
      type = "b", pch = 17, 
      axes = FALSE, ann = FALSE, 
@@ -122,7 +122,7 @@ dev.off()
 # png(file = "../pics/US_Top_Income_Growth_vs_MTR_72dpi_en.png", width = 864, height = 486)
 # png(file = "../pics/US_Top_Income_Growth_vs_MTR_300dpi_en.png", width = 1280, height = 720)
 par(mar = c(5, 6, 4, 6) + 0.1,
-    family = "HCR Dotum LVT")
+    family = "")
 plot(Rate_99_z ~ Year, data = top_income_tax, type = "b", pch = 24, col = "black", bg = "black", axes = FALSE, ann = FALSE, xlim = c(1910, 2020), ylim = c(0, 1))
 lines(Rate_1_z ~ Year, data = top_income_tax, type = "b", pch = 24, col = "black", bg = "white")
 box()
@@ -157,7 +157,7 @@ dev.off()
 # png(file = "../pics/US_Income_Growth_vs_MTR_72dpi_K.png", width = 864, height = 486)
 # png(file = "../pics/US_Income_Growth_vs_MTR_300dpi_K.png", width = 1280, height = 720)
 par(mar = c(5, 6, 4, 6) + 0.1,
-    family = "HCR Dotum LVT")
+    family = "")
 plot(Rate_99_K_z ~ Year, data = top_income_tax, type = "b", pch = 24, col = "black", bg = "black", axes = FALSE, ann = FALSE, xlim = c(1910, 2020), ylim = c(0, 1))
 lines(Rate_1_K_z ~ Year, data = top_income_tax, type = "b", pch = 24, col = "black", bg = "white")
 box()

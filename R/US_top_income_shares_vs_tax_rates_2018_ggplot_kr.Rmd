@@ -17,7 +17,7 @@ library(magrittr)
 library(ggplot2)
 #> 데이터 불러 들이기
 load("US_top_income_shares_vs_tax_rates_2018_v2.RData")
-source("./theme_kr.R")
+# source("./theme_kr.R")
 ```
 
 이 중에서 상위 1%의 소득 점유율(`P99_100`)과 한계 소득세율(Marginal Tax Rates) 간의 관계를 살펴보자
@@ -39,7 +39,8 @@ M2 <- M1 +
   scale_colour_manual(values = c("red", "black")) +
   scale_linetype_manual(values = c("longdash", "solid")) 
 M3 <- M2 + 
-  theme_bw() + theme_kr +
+  theme_bw() + 
+#  theme_kr +
   scale_x_continuous(name = "연도", breaks = seq(1910, 2020, by = 10), labels = seq(1910, 2020, by = 10)) +
   scale_y_continuous(name = "상위 1% 소득 점유율(%)", breaks = y1_at, labels = labels1_at, limits = c(0, 1),
                      sec.axis = sec_axis(name = "한계 소득세율(%)", trans = ~ z(., q = .), 
@@ -47,7 +48,7 @@ M3 <- M2 +
   labs(title = "상위 1% 소득점유율과 한계 소득세율") +
   annotate("text", x = c(1975, 1955), y = c(0.8, 0.35), 
            label = c("한계 소득세율", "상위 1% 소득점유율"), 
-           family = "HCR Dotum LVT", size = 6) +
+           family = "", size = 6) +
   theme(plot.title = element_text(hjust = 0.5, size = 20, margin = margin(t = 0, r = 0, b = 12, l = 0)))
 M3
 ``` 
@@ -71,14 +72,15 @@ Mi2 <- Mi1 +
   scale_colour_manual(values = c("red", "black")) +
   scale_linetype_manual(values = c("longdash", "solid")) 
 Mi3 <- Mi2 + 
-  theme_bw() + theme_kr +
+  theme_bw() + 
+#  theme_kr +
   scale_x_continuous(name = "연도", breaks = seq(1910, 2020, by = 10), labels = seq(1910, 2020, by = 10)) +
   scale_y_continuous(name = "상위 1% 소득 점유율(%)", breaks = y1_at, labels = labels1_at, limits = c(0, 1),
                      sec.axis = sec_axis(name = "한계 소득세율(%)", trans = ~ z(., q = .), 
                                          breaks = (y4_at + 0.05 )/1.1, labels = rev(labels4_at))) +
   labs(title = "상위 1% 소득점유율과 한계 소득세율") +
   annotate("text", x = c(1985, 1955), y = c(0.8, 0.35), label = c("한계 소득세율", "상위 1% 소득점유율"), 
-           family = "HCR Dotum LVT", size = 6) +
+           family = "", size = 6) +
   theme(plot.title = element_text(hjust = 0.5, size = 20, margin = margin(t = 0, r = 0, b = 12, l = 0)))
 Mi3
 ``` 
@@ -95,15 +97,16 @@ R2 <- R1 +
   scale_linetype_manual(values = c("longdash", "solid", "solid"), guide = FALSE) +
   scale_shape_manual(name = "", labels = c("하위99%", "상위1%"), values = c(17, 24))
 R3 <- R2 + 
-  theme_bw() + theme_kr +
+  theme_bw() + 
+#  theme_kr +
   scale_x_continuous(name = "연도", breaks = seq(1910, 2020, by = 10), labels = seq(1910, 2020, by = 10)) +
   scale_y_continuous(name = "평균 소득 (1913 = 100)", breaks = y2_at, labels = labels2_at, limits = c(0, 1),
                      sec.axis = sec_axis(name = "한계 소득세율(%)", trans = ~ z(., q = .), 
                                          breaks = (y4_at + 0.05 )/1.1, labels = labels4_at)) +
   labs(title = "한계 소득세율과 상위 1% 및 하위 99%의 소득 증가\n(자본이득 제외)") +
   annotate("text", x = 1925, y = 0.9, label = "한계 소득세율", 
-           family = "HCR Dotum LVT", size = 6) +
-  theme(plot.title = element_text(family = "KoPubWorldDotum Bold", hjust = 0.5, size = 20),
+           family = "", size = 6) +
+  theme(plot.title = element_text(family = "", hjust = 0.5, size = 20),
         legend.position = c(0.9, 0.1),
         legend.title = element_blank(),
         legend.background = element_rect(colour = "black", linetype = "solid"))
@@ -125,15 +128,16 @@ RK2 <- RK1 +
   scale_linetype_manual(values = c("longdash", "solid", "solid"), guide = FALSE) +
   scale_shape_manual(name = "", labels = c("하위99%", "상위1%"), values = c(17, 24))
 RK3 <- RK2 + 
-  theme_bw() + theme_kr +
+  theme_bw() + 
+#  theme_kr +
   scale_x_continuous(name = "연도", breaks = seq(1910, 2020, by = 10), labels = seq(1910, 2020, by = 10)) +
   scale_y_continuous(name = "평균 소득 (1913 = 100)", breaks = y3_at, labels = labels3_at, limits = c(0, 1),
                      sec.axis = sec_axis(name = "한계 소득세율(%)", trans = ~ z(., q = .), 
                                          breaks = (y4_at + 0.05 )/1.1, labels = labels4_at)) +
   labs(title = "한계 소득세율과 상위 1% 및 하위 99%의 소득 증가\n(자본이득 포함)") +
   annotate("text", x = 1925, y = 0.9, label = "한계 소득세율", 
-           family = "HCR Dotum LVT", size = 6) +
-  theme(plot.title = element_text(family = "KoPubWorldDotum Bold", hjust = 0.5, size = 20),
+           family = "", size = 6) +
+  theme(plot.title = element_text(family = "", hjust = 0.5, size = 20),
         legend.position = c(0.9, 0.1),
         legend.title = element_blank(),
         legend.background = element_rect(colour = "black", linetype = "solid"))
