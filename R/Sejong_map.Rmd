@@ -1,8 +1,8 @@
 ---
 title: "King Sejong National Referendum on the Map"
-author: "coop711"
+# author: "coop711"
 # date: '2017-10-23'
-date : "`r Sys.Date()`"
+# date : "`r Sys.Date()`"
 output: html_document
 ---
 

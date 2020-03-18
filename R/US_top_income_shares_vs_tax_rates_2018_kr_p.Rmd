@@ -25,7 +25,7 @@ load("US_top_income_shares_vs_tax_rates_2018.RData")
 # png(file = "../pics/US_Top_Income_Share_vs_MTR_300dpi_en.png", width = 1280, height = 720)
 #> 왼쪽, 오른쪽 수직 축의 축 눈금을 수평하게 놓을 수 있도록 공간 조정
 par(mar = c(5, 6, 4, 6) + 0.1,
-    family = "")
+    family = "HCR Dotum LVT")
 #> 점과 선을 함께 사용하여 소득 상위 1%의 점유율 표시.
 top_income_tax %>%
   plot(P99_100_z ~ Year, data = ., 
@@ -77,7 +77,8 @@ title(main = "상위 1% 소득점유율과 최고 한계세율", xlab = "연도"
 text(x = 1955, y = 95, labels = "최고 한계세율", cex = 1.2)
 text(x = 1960, y = 17, labels = "상위 1% 소득점유율", cex = 1.2)
 #> 외부 그림 파일로 저장.
-dev.copy(png, file ="../pics/US_Top_Income_Share_vs_MTR_kr.png", width = 960, height = 540)
+# dev.copy(png, file ="../pics/US_Top_Income_Share_vs_MTR_kr.png", width = 960, height = 540)
+dev.copy(png, file ="../pics/US_Top_Income_Share_vs_MTR_kr_wide.png", width = 960, height = 270)
 dev.off()
 ``` 
 
