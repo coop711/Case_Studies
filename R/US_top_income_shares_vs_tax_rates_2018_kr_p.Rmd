@@ -30,6 +30,8 @@ par(mar = c(5, 6, 4, 6) + 0.1,
 top_income_tax %>%
   plot(P99_100_z ~ Year, data = ., 
        type = "b", pch = 17, 
+       cex = 1.2, 
+       lwd = 3,
        axes = FALSE, ann = FALSE, 
        xlim = c(1910, 2020), ylim = c(0, 1))
 #> 점유율 도표를 박스 안에
@@ -55,7 +57,10 @@ mtext("상위 1% 소득점유율(%)", side = 2, line = 3)
 #> 범위를 0에서 1사이로 변환한 한계소득세율을 도표에 추가.
 top_income_tax %>%
   lines(Marginal_z ~ Year, data = ., 
-        type = "l", lty = 2, lwd = 2, col = "red", 
+        type = "l", 
+        lty = 1, 
+        lwd = 5, 
+        col = "red", 
         xlim = c(1910, 2020), ylim = c(0, 1))
 #> 오른편 수직축에 한계소득세율의 눈금을 표시하기 위하여 역시 선형변환 함수를 이용하고 실제 표시하는 눈금은 한계소득세율의 실제값 사용.
 y4_at <- top_income_tax$Marginal %>%
@@ -74,11 +79,11 @@ mtext("최고 한계세율(%)", side = 4, line = 3)
 #> 메인 타이틀 작성
 title(main = "상위 1% 소득점유율과 최고 한계세율", xlab = "연도", cex.main = 1.8)
 #> 어느 선이 어느 변수인지 텍스트로 표시
-text(x = 1955, y = 95, labels = "최고 한계세율", cex = 1.2)
-text(x = 1960, y = 17, labels = "상위 1% 소득점유율", cex = 1.2)
+text(x = 1953, y = 0.9, labels = "최고 한계세율", cex = 1.2)
+text(x = 1964, y = 0.2, labels = "상위 1% 소득점유율", cex = 1.2)
 #> 외부 그림 파일로 저장.
 # dev.copy(png, file ="../pics/US_Top_Income_Share_vs_MTR_kr.png", width = 960, height = 540)
-dev.copy(png, file ="../pics/US_Top_Income_Share_vs_MTR_kr_wide.png", width = 960, height = 270)
+dev.copy(png, file ="../pics/US_Top_Income_Share_vs_MTR_kr_wide.png", width = 960, height = 540)
 dev.off()
 ``` 
 
@@ -88,9 +93,11 @@ dev.off()
 # png(file = "../pics/US_Top_Income_Share_vs_MTR_72dpi_en.png", width = 864, height = 486)
 # png(file = "../pics/US_Top_Income_Share_vs_MTR_300dpi_en.png", width = 1280, height = 720)
 par(mar = c(5, 6, 4, 6) + 0.1,
-    family = "")
+    family = "HCR Dotum LVT")
 plot(P99_100_z ~ Year, data = top_income_tax, 
      type = "b", pch = 17, 
+     cex = 1.2, 
+     lwd = 3,
      axes = FALSE, ann = FALSE, 
      xlim = c(1910, 2020), ylim = c(0, 1))
 box()
@@ -103,7 +110,10 @@ mtext("상위 1% 소득점유율(%)", side = 2, line = 3)
 #> 변환된 한계소득세율을 뒤집는다.
 top_income_tax$M_inv <- 1 - top_income_tax$Marginal_z
 lines(M_inv ~ Year, data = top_income_tax, 
-      type = "l", lty = 2, lwd = 2, col = "red", 
+      type = "l", 
+      lty = 1, 
+      lwd = 5, 
+      col = "red", 
       xlim = c(1910, 2020), ylim = c(0, 1))
 y4_at <- c(0, z(top_income_tax$Marginal, seq(20, 80, by = 20)), 1)
 labels4_at <- format(c(min(top_income_tax$Marginal), seq(20, 80, by = 20), max(top_income_tax$Marginal)),
@@ -111,8 +121,8 @@ labels4_at <- format(c(min(top_income_tax$Marginal), seq(20, 80, by = 20), max(t
 axis(side = 4, at = y4_at, labels = rev(labels4_at), las = 1)
 mtext("최고 한계세율(%)", side = 4, line = 3)
 title(main = "상위 1% 소득점유율과 최고 한계세율", xlab = "연도", cex.main = 1.8)
-text(x = 1955, y = 95, labels = "최고 한계세율", cex = 1.2)
-text(x = 1960, y = 17, labels = "상위 1% 소득점유율", cex = 1.2)
+text(x = 1973, y = 0.35, labels = "최고 한계세율", cex = 1.2)
+text(x = 1998, y = 0.17, labels = "상위 1% 소득점유율", cex = 1.2)
 dev.copy(png, file ="../pics/US_Top_Income_Share_vs_inverse_MTR_kr.png", width = 960, height = 540)
 dev.off()
 ``` 
@@ -123,7 +133,7 @@ dev.off()
 # png(file = "../pics/US_Top_Income_Growth_vs_MTR_72dpi_en.png", width = 864, height = 486)
 # png(file = "../pics/US_Top_Income_Growth_vs_MTR_300dpi_en.png", width = 1280, height = 720)
 par(mar = c(5, 6, 4, 6) + 0.1,
-    family = "")
+    family = "HCR Dotum LVT")
 plot(Rate_99_z ~ Year, data = top_income_tax, type = "b", pch = 24, col = "black", bg = "black", axes = FALSE, ann = FALSE, xlim = c(1910, 2020), ylim = c(0, 1))
 lines(Rate_1_z ~ Year, data = top_income_tax, type = "b", pch = 24, col = "black", bg = "white")
 box()
@@ -158,7 +168,7 @@ dev.off()
 # png(file = "../pics/US_Income_Growth_vs_MTR_72dpi_K.png", width = 864, height = 486)
 # png(file = "../pics/US_Income_Growth_vs_MTR_300dpi_K.png", width = 1280, height = 720)
 par(mar = c(5, 6, 4, 6) + 0.1,
-    family = "")
+    family = "HCR Dotum LVT")
 plot(Rate_99_K_z ~ Year, data = top_income_tax, type = "b", pch = 24, col = "black", bg = "black", axes = FALSE, ann = FALSE, xlim = c(1910, 2020), ylim = c(0, 1))
 lines(Rate_1_K_z ~ Year, data = top_income_tax, type = "b", pch = 24, col = "black", bg = "white")
 box()
