@@ -15,16 +15,22 @@ output: html_document
 library(xlsx)
 library(knitr)
 library(magrittr)
-doorae0924_rest <- read.xlsx("../data/Data0924.xlsx", 
-                             sheetIndex = 1, 
-                             colIndex = 2:54, endRow = 98, 
-                             stringsAsFactors = TRUE, 
-                             encoding = "UTF-8")
-doorae0924_name <- read.xlsx("../data/Data0924.xlsx", 
-                             sheetIndex = 1, 
-                             colIndex = 1, endRow = 98, 
-                             stringsAsFactors = FALSE, 
-                             encoding = "UTF-8")
+library(readxl)
+# library(xlsx)
+library(knitr)
+doorae0924_rest <- read_excel("../data/Data0924.xlsx", sheet = 1, range = "B1:BB98")
+doorae0924_name <- read_excel("../data/Data0924.xlsx", sheet = 1, range = "A1:A98")
+doorae0924 <- data.frame(doorae0924_name, doorae0924_rest)
+# doorae0924_rest <- read.xlsx("../data/Data0924.xlsx", 
+#                              sheetIndex = 1, 
+#                              colIndex = 2:54, endRow = 98, 
+#                              stringsAsFactors = TRUE, 
+#                              encoding = "UTF-8")
+# doorae0924_name <- read.xlsx("../data/Data0924.xlsx", 
+#                              sheetIndex = 1, 
+#                              colIndex = 1, endRow = 98, 
+#                              stringsAsFactors = FALSE, 
+#                              encoding = "UTF-8")
 # doorae0924 <- doorae0924_name %>%
 #   data.frame(doorae0924_rest)
 # doorae0924 <- doorae0924_rest %>%
