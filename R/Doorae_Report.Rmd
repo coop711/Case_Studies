@@ -282,7 +282,9 @@ mosaic_gg(t(status.vs.business_item),
 ### 요약표
 
 ```{r, echo=FALSE, results='markup'}
-tapply(doorae$"업력", doorae$"공동체상태", summary)
+tapply(doorae$"업력", 
+       INDEX = doorae$"공동체상태", 
+       FUN = summary)
 ```
 
 ### Box Plot
@@ -304,10 +306,14 @@ box.1 <- box.0 +
   theme_bw(base_family = "KoPubWorldDotum Medium") 
 #  theme.kr.HCR
 # box.1
-box.2 <- box.1 + 
-  ggtitle("공동체상태와 업력") + 
-  xlab("공동체상태") + 
-  ylab("업력(년)") 
+# box.2 <- box.1 + 
+#   ggtitle("공동체상태와 업력") + 
+#   xlab("공동체상태") + 
+#   ylab("업력(년)") 
+box.2 <- box.1 +
+  labs(title = "공동체상태와 업력",
+       x = "공동체상태",
+       y = "업력(년)")
 # box.2
 box.3 <- box.2 + 
   scale_x_discrete(labels = c("창업준비", "경영개선")) 
@@ -317,7 +323,7 @@ box.4 <- box.3 +
            x = c(0.8, 1.65), 
            y = c(11.7, 12.4), 
            label = c("예그리나", "아름다운인제관광"), 
-           size = 3.5, 
+           size = 3.5,
            family = "KoPubWorldDotum Medium")
 box.4
 ```
@@ -513,7 +519,9 @@ d.8 <- d.7 +
         legend.justification = c(1, 0.5))
 d.8
 d.9 <- d.8 + 
-  ggtitle("공동체상태별 업력") 
+  ggtitle("공동체상태별 업력") +
+  theme(plot.title = element_text(hjust = 0.5, 
+                                  size = 20))
 d.9
 ```
 
