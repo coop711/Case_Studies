@@ -45,8 +45,7 @@ doorae %>%
 ## 변수별 기초통계 및 요약
 
 ```{r echo=FALSE}
-options(width=132)
-options(digits=3)
+options(width = 132, digits = 3)
 ## cols.no.summary.names <-c("설립일", "사업자등록", "업태", "종목", "소재지", "사업명", "아이디어", "대표상품") 
 ## cols.no.summary <- which(names(doorae) %in% # cols.no.summary.names)
 doorae %>%
@@ -81,8 +80,7 @@ doorae %$%
   prop.table(margin = 1) %>%
   `*`(100) %>%
   cbind("계" = rowSums(.)) %>%
-  format(digits = 3, nsmall = 1) %>%
-#  round(digits = 1) %>%
+  round(digits = 1) %>%
   kable(caption = "ㅇ공동체상태와 조직형태(%, 계)", 
         align = c("c", "r", "r", "r"))
 doorae %$%
@@ -103,7 +101,7 @@ doorae %$%
 * 공동체상태와 조직형태
     * 경영개선 상태에서 법인격을 갖춘 공동체사업의 비율이 창업준비 상태에서 법인격을 갖춘 공동체사업의 비율보다 압도적으로 많다는 점에 유의.
 
-```{r, echo = FALSE, fig.width = 6, fig.height = 4.2}
+```{r, echo = FALSE, fig.width = 6, fig.height = 4.2, results = 'hide'}
 #> 모자이크 플롯에 구현될 행(조직형태)과 열(공동체상태)의 구조에 맞추어 table()의 구성 결정 
 tbl <- doorae %$%
   table(.$"조직형태", .$"공동체상태" , 
@@ -112,41 +110,21 @@ tbl <- doorae %$%
 #   table(.$"공동체상태", .$"조직형태", 
 #         dnn = c("공동체상태", "조직형태")) %>%
 #   t 
-#> 막대의 중간 위치 좌표 잡는 사용자 함수 설정
-pos <- function(x){
-    cumsum(x) - x / 2
-}
-#> 깔끔한 데이터 프레임 전환
-tbl_df <- tbl %>%    
+tbl_df <- tbl %>%    #> (깔끔한) 데이터 프레임으로 전환.
   as.data.frame
-#> p 행열 계산에서 tbl_df를 입력할 것에 대비하여 코드 수정하고,
-#> (깔끔한) 데이터 프레임으로 전환.
-tbl_p_df <- tbl_df %>%
+N <- length(levels(tbl_df[, 1])) #> fill 로 표현할 factor의 level 수효
+tbl_p_df <- tbl %>%   #> 각 조합의 비율 계산 
+  prop.table %>%
+  as.data.frame
+tbl_p_m <- tbl_df %>%  #> x 축에 표시할 factor 비율의 주변 합 계산
   `[`(, 3) %>%
-  proportions %>%
-  data.frame(tbl_df[1:2], "Prop" = .)
-#> fill 로 표현할 factor의 level 수효
-N <- length(levels(tbl_df[, 1])) 
-# tbl_p_df <- tbl %>%   #> 각 조합의 비율 계산 
-#   prop.table %>%
-#   as.data.frame
-#> x 축에 표시할 factor 비율의 주변 합 계산 (아래 계산에서만 필요함)
-# tbl_p_m <- tbl_df %>%  
-#   `[`(, 3) %>%
-#   tapply(tbl_df[, 2], sum) %>%
-#   prop.table
-#> mosaic plot의 폭 계산
-tbl_p_df$width <- tapply(tbl_p_df[, 3], tbl_p_df[, 2], sum) %>% 
-    rep(each = N)
-# tbl_p_df$width <- tbl_p_m[match(tbl_p_df[, 2], names(tbl_p_m))] (코드 일관성 유지)
-#> 막대의 높이 벡터 계산 (코드 일관성 유지)
-tbl_p_df$height <- unlist(tapply(tbl_p_df[, 3], 
-                                   tbl_p_df[, 2], 
-                                   proportions))
-# tbl_p_df$height <- tbl %>%       
-#   prop.table(margin = 2) %>%
-#   as.data.frame %>%
-#  `[`(, 3)
+  tapply(tbl_df[, 2], sum) %>%
+  prop.table
+tbl_p_df$width <- tbl_p_m[match(tbl_p_df[, 2], names(tbl_p_m))] #> tbl_p_df 에 폭 벡터 추가
+tbl_p_df$height <- tbl %>%       #> tbl_p_df 에 높이 벡터 추가
+  prop.table(margin = 2) %>%
+  as.data.frame %>%
+  `[`(, 3)
 #> 추가 정보로 표시할 라벨의 좌표 계산
 tbl_p_df$label_height <- unlist(tapply(tbl_p_df$height, 
                                        tbl_p_df[, 2], 
@@ -155,33 +133,10 @@ tbl_p_df$label_height <- unlist(tapply(tbl_p_df$height,
 tbl_p_df$y_breaks <- unlist(tapply(tbl_p_df$height, 
                                    tbl_p_df[, 2], 
                                    cumsum))
+#> x 축에 표시할 눈금의 좌표 계산
+x_center <- cumsum(tbl_p_m) - tbl_p_m / 2
 #> x 축에 표시할 눈금의 좌표를 tbl_p_df  데이터 프레임에 벡터로 추가
-tbl_p_df$center <- tapply(tbl_p_df[, 3], tbl_p_df[, 2], sum) %>%
-    pos %>%
-    rep(each = N)
-# x_center <- cumsum(tbl_p_m) - tbl_p_m / 2
-# tbl_p_df$center <- x_center[match(tbl_p_df[, 2], names(x_center))]
-#> geom_bar  로 그리기
-m1 <- ggplot(data = tbl_p_df, 
-             aes(x = center, y = height, width = width)) + 
-  geom_bar(aes(fill = tbl_df[, 1]), 
-           stat = "identity", 
-           col = "white", 
-           size = 1, 
-           position = position_stack(reverse = TRUE)) 
-m2 <- m1 + 
-  theme_bw()
-m3 <- m2 + 
-  geom_text(aes(x = center, y = 1.05), 
-            label = tbl_p_df[, 2], 
-            family = "KoPubWorldDotum Medium")
-m4 <- m3 + 
-  geom_text(aes(x = center, y = label_height), 
-            label = format(ifelse(tbl_df[, 3] == 0, "", tbl_df[, 3]), 
-                           big.mark = ","), 
-            position = position_identity())
-##########
-tbl_p_m <- tapply(tbl_p_df[, 3], tbl_p_df[, 2], sum)
+tbl_p_df$center <- x_center[match(tbl_p_df[, 2], names(x_center))]
 x_breaks <- c(0, ifelse(cumsum(tbl_p_m) < 0.1, 0.0, cumsum(tbl_p_m)))
 x_label <- format(x_breaks * 100, 
                   digits = 3, 
@@ -190,8 +145,22 @@ y_breaks <- c(0, tbl_p_df$y_breaks)
 y_label <- format(y_breaks * 100,
                   digits = 2,
                   nsmall = 1)
-##########
-m5 <- m4 + 
+#> geom_bar  로 그리기
+ggplot(data = tbl_p_df, 
+       aes(x = center, y = height, width = width)) + 
+  geom_bar(aes(fill = tbl_df[, 1]), 
+           stat = "identity", 
+           col = "white", 
+           size = 1, 
+           position = position_stack(reverse = TRUE)) + 
+  theme_bw() + 
+  geom_text(aes(x = center, y = 1.05), 
+            label = tbl_p_df[, 2], 
+            family = "KoPubWorldDotum Medium") + 
+  geom_text(aes(x = center, y = label_height), 
+            label = format(ifelse(tbl_df[, 3] == 0, "", tbl_df[, 3]), 
+                           big.mark = ","), 
+            position = position_identity()) +
   scale_x_continuous(name = "공동체상태", 
                      breaks = x_breaks, 
                      label = x_label) + 
@@ -199,25 +168,27 @@ m5 <- m4 +
                      breaks = y_breaks,
                      label = y_label) +
   scale_fill_brewer(name = "조직형태") +
-  ggtitle("공동체상태와 조직형태")
-m6 <- m5 + 
-  theme(plot.title = element_text(family = "KoPubWorldDotum Medium",
-                                  size = 18, hjust = 0.5),
+  ggtitle("공동체상태와 조직형태") + 
+  theme(plot.title = element_text(hjust = 0.5, 
+                                  size = 18, 
+                                  family = "KoPubWorldDotum Bold"),
         axis.title = element_text(family = "KoPubWorldDotum Medium"),
         legend.text = element_text(family = "KoPubWorldDotum Medium"),
         legend.title = element_text(family = "KoPubWorldDotum Medium"))
-m6
 ```
 
-```{r, echo = FALSE,, fig.width = 6, fig.height = 4.2}
-source("./mosaic_gg.R")
+
+```{r, echo = FALSE, fig.width = 6, fig.height = 4.2, fig.show = 'hide'}
+source("./mosaic_gg_new.R")
 tbl %>%
-  mosaic_gg(base_family = "KoPubWorldDotum Medium",
-            ggtitle = "공동체상태와 조직형태",
-            xlab = "공동체상태",
-            ylab = "조직형태", 
-            fill_name = "조직형태") +
-  scale_fill_brewer(name = "조직형태", type = "qual")
+  mosaic_gg +
+  theme_bw(base_family = "KoPubWorldDotum Medium") +
+  labs(x = "공동체상태", y = "조직형태") +
+  scale_fill_brewer(name = "조직형태") +
+  ggtitle("공동체상태와 조직형태") +
+  theme(plot.title = element_text(hjust = 0.5, 
+                                  size = 18, 
+                                  family = "KoPubWorldDotum Bold")) 
 ```
 
 * 조직형태와 공동체상태
@@ -227,12 +198,14 @@ tbl %>%
 doorae %$%
   table(.$"공동체상태", .$"조직형태", 
         dnn = c("공동체상태", "조직형태")) %>%
-  mosaic_gg(base_family = "KoPubWorldDotum Medium",
-            ggtitle = "조직형태와 공동체상태",
-            xlab = "조직형태", 
-            ylab = "공동체상태",
-            fill_name = "공동체상태") +
-  scale_fill_brewer(name = "공동체상태", type = "div")
+  mosaic_gg +
+  theme_bw(base_family = "KoPubWorldDotum Medium") +
+  labs(x = "조직형태", y = "공동체상태") +
+  scale_fill_brewer(name = "공동체상태", type = "div") +
+  ggtitle("조직형태와 공동체상태") +
+  theme(plot.title = element_text(hjust = 0.5, 
+                                  size = 18, 
+                                  family = "KoPubWorldDotum Bold"))
 ```
 
 <P style = "page-break-before:always">
@@ -383,14 +356,18 @@ doorae %>%
 
 ```{r, echo=FALSE, fig.width = 6, fig.height = 4.5}
 doorae %$%
-  table(.$"공동체상태", .$"법인유형", dnn = c("공동체상태", "조직유형")) %>%
+  table(.$"공동체상태", .$"법인유형", 
+        dnn = c("공동체상태", "조직유형")) %>%
   t %>%
-  mosaic_gg(base_family = "KoPubWorldDotum Medium",
-            ggtitle = "공동체상태와 조직유형",
-            xlab = "공동체상태", 
-            ylab = "조직유형",
-            fill_name = "조직유형") +
-  scale_fill_brewer(name = "조직유형", type = "qual")
+  mosaic_gg +
+  theme_bw(base_family = "KoPubWorldDotum Medium") +
+  labs(x = "공동체상태", y = "조직유형") +
+  scale_fill_brewer(name = "조직유형", type = "qual") +
+  ggtitle("공동체상태와 조직유형") +
+  theme(plot.title = element_text(hjust = 0.5, 
+                                  size = 18, 
+                                  family = "KoPubWorldDotum Bold"))
+  
 ```
 
 <P style = "page-break-before:always">
@@ -432,12 +409,14 @@ doorae %$%
   table(.$"공동체상태", .$"사업아이템", 
         dnn = c("공동체상태", "사업아이템")) %>%
   t %>%
-  mosaic_gg(base_family = "KoPubWorldDotum Medium",
-            ggtitle = "공동체상태와 사업아이템",
-            xlab = "공동체상태", 
-            ylab = "사업아이템",
-            fill_name = "사업아이템") +
-  scale_fill_viridis_d(name = "사업아이템")
+  mosaic_gg +
+  theme_bw(base_family = "KoPubWorldDotum Medium") +
+  labs(y = "사업아이템", x = "공동체상태") +
+  scale_fill_viridis_d(name = "사업아이템") +
+  ggtitle("조직형태와 공동체상태와 사업아이템") +
+  theme(plot.title = element_text(hjust = 0.5, 
+                                  size = 18, 
+                                  family = "KoPubWorldDotum Bold"))
 ```
 
 <P style = "page-break-before:always">
@@ -464,35 +443,24 @@ doorae %$%
     * '아름다운인제관광'과 '예그리나'가 예외적으로 오랜 업력
 
 ```{r, echo=FALSE, fig.width=5, fig.height=5}
-box_0 <- ggplot(data = doorae_ys, 
-                mapping = aes(x = status, 
-                              y = years))
-# box_0
-box_1 <- box_0 + 
+ggplot(data = doorae_ys, 
+       mapping = aes(x = status, y = years)) + 
   geom_boxplot() + 
-  theme_bw()
-# theme_kr_HCR
-# box_1
-box_2 <- box_1 + 
+  theme_bw() + 
   ggtitle("공동체상태와 업력") + 
   xlab("공동체상태") + 
   ylab("업력(년)") +
   theme(plot.title = element_text(family = "KoPubWorldDotum Medium"),
         axis.text.x = element_text(family = "KoPubWorldDotum Medium"),
         axis.title.x = element_text(family = "KoPubWorldDotum Medium"),
-        axis.title.y = element_text(family = "KoPubWorldDotum Medium"))
-# box_2
-box_3 <- box_2 + 
-  scale_x_discrete(labels = c("창업준비", "경영개선")) 
-# box_3
-box_4 <- box_3 + 
+        axis.title.y = element_text(family = "KoPubWorldDotum Medium")) + 
+  scale_x_discrete(labels = c("창업준비", "경영개선")) + 
   annotate("text", 
            x = c(0.8, 1.65), 
            y = c(11.7, 12.4), 
            label = c("예그리나", "아름다운인제관광"), 
            size = 3.5, 
            family = "KoPubWorldDotum Medium")
-box_4
 ```
 
 <P style = "page-break-before:always">
@@ -502,21 +470,12 @@ box_4
 * 분위수 비교 뿐 아니라 평균 업력 비교도 가능함
 
 ```{r echo=FALSE, fig.width=4.5, fig.height=4.5}
-ecdf_1 <- ggplot(data = doorae_ys, 
-                 mapping = aes(x = years, colour = status)) 
-# ecdf_1
-ecdf_2 <- ecdf_1 + 
-  stat_ecdf()
-# ecdf_2
-ecdf_3 <- ecdf_2 + 
-  theme_bw()
-# theme_kr_HCR
-# ecdf_3
-ecdf_4 <- ecdf_3 + 
-  theme(panel.background=element_rect("white"),
-        panel.border=element_rect(colour="black", fill = NA))
-# ecdf_4
-ecdf_5 <- ecdf_3 + 
+ggplot(data = doorae_ys, 
+       mapping = aes(x = years, colour = status)) + 
+  stat_ecdf() + 
+  theme_bw() + 
+  theme(panel.background = element_rect("white"), 
+        panel.border = element_rect(colour = "black", fill = NA)) + 
   ggtitle("공동체상태와 업력") +
   xlab("업력(년)") +
   ylab("분위") +
@@ -524,21 +483,11 @@ ecdf_5 <- ecdf_3 +
         axis.title.x = element_text(family = "KoPubWorldDotum Medium"),
         axis.title.y = element_text(family = "KoPubWorldDotum Medium"),
         legend.title = element_text(family = "KoPubWorldDotum Medium"),
-        legend.text = element_text(family = "KoPubWorldDotum Medium"),
-        legend.box.background = element_rect(fill = "red", 
-                                             colour = "black"))
-# ecdf_5
-ecdf_8 <- ecdf_5 + 
-  labs(colour = "공동체상태") 
-# ecdf_8
-ecdf_9 <- ecdf_8 + 
+        legend.text = element_text(family = "KoPubWorldDotum Medium")) + 
+  labs(colour = "공동체상태") + 
   scale_colour_brewer(palette = "Set2", 
-                      labels = c("창업준비", "경영개선")) 
-# ecdf_9
-ecdf_10 <- ecdf_9 + 
-  theme(legend.position = c(0.78, 0.5))
-# ecdf_10
-ecdf_11 <- ecdf_10 + 
+                      labels = c("창업준비", "경영개선")) + 
+  theme(legend.position = c(0.8, 0.5)) + 
   annotate("segment", 
            x = 1.4, 
            xend = 4.5, 
@@ -546,28 +495,17 @@ ecdf_11 <- ecdf_10 +
            yend = 0.5, 
            colour = "blue", 
            arrow = arrow(ends = "both", 
-                         length = unit(0.2, "cm")))
-# ecdf_11
-ecdf_12 <- ecdf_11 + 
+                         length = unit(0.2, "cm"))) + 
   scale_x_continuous(breaks = c(0, 1.3, 4.5, 12.4), 
-                     labels = c(0, 1.3, 4.5, 12.4))
-# ecdf_12
-ecdf_13 <- ecdf_12 + 
-  annotate("text", 
-           x = 2.8, 
-           y = 0.54, 
+                     labels = c(0, 1.3, 4.5, 12.4)) + 
+  annotate("text", x = 2.8, y = 0.54, 
            label = "중위수의 차이", 
            size = 3, 
-           family = "KoPubWorldDotum Medium")
-# ecdf_13
-ecdf_14 <- ecdf_13 + 
-  annotate("text", 
-           x = 2.8, 
-           y = 0.46, 
+           family = "KoPubWorldDotum Medium") + 
+  annotate("text", x = 2.8, y = 0.46, 
            label = "약 3년", 
            size = 3, 
            family = "KoPubWorldDotum Medium")
-ecdf_14
 ```
 
 ```{r, echo = FALSE}
@@ -590,72 +528,38 @@ years_df <- data.frame(years = years_x,
 ```
 
 
-```{r echo=FALSE, fig.width=4.5, fig.height=4.5}
-poly_1 <- ggplot(data = years_df, 
-                 mapping = aes(x = years, 
-                               y = ecdf_years)) + 
-  geom_path()
-# poly_1
-poly_2 <- poly_1 + 
-  geom_polygon(alpha = 0.3, 
-               fill = "red") 
-# poly_2
-poly_3 <- poly_2 + 
-  theme_bw() 
-# poly_3
-poly_4 <- poly_3 + 
+```{r echo = FALSE, fig.width = 4.5, fig.height = 4.5}
+ggplot(data = years_df, 
+       mapping = aes(x = years, y = ecdf_years)) + 
+  geom_path() + 
+  geom_polygon(alpha = 0.3, fill = "red") + 
+  theme_bw() + 
   theme(panel.background = element_rect("white"), 
-        panel.border = element_rect(colour = "black", fill = NA))
-# poly_4
-poly_5 <- poly_4 + 
+        panel.border = element_rect(colour = "black", fill = NA)) +
   ggtitle("공동체상태와 업력") +
-  theme(plot.title = element_text(family = "KoPubWorldDotum Medium"))
-# poly_5
-poly_6 <- poly_5 + 
+  theme(plot.title = element_text(family = "KoPubWorldDotum Medium")) + 
   xlab("업력(년)") +
-  theme(axis.title.x = element_text(family = "KoPubWorldDotum Medium"))
-# poly_6
-poly_7 <- poly_6 + 
+  theme(axis.title.x = element_text(family = "KoPubWorldDotum Medium")) + 
   ylab("분위") +
-  theme(axis.title.y = element_text(family = "KoPubWorldDotum Medium"))
-# poly_7
-# poly_8 <- poly_7 + 
-#   labs(colour = "공동체상태") 
-# poly_8
-# poly_9 <- poly_8 + 
-#   scale_colour_discrete(labels = c("창업준비", "경영개선"))
-# poly_9
-# poly_10 <- poly_9 + 
-#   theme(legend.position = c(0.8, 0.5))
-# poly_10
-poly_11 <- poly_7 + 
+  theme(axis.title.y = element_text(family = "KoPubWorldDotum Medium")) + 
+  labs(colour = "공동체상태") + 
+  scale_colour_discrete(labels = c("창업준비", "경영개선")) + 
+  theme(legend.position = c(0.8, 0.5)) + 
   scale_x_continuous(breaks = c(0, 1.3, 4.5, 12.4), 
-                     labels = c(0, 1.3, 4.5, 12.4))
-# poly_11
-poly_12 <- poly_11 + 
-  annotate("text", 
-           x = 4.4, 
-           y = 0.78, 
-           label="두 도표 간 면적은\n평균의 차이,\n약 3년", 
+                     labels = c(0, 1.3, 4.5, 12.4)) + 
+  annotate("text", x = 4.4, y = 0.78, 
+           label = "두 도표 간 면적은\n평균의 차이,\n약 3년", 
            size = 4, 
            angle = 15, 
-           family = "KoPubWorldDotum Medium")
-# poly_12
-poly_13 <- poly_12 + 
-  annotate("text", 
-           x = 6, 
-           y = 0.6, 
+           family = "KoPubWorldDotum Medium") + 
+  annotate("text", x = 6, y = 0.6, 
            label = "경영개선", 
            size = 4, 
-           family = "KoPubWorldDotum Medium")
-poly_14 <- poly_13 + 
-  annotate("text", 
-           x = 1, 
-           y = 0.9, 
+           family = "KoPubWorldDotum Medium") + 
+  annotate("text", x = 1, y = 0.9, 
            label = "창업준비", 
            size = 4, 
            family = "KoPubWorldDotum Medium")
-poly_14
 ```
 
 <P style = "page-break-before:always">
@@ -668,45 +572,27 @@ poly_14
 ```{r echo=FALSE, fig.width=6, fig.height=9}
 nameorder <- doorae$"조직명"[order(doorae$"공동체상태", doorae$"업력")]
 doorae$name <- factor(doorae$"조직명", levels = nameorder)
-d_1 <- ggplot(data = doorae, 
-              mapping = aes(x = 업력, y = name)) + 
+ggplot(data = doorae, 
+       mapping = aes(x = 업력, y = name)) + 
   geom_segment(aes(yend = name), 
                xend = 0, 
-               colour = "grey50")
-# d_1
-d_2 <- d_1 + 
-  geom_point(size = 3, 
-             aes(colour = 공동체상태)) 
-# d_2
-d_3 <- d_2 + 
+               colour = "grey50") + 
+  geom_point(aes(colour = 공동체상태), 
+             size = 3)  + 
   scale_colour_brewer(palette = "Set1", 
-                      limits = c("경영개선", "창업준비"))
-# d_3
-d_4 <- d_3 + 
-  theme_bw()
-# d_4
-d_5 <- d_4
-# d_5
-d_6 <- d_5 + 
-  ylab("조직명")  
-# d_6
-d_7 <- d_6 + 
-  theme(axis.text.y = element_text(size = 6)) 
-# d_7
-d_8 <- d_7 + 
+                      limits = c("경영개선", "창업준비")) + 
+  theme_bw() + 
+  ylab("조직명") + 
+  theme(axis.text.y = element_text(size = 6)) + 
   theme(panel.grid.major.y = element_blank(), 
         legend.position = c(0.9, 0.55), 
-        legend.justification = c(1, 0.5),
-        legend.background = element_rect(colour = "black"))
-# d_8
-d_9 <- d_8 + 
+        legend.justification = c(1, 0.5))+ 
   ggtitle("공동체상태별 업력") +
   theme(plot.title = element_text(family = "KoPubWorldDotum Medium"),
         axis.title.x = element_text(family = "KoPubWorldDotum Medium"),
         axis.title.y = element_text(family = "KoPubWorldDotum Medium"),
         legend.title = element_text(family = "KoPubWorldDotum Medium"),
         legend.text = element_text(family = "KoPubWorldDotum Medium"))
-d_9
 ```
 
 <P style = "page-break-before:always">
