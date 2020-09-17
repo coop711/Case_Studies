@@ -179,7 +179,7 @@ ggplot(data = tbl_p_df,
 
 
 ```{r, echo = FALSE, fig.width = 6, fig.height = 4.2, fig.show = 'hide'}
-source("./mosaic_gg_new.R")
+source("./mosaic_gg.R")
 tbl %>%
   mosaic_gg +
   theme_bw(base_family = "KoPubWorldDotum Medium") +
