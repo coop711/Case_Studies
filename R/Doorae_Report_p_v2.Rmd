@@ -183,7 +183,7 @@ m6
 ```
 
 ```{r, echo = FALSE, fig.width = 6, fig.height = 4.2}
-source("./mosaic_gg.R")
+source("./mosaic_gg_old_v2.R")
 tbl %>%
   mosaic_gg(base_family = "KoPubWorldDotum Medium",
             ggtitle = "공동체상태와 조직형태",
