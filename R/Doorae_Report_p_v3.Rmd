@@ -156,7 +156,7 @@ ggplot(data = tbl_p_df,
   theme_bw() + 
   geom_text(aes(x = center, y = 1.05), 
             label = tbl_p_df[, 2], 
-            family = "KoPubWorldDotum Medium") + 
+            family = "") + 
   geom_text(aes(x = center, y = label_height), 
             label = format(ifelse(tbl_df[, 3] == 0, "", tbl_df[, 3]), 
                            big.mark = ","), 
@@ -200,9 +200,9 @@ doorae %$%
         dnn = c("공동체상태", "조직형태")) %>%
   mosaic_gg +
   theme_bw(base_family = "KoPubWorldDotum Medium") +
-  labs(x = "조직형태", y = "공동체상태") +
+  labs(title = "조직형태와 공동체상태", x = "조직형태", y = "공동체상태") +
   scale_fill_brewer(name = "공동체상태", type = "div") +
-  ggtitle("조직형태와 공동체상태") +
+#  ggtitle("조직형태와 공동체상태") +
   theme(plot.title = element_text(hjust = 0.5, 
                                   size = 18, 
                                   family = "KoPubWorldDotum Bold"))

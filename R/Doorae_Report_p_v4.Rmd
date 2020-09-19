@@ -141,20 +141,20 @@ tbl_p_df$width <- tapply(tbl_p_df[, 3], tbl_p_df[, 2], sum) %>%
 # tbl_p_df$width <- tbl_p_m[match(tbl_p_df[, 2], names(tbl_p_m))] (코드 일관성 유지)
 #> 막대의 높이 벡터 계산 (코드 일관성 유지)
 tbl_p_df$height <- unlist(tapply(tbl_p_df[, 3], 
-                                   tbl_p_df[, 2], 
-                                   proportions))
+                                 INDEX = tbl_p_df[, 2], 
+                                 FUN = proportions))
 # tbl_p_df$height <- tbl %>%       
 #   prop.table(margin = 2) %>%
 #   as.data.frame %>%
 #  `[`(, 3)
 #> 추가 정보로 표시할 라벨의 좌표 계산
 tbl_p_df$label_height <- unlist(tapply(tbl_p_df$height, 
-                                       tbl_p_df[, 2], 
-                                       function(x) cumsum(x) - x / 2))
+                                       INDEX = tbl_p_df[, 2], 
+                                       FUN = pos))
 #> y축에 표시할 눈금의 좌표 계산
 tbl_p_df$y_breaks <- unlist(tapply(tbl_p_df$height, 
-                                   tbl_p_df[, 2], 
-                                   cumsum))
+                                   INDEX = tbl_p_df[, 2], 
+                                   FUN = cumsum))
 #> x 축에 표시할 눈금의 좌표를 tbl_p_df  데이터 프레임에 벡터로 추가
 tbl_p_df$center <- tapply(tbl_p_df[, 3], tbl_p_df[, 2], sum) %>%
     pos %>%
@@ -185,7 +185,7 @@ ggplot(data = tbl_p_df,
   theme_bw() + 
   geom_text(aes(x = center, y = 1.05), 
             label = tbl_p_df[, 2], 
-            family = "KoPubWorldDotum Medium") + 
+            family = "") + 
   geom_text(aes(x = center, y = label_height), 
             label = format(ifelse(tbl_df[, 3] == 0, "", tbl_df[, 3]), 
                            big.mark = ","), 

@@ -182,7 +182,7 @@ m6 <- m5 +
 m6
 ```
 
-```{r, echo = FALSE, fig.width = 6, fig.height = 4.2}
+```{r, echo = FALSE, fig.width = 6, fig.height = 4.2, message = FALSE}
 source("./mosaic_gg_old_v2.R")
 tbl %>%
   mosaic_gg(base_family = "KoPubWorldDotum Medium",
@@ -196,7 +196,7 @@ tbl %>%
 * 조직형태와 공동체상태
     * 이는 거꾸로 법인격을 갖춘 공동체사업체 중에 경영개선 상태에 들어간 비율이 압도적으로 많다는 것으로 이해할 수도 있음.
 
-```{r, echo = FALSE, fig.width = 6, fig.height = 4.2}
+```{r, echo = FALSE, fig.width = 6, fig.height = 4.2, message = FALSE}
 doorae %$%
   table(.$"공동체상태", .$"조직형태", 
         dnn = c("공동체상태", "조직형태")) %>%
@@ -354,7 +354,7 @@ doorae %>%
 
 ### 모자이크 플롯
 
-```{r, echo=FALSE, fig.width = 6, fig.height = 4.5}
+```{r, echo=FALSE, fig.width = 6, fig.height = 4.5, message = FALSE}
 doorae %$%
   table(.$"공동체상태", .$"법인유형", dnn = c("공동체상태", "조직유형")) %>%
   t %>%
@@ -400,7 +400,7 @@ doorae %$%
 
 ### 모자이크 플롯
 
-```{r, echo=FALSE, fig.width = 6, fig.height = 4.5}
+```{r, echo=FALSE, fig.width = 6, fig.height = 4.5, message = FALSE}
 doorae %$%
   table(.$"공동체상태", .$"사업아이템", 
         dnn = c("공동체상태", "사업아이템")) %>%
