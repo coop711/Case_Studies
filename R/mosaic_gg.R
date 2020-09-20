@@ -67,7 +67,6 @@ m5 <- m4 +
                      label = x_label) + 
   scale_y_continuous(breaks = y_breaks,
                      label = y_label) +
-  ggtitle(ggtitle) +
   theme(plot.margin = unit(c(1, 2, 1, 1), "lines"))
 return(m5)
 }

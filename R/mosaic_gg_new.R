@@ -11,18 +11,22 @@ N <- length(levels(tbl_df[, 1]))
   `[`(, 3) %>%
   proportions %>%
   data.frame(tbl_df[1:2], "Prop" = .)
-  tbl_p_df$width <- tapply(tbl_p_df[, 3], tbl_p_df[, 2], sum) %>% 
+  tbl_p_df$width <- tapply(tbl_p_df[, 3], 
+                           INDEX = tbl_p_df[, 2], 
+                           FUN = sum) %>% 
     rep(each = N)
   tbl_p_df$height <- unlist(tapply(tbl_p_df[, 3], 
-                                   tbl_p_df[, 2], 
-                                   proportions))
+                                   INDEX = tbl_p_df[, 2], 
+                                   FUN = proportions))
   tbl_p_df$label_height <- unlist(tapply(tbl_p_df$height, 
-                                         tbl_p_df[, 2], 
-                                         function(x) cumsum(x) - x / 2))
+                                         INDEX = tbl_p_df[, 2], 
+                                         FUN = pos))
   tbl_p_df$y_breaks <- unlist(tapply(tbl_p_df$height, 
-                                     tbl_p_df[, 2], 
-                                     cumsum))
-  tbl_p_df$center <- tapply(tbl_p_df[, 3], tbl_p_df[, 2], sum) %>%
+                                     INDEX = tbl_p_df[, 2], 
+                                     FUN = cumsum))
+  tbl_p_df$center <- tapply(tbl_p_df[, 3], 
+                            INDEX = tbl_p_df[, 2], 
+                            FUN = sum) %>%
     pos %>%
     rep(each = N)
 ########## 
