@@ -18,7 +18,8 @@ library(readxl)
 library(knitr)
 # doorae0924.rest <- read.xlsx("../data/Data0924.xlsx", 1, colIndex = 2:54, endRow = 98, stringsAsFactors = TRUE, encoding = "UTF-8")
 # doorae0924.name <- read.xlsx("../data/Data0924.xlsx", 1, colIndex = 1, endRow = 98, stringsAsFactors = FALSE, encoding = "UTF-8")
-doorae0924.rest <- read_excel("../data/Data0924.xlsx", sheet = 1, range = "B1:BB98")
+#> trim.ws = TRUE 의 효과는 read.xlsx 를 그대로 돌리는 것과 같은 효과
+doorae0924.rest <- read_excel("../data/Data0924.xlsx", sheet = 1, range = "B1:BB98", trim_ws = FALSE)
 doorae0924.name <- read_excel("../data/Data0924.xlsx", sheet = 1, range = "A1:A98")
 doorae0924 <- data.frame(doorae0924.name, doorae0924.rest)
 ```
@@ -32,7 +33,7 @@ doorae0924$"시도"
 * 전북이 두 개 나옴에 유의. 어떤 사연인가 하면,
 
 ```{r, data cleaning}
-(id.to.fix <- which(doorae0924$"시도"=="전북 "))
+(id.to.fix <- which(doorae0924$"시도" == "전북 "))
 doorae0924$"조직명"[id.to.fix]
 doorae0924$"시도"[id.to.fix] <- "전북"
 doorae0924$"시도"

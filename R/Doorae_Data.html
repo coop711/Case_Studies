@@ -11,11 +11,7 @@
 
 <meta name="author" content="coop711" />
 
-<<<<<<< HEAD
-<meta name="date" content="2020-09-14" />
-=======
-<meta name="date" content="2020-09-13" />
->>>>>>> 79760a25a2961d47e763780267a3ddb1386337e4
+<meta name="date" content="2020-09-20" />
 
 <title>Doorae_data</title>
 
@@ -369,11 +365,7 @@ summary {
 
 <h1 class="title toc-ignore">Doorae_data</h1>
 <h4 class="author">coop711</h4>
-<<<<<<< HEAD
-<h4 class="date">2020-09-14</h4>
-=======
-<h4 class="date">2020-09-13</h4>
->>>>>>> 79760a25a2961d47e763780267a3ddb1386337e4
+<h4 class="date">2020-09-20</h4>
 
 </div>
 
@@ -388,12 +380,12 @@ summary {
 </ul></li>
 </ul>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ── Attaching packages ────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
 <pre><code>## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
 ## ✓ tibble  3.0.3     ✓ dplyr   1.0.2
 ## ✓ tidyr   1.1.2     ✓ stringr 1.4.0
 ## ✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
-<pre><code>## ── Conflicts ────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Conflicts ───────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(readxl)
@@ -401,30 +393,32 @@ summary {
 library(knitr)
 # doorae0924.rest &lt;- read.xlsx(&quot;../data/Data0924.xlsx&quot;, 1, colIndex = 2:54, endRow = 98, stringsAsFactors = TRUE, encoding = &quot;UTF-8&quot;)
 # doorae0924.name &lt;- read.xlsx(&quot;../data/Data0924.xlsx&quot;, 1, colIndex = 1, endRow = 98, stringsAsFactors = FALSE, encoding = &quot;UTF-8&quot;)
-doorae0924.rest &lt;- read_excel(&quot;../data/Data0924.xlsx&quot;, sheet = 1, range = &quot;B1:BB98&quot;)
+#&gt; trim.ws = TRUE 의 효과는 read.xlsx 를 그대로 돌리는 것과 같은 효과
+doorae0924.rest &lt;- read_excel(&quot;../data/Data0924.xlsx&quot;, sheet = 1, range = &quot;B1:BB98&quot;, trim_ws = FALSE)
 doorae0924.name &lt;- read_excel(&quot;../data/Data0924.xlsx&quot;, sheet = 1, range = &quot;A1:A98&quot;)
 doorae0924 &lt;- data.frame(doorae0924.name, doorae0924.rest)</code></pre>
 </div>
 <div id="data-cleaning" class="section level3">
 <h3>Data cleaning</h3>
 <pre class="r"><code>doorae0924$&quot;시도&quot;</code></pre>
-<pre><code>##  [1] &quot;경기&quot; &quot;경기&quot; &quot;경기&quot; &quot;경기&quot; &quot;경기&quot; &quot;경기&quot; &quot;경기&quot; &quot;경기&quot; &quot;경기&quot; &quot;경기&quot;
-## [11] &quot;경기&quot; &quot;경기&quot; &quot;경기&quot; &quot;강원&quot; &quot;강원&quot; &quot;강원&quot; &quot;강원&quot; &quot;강원&quot; &quot;강원&quot; &quot;강원&quot;
-## [21] &quot;강원&quot; &quot;강원&quot; &quot;강원&quot; &quot;충북&quot; &quot;충북&quot; &quot;충북&quot; &quot;충북&quot; &quot;충북&quot; &quot;충북&quot; &quot;충북&quot;
-## [31] &quot;충북&quot; &quot;충남&quot; &quot;충남&quot; &quot;전북&quot; &quot;전북&quot; &quot;전북&quot; &quot;전북&quot; &quot;전북&quot; &quot;전북&quot; &quot;전북&quot;
-## [41] &quot;전북&quot; &quot;전북&quot; &quot;전북&quot; &quot;전북&quot; &quot;전북&quot; &quot;전북&quot; &quot;전북&quot; &quot;전북&quot; &quot;전북&quot; &quot;전북&quot;
-## [51] &quot;전북&quot; &quot;전남&quot; &quot;전남&quot; &quot;전남&quot; &quot;전남&quot; &quot;전남&quot; &quot;전남&quot; &quot;전남&quot; &quot;전남&quot; &quot;전남&quot;
-## [61] &quot;전남&quot; &quot;전남&quot; &quot;전남&quot; &quot;전남&quot; &quot;전남&quot; &quot;전남&quot; &quot;전남&quot; &quot;전남&quot; &quot;경북&quot; &quot;경북&quot;
-## [71] &quot;경북&quot; &quot;경북&quot; &quot;경북&quot; &quot;경북&quot; &quot;경북&quot; &quot;경북&quot; &quot;경북&quot; &quot;경북&quot; &quot;경북&quot; &quot;경북&quot;
-## [81] &quot;경북&quot; &quot;경북&quot; &quot;경북&quot; &quot;경북&quot; &quot;경북&quot; &quot;경북&quot; &quot;경남&quot; &quot;경남&quot; &quot;경남&quot; &quot;경남&quot;
-## [91] &quot;경남&quot; &quot;경남&quot; &quot;경남&quot; &quot;경남&quot; &quot;경남&quot; &quot;경남&quot; &quot;경남&quot;</code></pre>
+<pre><code>##  [1] &quot;경기&quot;  &quot;경기&quot;  &quot;경기&quot;  &quot;경기&quot;  &quot;경기&quot;  &quot;경기&quot;  &quot;경기&quot;  &quot;경기&quot;  &quot;경기&quot; 
+## [10] &quot;경기&quot;  &quot;경기&quot;  &quot;경기&quot;  &quot;경기&quot;  &quot;강원&quot;  &quot;강원&quot;  &quot;강원&quot;  &quot;강원&quot;  &quot;강원&quot; 
+## [19] &quot;강원&quot;  &quot;강원&quot;  &quot;강원&quot;  &quot;강원&quot;  &quot;강원&quot;  &quot;충북&quot;  &quot;충북&quot;  &quot;충북&quot;  &quot;충북&quot; 
+## [28] &quot;충북&quot;  &quot;충북&quot;  &quot;충북&quot;  &quot;충북&quot;  &quot;충남&quot;  &quot;충남&quot;  &quot;전북&quot;  &quot;전북&quot;  &quot;전북&quot; 
+## [37] &quot;전북&quot;  &quot;전북&quot;  &quot;전북&quot;  &quot;전북&quot;  &quot;전북&quot;  &quot;전북&quot;  &quot;전북&quot;  &quot;전북&quot;  &quot;전북&quot; 
+## [46] &quot;전북&quot;  &quot;전북&quot;  &quot;전북&quot;  &quot;전북&quot;  &quot;전북 &quot; &quot;전북 &quot; &quot;전남&quot;  &quot;전남&quot;  &quot;전남&quot; 
+## [55] &quot;전남&quot;  &quot;전남&quot;  &quot;전남&quot;  &quot;전남&quot;  &quot;전남&quot;  &quot;전남&quot;  &quot;전남&quot;  &quot;전남&quot;  &quot;전남&quot; 
+## [64] &quot;전남&quot;  &quot;전남&quot;  &quot;전남&quot;  &quot;전남&quot;  &quot;전남&quot;  &quot;경북&quot;  &quot;경북&quot;  &quot;경북&quot;  &quot;경북&quot; 
+## [73] &quot;경북&quot;  &quot;경북&quot;  &quot;경북&quot;  &quot;경북&quot;  &quot;경북&quot;  &quot;경북&quot;  &quot;경북&quot;  &quot;경북&quot;  &quot;경북&quot; 
+## [82] &quot;경북&quot;  &quot;경북&quot;  &quot;경북&quot;  &quot;경북&quot;  &quot;경북&quot;  &quot;경남&quot;  &quot;경남&quot;  &quot;경남&quot;  &quot;경남&quot; 
+## [91] &quot;경남&quot;  &quot;경남&quot;  &quot;경남&quot;  &quot;경남&quot;  &quot;경남&quot;  &quot;경남&quot;  &quot;경남&quot;</code></pre>
 <ul>
 <li>전북이 두 개 나옴에 유의. 어떤 사연인가 하면,</li>
 </ul>
-<pre class="r"><code>(id.to.fix &lt;- which(doorae0924$&quot;시도&quot;==&quot;전북 &quot;))</code></pre>
-<pre><code>## integer(0)</code></pre>
+<pre class="r"><code>(id.to.fix &lt;- which(doorae0924$&quot;시도&quot; == &quot;전북 &quot;))</code></pre>
+<pre><code>## [1] 50 51</code></pre>
 <pre class="r"><code>doorae0924$&quot;조직명&quot;[id.to.fix]</code></pre>
-<pre><code>## character(0)</code></pre>
+<pre><code>## [1] &quot;숲속나들이&quot;       &quot;구천동펜션협의회&quot;</code></pre>
 <pre class="r"><code>doorae0924$&quot;시도&quot;[id.to.fix] &lt;- &quot;전북&quot;
 doorae0924$&quot;시도&quot;</code></pre>
 <pre><code>##  [1] &quot;경기&quot; &quot;경기&quot; &quot;경기&quot; &quot;경기&quot; &quot;경기&quot; &quot;경기&quot; &quot;경기&quot; &quot;경기&quot; &quot;경기&quot; &quot;경기&quot;
