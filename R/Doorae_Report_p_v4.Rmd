@@ -123,7 +123,8 @@ tbl_df <- tbl %>%
 #> (깔끔한) 데이터 프레임으로 전환.
 tbl_p_df <- tbl_df %>%
   `[`(, 3) %>%
-  proportions %>%
+  prop.table %>%
+#  proportions %>%
   data.frame(tbl_df[1:2], "Prop" = .)
 #> fill 로 표현할 factor의 level 수효
 N <- length(levels(tbl_df[, 1])) 
