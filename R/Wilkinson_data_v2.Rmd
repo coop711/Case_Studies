@@ -13,7 +13,7 @@ Equality Trust에서 기부금을 받고 제공하는 두 종류의 자료 중 2
 library(magrittr)
 library(knitr)
 data_full <- "../data/international-inequality_GDP.csv" %>%
-  read.csv(stringsAsFactors = FALSE)
+  read.csv
 data_full %>% 
   names
 ```
@@ -22,12 +22,16 @@ data_full %>%
 `which()`를 이용하여 해당 인덱스를 찾고, 나라명을 추출한다.
 
 ```{r}
-country_na <- data_full %>% 
-  `[`(., "Index.of.health...social_problems") %>% 
+country_na <- data_full %>%
+  .$Index.of.health...social_problems %>%
   is.na %>% 
   which
+# country_na <- data_full %>%
+#   `[`(, "Index.of.health...social_problems") %>%
+#   is.na %>%
+#   which
 data_full %>% 
-  `[`(., , "Country") %>% 
+  .$Country %>% 
       `[`(country_na)
 ```
 
@@ -50,12 +54,17 @@ v_names_index <- data_full %>%
   `%in%`(v_names) %>%
   which 
 data_21 <- data_full %>%
-  `[`(., -c(11, 18), v_names_index)
-data_21 %>% names
+  `[`(-country_na, v_names_index)
+data_21 %>%
+  names
 names(data_21)[2:3] <- c("Income_inequality", "Index_HS")
-data_21 %>% names %>% `[`(2:3)
-data_21 %>% str
-data_21 %>% kable
+data_21 %>% 
+  names %>% 
+  `[`(2:3)
+data_21 %>% 
+  str
+data_21 %>% 
+  kable
 ```
 
 ### Save

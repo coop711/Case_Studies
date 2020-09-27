@@ -39,7 +39,7 @@ options(digits = 2)
 v_names <- c("Country", "Income.inequality", "Index.of.health...social_problems", "GDP_WB")
 names(data_full) %in% v_names
 (v_names_index <- which(names(data_full) %in% v_names))
-data_21 <- data_full[-c(11, 18), v_names]
+data_21 <- data_full[-country_na, v_names]
 # data_21 <- data_full[-c(11, 18), v_names_index]
 str(data_21)
 names(data_21)[2:3] <- c("Income_inequality", "Index_HS")
