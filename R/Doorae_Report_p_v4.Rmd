@@ -142,8 +142,9 @@ tbl_p_df$width <- tapply(tbl_p_df[, 3], tbl_p_df[, 2], sum) %>%
 # tbl_p_df$width <- tbl_p_m[match(tbl_p_df[, 2], names(tbl_p_m))] (코드 일관성 유지)
 #> 막대의 높이 벡터 계산 (코드 일관성 유지)
 tbl_p_df$height <- unlist(tapply(tbl_p_df[, 3], 
-                                 INDEX = tbl_p_df[, 2], 
-                                 FUN = proportions))
+                                 INDEX = tbl_p_df[, 2],
+#                                 FUN = proportions))
+                                 FUN = prop.table))
 # tbl_p_df$height <- tbl %>%       
 #   prop.table(margin = 2) %>%
 #   as.data.frame %>%
