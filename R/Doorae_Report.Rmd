@@ -315,10 +315,10 @@ box.2 <- box.1 +
        x = "공동체상태",
        y = "업력(년)")
 # box.2
-box.3 <- box.2 + 
-  scale_x_discrete(labels = c("창업준비", "경영개선")) 
+# box.3 <- box.2 + 
+#  scale_x_discrete(labels = c("창업준비", "경영개선")) 
 # box.3
-box.4 <- box.3 + 
+box.4 <- box.2 + 
   annotate("text", 
            x = c(0.8, 1.65), 
            y = c(11.7, 12.4), 

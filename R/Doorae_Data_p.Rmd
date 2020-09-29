@@ -16,10 +16,12 @@ library(xlsx)
 library(knitr)
 library(magrittr)
 library(readxl)
-# library(xlsx)
-library(knitr)
-doorae0924_rest <- read_excel("../data/Data0924.xlsx", sheet = 1, range = "B1:BB98")
-doorae0924_name <- read_excel("../data/Data0924.xlsx", sheet = 1, range = "A1:A98")
+doorae0924_rest <- read_excel("../data/Data0924.xlsx", 
+                              sheet = 1, 
+                              range = "B1:BB98")
+doorae0924_name <- read_excel("../data/Data0924.xlsx", 
+                              sheet = 1, 
+                              range = "A1:A98")
 doorae0924 <- data.frame(doorae0924_name, doorae0924_rest)
 # doorae0924_rest <- read.xlsx("../data/Data0924.xlsx", 
 #                              sheetIndex = 1, 
