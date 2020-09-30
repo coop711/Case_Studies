@@ -40,6 +40,7 @@ N <- length(levels(tbl_df[, 1]))
            FUN = sum) %>%
     pos %>%
     rep(each = N)
+#> width와 사실상 중복 내용임.  
   tbl_p_m <- tapply(tbl_p_df[, 3], 
                     INDEX = tbl_p_df[, 2], 
                     FUN = sum)

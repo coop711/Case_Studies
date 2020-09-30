@@ -533,11 +533,12 @@ ggplot(data = doorae_ys,
   ggtitle("공동체상태와 업력") + 
   xlab("공동체상태") + 
   ylab("업력(년)") +
-  theme(plot.title = element_text(family = "KoPubWorldDotum Medium"),
+  theme(plot.title = element_text(hjust = 0.5, 
+                                  family = "KoPubWorldDotum Bold"),
         axis.text.x = element_text(family = "KoPubWorldDotum Medium"),
         axis.title.x = element_text(family = "KoPubWorldDotum Medium"),
         axis.title.y = element_text(family = "KoPubWorldDotum Medium")) + 
-  scale_x_discrete(labels = c("창업준비", "경영개선")) + 
+  scale_x_discrete(labels = c("창업", "경영")) + 
   annotate("text", 
            x = c(0.8, 1.65), 
            y = c(11.7, 12.4), 
@@ -556,18 +557,13 @@ ggplot(data = doorae_ys,
 ggplot(data = doorae_ys, 
        mapping = aes(x = years, colour = status)) + 
   stat_ecdf() + 
-  theme_bw() + 
+  theme_bw(base_family = "KoPubWorldDotum Medium") + 
   theme(panel.background = element_rect("white"),
         panel.border=element_rect(colour = "black", fill = NA)) + 
   ggtitle("공동체상태와 업력") +
   xlab("업력(년)") +
   ylab("분위") +
-  theme(plot.title = element_text(family = "KoPubWorldDotum Medium"),
-        axis.title.x = element_text(family = "KoPubWorldDotum Medium"),
-        axis.title.y = element_text(family = "KoPubWorldDotum Medium"),
-        legend.title = element_text(family = "KoPubWorldDotum Medium"),
-        legend.text = element_text(family = "KoPubWorldDotum Medium"),
-        legend.box.background = element_rect(fill = "red", 
+  theme(legend.box.background = element_rect(fill = "red", 
                                              colour = "black")) + 
   labs(colour = "공동체상태") + 
   scale_colour_brewer(palette = "Set2", 
@@ -585,14 +581,8 @@ ggplot(data = doorae_ys,
                      labels = c(0, 1.3, 4.5, 12.4)) + 
   annotate("text", 
            x = 2.8, 
-           y = 0.54, 
-           label = "중위수의 차이", 
-           size = 3, 
-           family = "KoPubWorldDotum Medium") + 
-  annotate("text", 
-           x = 2.8, 
-           y = 0.46, 
-           label = "약 3년", 
+           y = c(0.54, 0.46),  
+           label = c("중위수의 차이", "약 3년"),  
            size = 3, 
            family = "KoPubWorldDotum Medium")
 ```
@@ -624,35 +614,22 @@ ggplot(data = years_df,
   geom_path() + 
   geom_polygon(alpha = 0.3, 
                fill = "red") + 
-  theme_bw() + 
+  theme_bw(base_family = "KoPubWorldDotum Medium") + 
+  ggtitle("공동체상태와 업력") +
+  xlab("업력(년)") +
+  ylab("분위") +
   theme(panel.background = element_rect("white"), 
         panel.border = element_rect(colour = "black", fill = NA)) + 
-  ggtitle("공동체상태와 업력") +
-  theme(plot.title = element_text(family = "KoPubWorldDotum Medium")) + 
-  xlab("업력(년)") +
-  theme(axis.title.x = element_text(family = "KoPubWorldDotum Medium")) + 
-  ylab("분위") +
-  theme(axis.title.y = element_text(family = "KoPubWorldDotum Medium")) + 
   scale_x_continuous(breaks = c(0, 1.3, 4.5, 12.4), 
                      labels = c(0, 1.3, 4.5, 12.4)) + 
   annotate("text", 
-           x = 4.4, 
-           y = 0.78, 
-           label="두 도표 간 면적은\n평균의 차이,\n약 3년", 
+           x = c(1, 6, 4.4), 
+           y = c(0.9, 0.6, 0.78),  
+           label = c("창업준비", 
+                     "경영개선", 
+                     "두 도표 간 면적은\n평균의 차이,\n약 3년"), 
            size = 4, 
-           angle = 15, 
-           family = "KoPubWorldDotum Medium") + 
-  annotate("text", 
-           x = 6, 
-           y = 0.6, 
-           label = "경영개선", 
-           size = 4, 
-           family = "KoPubWorldDotum Medium") + 
-  annotate("text", 
-           x = 1, 
-           y = 0.9, 
-           label = "창업준비", 
-           size = 4, 
+           angle = c(0, 0, 15), 
            family = "KoPubWorldDotum Medium")
 ```
 
@@ -664,8 +641,10 @@ ggplot(data = years_df,
     * 개별 조직명도 파악됨.
 
 ```{r echo=FALSE, fig.width=6, fig.height=9}
-nameorder <- doorae$"조직명"[order(doorae$"공동체상태", doorae$"업력")]
-doorae$name <- factor(doorae$"조직명", levels = nameorder)
+# nameorder <- doorae$"조직명"[order(doorae$"공동체상태", doorae$"업력")]
+# doorae$name <- factor(doorae$"조직명", levels = nameorder)
+doorae$name <- doorae$"조직명"[order(doorae$"공동체상태", doorae$"업력")] %>%
+  factor(doorae$"조직명", levels = .)
 ggplot(data = doorae, 
        mapping = aes(x = 업력, y = name)) + 
   geom_segment(aes(yend = name), 
@@ -673,21 +652,17 @@ ggplot(data = doorae,
                colour = "grey50") + 
   geom_point(aes(colour = 공동체상태),
              size = 3) + 
+  theme_bw(base_family = "KoPubWorldDotum Medium") + 
   scale_colour_brewer(palette = "Set1", 
                       limits = c("경영개선", "창업준비")) + 
-  theme_bw() + 
+  ggtitle("공동체상태별 업력") +
   ylab("조직명") + 
-  theme(axis.text.y = element_text(size = 6)) + 
-  theme(panel.grid.major.y = element_blank(), 
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.y = element_text(size = 6),
+        panel.grid.major.y = element_blank(), 
         legend.position = c(0.9, 0.55), 
         legend.justification = c(1, 0.5),
-        legend.background = element_rect(colour = "black")) + 
-  ggtitle("공동체상태별 업력") +
-  theme(plot.title = element_text(family = "KoPubWorldDotum Medium"),
-        axis.title.x = element_text(family = "KoPubWorldDotum Medium"),
-        axis.title.y = element_text(family = "KoPubWorldDotum Medium"),
-        legend.title = element_text(family = "KoPubWorldDotum Medium"),
-        legend.text = element_text(family = "KoPubWorldDotum Medium"))
+        legend.background = element_rect(colour = "black"))
 ```
 
 <P style = "page-break-before:always">
