@@ -7,34 +7,45 @@ N <- length(levels(tbl_df[, 1]))
   pos <- function(x){
     cumsum(x) - x / 2
   }
-  tbl_p_df <- tbl_df %>%
-  `[`(, 3) %>%
-  prop.table %>%
+  tbl_p_df <- 
+    tbl_df %>%
+    `[`(, 3) %>%
+    prop.table %>%
 #  proportions %>%
   data.frame(tbl_df[1:2], "Prop" = .)
-  tbl_p_df$width <- tapply(tbl_p_df[, 3], 
-                           INDEX = tbl_p_df[, 2], 
-                           FUN = sum) %>% 
+  tbl_p_df$width <- 
+    tapply(tbl_p_df[, 3], 
+           INDEX = tbl_p_df[, 2], 
+           FUN = sum) %>% 
     rep(each = N)
-  tbl_p_df$height <- unlist(tapply(tbl_p_df[, 3], 
-                                   INDEX = tbl_p_df[, 2], 
-                                   FUN = prop.table))
- #                                  FUN = proportions))
-  tbl_p_df$label_height <- unlist(tapply(tbl_p_df$height, 
-                                         INDEX = tbl_p_df[, 2], 
-                                         FUN = pos))
-  tbl_p_df$y_breaks <- unlist(tapply(tbl_p_df$height, 
-                                     INDEX = tbl_p_df[, 2], 
-                                     FUN = cumsum))
-  tbl_p_df$center <- tapply(tbl_p_df[, 3], 
-                            INDEX = tbl_p_df[, 2], 
-                            FUN = sum) %>%
+  tbl_p_df$height <- 
+    tapply(tbl_p_df[, 3], 
+           INDEX = tbl_p_df[, 2], 
+           FUN = prop.table) %>%
+    unlist
+ #          FUN = proportions))
+  tbl_p_df$label_height <- 
+    tapply(tbl_p_df$height, 
+                  INDEX = tbl_p_df[, 2], 
+                  FUN = pos) %>%
+    unlist
+  tbl_p_df$y_breaks <- 
+    tapply(tbl_p_df$height, 
+           INDEX = tbl_p_df[, 2], 
+           FUN = cumsum) %>%
+    unlist
+  tbl_p_df$center <- 
+    tapply(tbl_p_df[, 3], 
+           INDEX = tbl_p_df[, 2], 
+           FUN = sum) %>%
     pos %>%
     rep(each = N)
+  tbl_p_m <- tapply(tbl_p_df[, 3], 
+                    INDEX = tbl_p_df[, 2], 
+                    FUN = sum)
 ########## 
 #> breaks and labels
-  tbl_p_m <- tapply(tbl_p_df[, 3], tbl_p_df[, 2], sum)
-  x_breaks <- c(0, ifelse(cumsum(tbl_p_m) < 0.1, 0.0, cumsum(tbl_p_m)))
+  x_breaks <- c(0, ifelse(tbl_p_m < 0.1, 0.0, cumsum(tbl_p_m)))
   x_label <- format(x_breaks * 100, 
                     digits = 3, 
                     nsmall = 1)

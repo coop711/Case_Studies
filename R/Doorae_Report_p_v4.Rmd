@@ -69,13 +69,15 @@ doorae %>%
 
 ```{r, echo = FALSE, message = FALSE}
 doorae %$%
-  table(.$"공동체상태", .$"조직형태") %>%
+  table(.$"공동체상태", .$"조직형태",
+        dnn = c("공동체상태", "조직형태")) %>%
   cbind("계" = rowSums(.)) %>%
   rbind("계" = colSums(.)) %>%
   kable(caption = "ㅇ공동체상태와 조직형태(계)", 
         align = c("c", "r", "r", "r"))
 doorae %$%
-  table(.$"공동체상태", .$"조직형태") %>%
+  table(.$"공동체상태", .$"조직형태",
+        dnn = c("공동체상태", "조직형태")) %>%
   prop.table(margin = 1) %>%
   `*`(100) %>%
   cbind("계" = rowSums(.)) %>%
@@ -84,7 +86,8 @@ doorae %$%
   kable(caption = "ㅇ공동체상태와 조직형태(%, 계)", 
         align = c("c", "r", "r", "r"))
 doorae %$%
-  table(.$"공동체상태", .$"조직형태") %>%
+  table(.$"공동체상태", .$"조직형태", 
+        dnn = c("공동체상태", "조직형태")) %>%
   prop.table(margin = 2) %>%
   `*`(100) %>%
   rbind("계" = colSums(.)) %>%
@@ -103,14 +106,24 @@ doorae %$%
 ```{r, echo = FALSE, fig.width = 6, fig.height = 4.2}
 #> 모자이크 플롯에 구현될 행(조직형태)과 열(공동체상태)의 구조에 맞추어 table()의 구성 결정 
 tbl <- doorae %$%
-  table(.$"조직형태", .$"공동체상태")
+  table(.$"조직형태", .$"공동체상태",
+        dnn = c("조직형태", "공동체상태"))
 # tbl <- doorae %$%
 #   table(.$"공동체상태", .$"조직형태", 
 #         dnn = c("공동체상태", "조직형태")) %>%
 #   t 
 #> 막대의 중간 위치 좌표 잡는 사용자 함수 설정
-pos <- function(x){
-    cumsum(x) - x / 2
+# pos <- function(x){
+#   cumsum(x) - x / 2
+# } 
+# pos <- . %>% {
+#   cumsum(.) - . / 2
+#   }
+# pos <- . %>% {
+#   `-`(cumsum(.), . / 2)
+# }
+pos <- . %>% {
+  `-`(cumsum(.), `/`(., 2))
 }
 #> 깔끔한 데이터 프레임 전환
 tbl_df <- tbl %>%    
@@ -133,40 +146,52 @@ N <- length(levels(tbl_df[, 1]))
 #   tapply(tbl_df[, 2], sum) %>%
 #   prop.table
 #> mosaic plot의 폭 계산
-tbl_p_df$width <- tapply(tbl_p_df[, 3], 
-                         INDEX = tbl_p_df[, 2], 
-                         FUN = sum) %>% 
+tbl_p_df$width <- 
+  tapply(tbl_p_df[, 3], 
+         INDEX = tbl_p_df[, 2], 
+         FUN = sum) %>% 
   rep(each = N)
 # tbl_p_df$width <- tbl_p_m[match(tbl_p_df[, 2], names(tbl_p_m))] (코드 일관성 유지)
 #> 막대의 높이 벡터 계산 (코드 일관성 유지)
-tbl_p_df$height <- unlist(tapply(tbl_p_df[, 3], 
-                                 INDEX = tbl_p_df[, 2],
-#                                 FUN = proportions))
-                                 FUN = prop.table))
+tbl_p_df$height <-
+  tapply(tbl_p_df[, 3], 
+         INDEX = tbl_p_df[, 2],
+#         FUN = proportions))
+         FUN = prop.table) %>%
+  unlist
 # tbl_p_df$height <- tbl %>%       
 #   prop.table(margin = 2) %>%
 #   as.data.frame %>%
 #  `[`(, 3)
 #> 추가 정보로 표시할 라벨의 좌표 계산
-tbl_p_df$label_height <- unlist(tapply(tbl_p_df$height, 
-                                       INDEX = tbl_p_df[, 2], 
-                                       FUN = pos))
+tbl_p_df$label_height <- 
+  tapply(tbl_p_df$height, 
+         INDEX = tbl_p_df[, 2], 
+         FUN = pos) %>%
+  unlist
 #> y축에 표시할 눈금의 좌표 계산
-tbl_p_df$y_breaks <- unlist(tapply(tbl_p_df$height, 
-                                   INDEX = tbl_p_df[, 2], 
-                                   FUN = cumsum))
-#> x 축에 표시할 눈금의 좌표를 tbl_p_df  데이터 프레임에 벡터로 추가
-tbl_p_df$center <- tapply(tbl_p_df[, 3], 
-                          INDEX = tbl_p_df[, 2], 
-                          FUN = sum) %>%
-    pos %>%
-    rep(each = N)
+tbl_p_df$y_breaks <- 
+  tapply(tbl_p_df$height, 
+         INDEX = tbl_p_df[, 2], 
+         FUN = cumsum) %>%
+  unlist
+#> 도표 윗 부분 여백에 표시할 조직 형태의 x좌표를 tbl_p_df  데이터 프레임에 벡터로 추가. 간단히 막대 폭의 중간 지점을 계산하는 것임.
+tbl_p_df$center <- 
+  tapply(tbl_p_df[, 3], 
+         INDEX = tbl_p_df[, 2], 
+         FUN = sum) %>%
+  pos %>%
+  rep(each = N)
 # x_center <- cumsum(tbl_p_m) - tbl_p_m / 2
 # tbl_p_df$center <- x_center[match(tbl_p_df[, 2], names(x_center))]
+#> 아래 코드는 tbl_p_df$width 계산과 동일한 내용의 반복임.
+tbl_p_m <- 
+  tapply(tbl_p_df[, 3], 
+         INDEX = tbl_p_df[, 2], 
+         FUN = sum)
 
 ##########
-tbl_p_m <- tapply(tbl_p_df[, 3], tbl_p_df[, 2], sum)
-x_breaks <- c(0, ifelse(cumsum(tbl_p_m) < 0.1, 0.0, cumsum(tbl_p_m)))
+x_breaks <- c(0, ifelse(tbl_p_m < 0.1, 0.0, cumsum(tbl_p_m)))
 x_label <- format(x_breaks * 100, 
                   digits = 3, 
                   nsmall = 1)
@@ -218,7 +243,9 @@ m1 + theme_bw(base_family = "KoPubWorldDotum Medium") +
   geom_text(aes(x = center, y = 1.05),
             label = tbl_p_df[, 2],
             family = "KoPubWorldDotum Medium") + 
-  labs(title = "공동체상태와 조직형태", x = "공동체상태", y = "조직형태") +
+  labs(title = "공동체상태와 조직형태", 
+       x = "공동체상태", 
+       y = "조직형태") +
   scale_fill_brewer(name = "조직형태", type = "qual") +
   theme(plot.title = element_text(hjust = 0.5, 
                                   size = 18,
