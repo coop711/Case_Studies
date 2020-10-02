@@ -34,6 +34,20 @@ data_full %>%
   .$Country %>% 
       `[`(country_na)
 ```
+단순히, 어느 나라의 건강 및 사회문제 지수에 결측치가 있는 지 알아내는 게 목적이라면 piping 버전의 장점을 살려 country_na를 등장시키지 않고 결과를 얻을 수 있다. 즉,
+
+```{r}
+data_full %>%
+  .$Index.of.health...social_problems %>%
+  is.na %>%
+#> 다음과 같이 "."을 이용할 수 있음에 유의하라.
+  data_full$Country[.]
+#> 위의 코드를 `[`를 이용하여 다시 쓴 것이다. ","의 사용에 유의하라.
+# data_full %>%
+#   `[`(, "Index.of.health...social_problems") %>%
+#   is.na %>%
+#   data_full$Country[.]
+```
 
 결측치가 있는 나라를 빼고, 필요한 변수만 챙겨서 새로운 data frame 을 구성하기 위하여 건강과 사회문제 지표의 위치를 찾아보자.
 
@@ -44,23 +58,35 @@ data_full %>%
   which
 ```
 
-새로운 data frame 을 `data_21` 으로 저장하자. 시각적 가독성을 높이기 위하여 자릿수를 조정한다.
+새로운 data frame 을 `data_21` 으로 저장하자. 시각적 가독성을 높이기 위하여 자릿수를 조정한다. piping을 활용하면 country_na라는 중간 변수를 도입하지 않고도 원하는 작업을 수행할 수 있다. 주석처리한 코드는 country_na 를 생성한 경우의 코드이다. 
 
 ```{r}
 options(digits = 2)
-v_names <- c("Country", "Income.inequality", "Index.of.health...social_problems", "GDP_WB")
-v_names_index <- data_full %>% 
-  names %>% 
-  `%in%`(v_names) %>%
-  which 
+v_names <- c("Country", 
+             "Income.inequality", 
+             "Index.of.health...social_problems", 
+             "GDP_WB")
+# v_names_index <- data_full %>% 
+#   names %>% 
+#   `%in%`(v_names) %>%
+#   which 
 data_21 <- data_full %>%
-  `[`(-country_na, v_names_index)
+  .$Index.of.health...social_problems %>%
+  is.na %>%
+  `!` %>%
+  data_full[., v_names]
+#> country_na 를 생성하였다면, 위의 넉줄을 뺴고 아래로 가면 된다.
+#  `[`(-country_na, v_names_index)
 data_21 %>%
   names
-names(data_21)[2:3] <- c("Income_inequality", "Index_HS")
-data_21 %>% 
-  names %>% 
-  `[`(2:3)
+#> 다음과 같은 식으로 적용 가능
+names(data_21)[2:3] %<>%
+  `<-`(c("Income_inequality", "Index_HS"))
+#> 그러나 다음 방식은 작동하지 않음
+# data_21 %>%
+#   names %>%
+#   `[`(2:3) %<>%
+#   `[<-`(c("Income_inequality", "Index_HS"))
 data_21 %>% 
   str
 data_21 %>% 
