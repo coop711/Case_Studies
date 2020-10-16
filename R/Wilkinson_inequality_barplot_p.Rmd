@@ -11,6 +11,7 @@ Equality Trust에서 기부금을 받고 제공하는 두 종류의 자료 중 2
 
 ```{r, data with GDP}
 library(knitr)
+library(magrittr)
 load("Inequality_Index_HS.RData")
 str(data_21)
 options(width = 132)
@@ -22,27 +23,35 @@ options(width = 132)
 
 ```{r, barplot of 5th ratios 1st, fig.width = 12, fig.height = 6}
 # par(mai = c(2.0, 0.8, 0.8, 0.4) + 0.2)
-(fifth <- data_21$Income_inequality)
-barplot(fifth)
+fifth <- data_21$Income_inequality
+data_21 %$%
+  barplot(.$Income_inequality)
 ```
 
 ```{r, barplot of 5th ratios 2nd, fig.width = 12, fig.height = 6}
 (Country <- data_21$Country)
-barplot(fifth, 
-        names.arg = Country)
+data_21 %$%
+  barplot(.$Income_inequality , names.arg = .$Country)
 ```
 
 ```{r, barplot of 5th ratios 3rd, fig.width = 12, fig.height = 6}
-(o_fifth <- order(fifth))
+# (o_fifth <- order(fifth))
+o_fifth <- data_21$Income_inequality %>%
+  order
 data.frame(Country, fifth, o_fifth, fifth[o_fifth], Country[o_fifth])
 rev_o_fifth <- order(fifth, decreasing = TRUE)
 data.frame(Country, fifth, o_fifth, rev_o_fifth, fifth[rev_o_fifth], Country[rev_o_fifth])
-barplot(fifth[o_fifth])
+data_21$Income_inequality %>%
+  `[`(order(.)) %>%
+barplot
 ```
 
 ```{r, barplot of 5th ratios 4th, fig.width = 12, fig.height = 6}
-barplot(fifth[o_fifth], 
-        names.arg = Country[o_fifth])
+data_21$Income_inequality %>%
+  `[`(order(.)) %>%
+  barplot(names.arg = data_21$Country[data_21$Income_inequality %>% order])
+# barplot(names.arg = data_21$Country[o_fifth])
+# barplot(fifth[o_fifth], names.arg = Country[o_fifth])
 ```
 
 ```{r, colors in rainbow}
@@ -54,16 +63,17 @@ par(mfrow = c(1, 1))
 ```
 
 ```{r, barplot of 5th ratios 5th, fig.width = 12, fig.height = 6}
-barplot(fifth[o_fifth], 
-        names.arg = Country[o_fifth],  
-        col = rainbow(N, start = 1/6, end = 1))
+data_21$Income_inequality %>%
+  `[`(order(.)) %>%
+  barplot(names.arg = data_21$Country[data_21$Income_inequality %>% order],
+          col = rainbow(N, start = 1/6, end = 1))
+# barplot(fifth[o_fifth], names.arg = Country[o_fifth], col = rainbow(N, start = 1/6, end = 1))
 ```
 
 ```{r, barplot of 5th ratios 6th, fig.width = 12, fig.height = 6}
 barplot(fifth[o_fifth], 
-        names.arg = Country[o_fifth],  
-        col = rainbow(N, start = 1/6, end = 1), 
-        las = 2)
+        names.arg = Country[o_fifth], 
+        col = rainbow(N, start = 1/6, end = 1), las = 2)
 ```
 
 ```{r, barplot of 5th ratios text annotation, fig.width = 12, fig.height = 8}
@@ -75,9 +85,11 @@ b_fifth <- barplot(fifth[o_fifth],
                    las = 2)
 text(x = b_fifth, 
      y = fifth[o_fifth] + 0.3, 
-     labels = format(fifth[o_fifth], digits = 3))
-title(main = "Fifth Ratios of Selected Countries", 
-      cex.main = 2)
+     labels = format(fifth[o_fifth], 
+                     digits = 3))
+# text(x = b_fifth, y = fifth[o_fifth], labels = format(fifth[o_fifth], digits = 3))
+# text(x = b_fifth[c(1, 11, 21)], y = fifth[o_fifth][c(1, 11, 21)] + 0.3, labels = format(fifth[o_fifth][c(1, 11, 21)], digits = 3))
+title(main = "Fifth Ratios of Selected Countries", cex.main = 2)
 ```
 
 ```{r, barplot of 5th ratios text annotation slanted, fig.width = 12, fig.height = 8}
@@ -89,14 +101,14 @@ b_fifth <- barplot(fifth[o_fifth],
                    las = 2)
 text(x = b_fifth, 
      y = fifth[o_fifth] + 0.3, 
-     labels = format(fifth[o_fifth], digits = 3))
+     labels = format(fifth[o_fifth], 
+                     digits = 3))
 text(x = b_fifth, 
      y = -0.4, 
      labels = Country[o_fifth], 
      srt = 45, 
      xpd = TRUE)
-title(main = "Fifth Ratios of Selected Countries", 
-      cex.main = 2)
+title(main = "Fifth Ratios of Selected Countries", cex.main = 2)
 ```
 
 <!--
