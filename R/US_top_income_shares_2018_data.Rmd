@@ -9,28 +9,44 @@ output: html_document
 
 준비한 자료는  [E. Saez 교수의 홈페이지](http://elsa.berkeley.edu/~saez/)에 있는 [`TabFig2015prel.xls`](http://eml.berkeley.edu//~saez/TabFig2017prel.xls)` 를 손봐서 불러들인 것이다. 
 
-```{r, data preparation, message = FALSE, echo = FALSE, results = 'hide'}
+```{r, read.xlsx, message = FALSE, echo = FALSE, results = 'hide', eval = FALSE}
 options(digits = 3)
 library(xlsx)
-US_top_income_shares_18 <- read.xlsx("../data/TabFig2018prel.xlsx", 
-                                     sheetIndex = 9, 
-                                     sheetName = "Table A3", 
-                                     startRow = 6, endRow = 111, 
-                                     colIndex = c(1:7, 9:13), 
-                                     colClasses = c("integer", rep("numeric", 12)), 
-                                     header = FALSE)
+US_top_income_shares_18 <- 
+  read.xlsx("../data/TabFig2018prel.xlsx", 
+            sheetIndex = 9, 
+            sheetName = "Table A3", 
+            startRow = 6, 
+            endRow = 111, 
+            colIndex = c(1:7, 9:13), 
+            colClasses = c("integer", rep("numeric", 12)), 
+            header = FALSE)
 v_names <- c("Year", "P90_100", "P95_100", "P99_100", "P99.5_100", "P99.9_100", "P99.99_100", "P90_95", "P95_99", "P99_99.5", "P99.5_99.9", "P99.9_99.99")
-US_top_income_shares_18[106, 1] <- 2018L
 names(US_top_income_shares_18) <- v_names
+US_top_income_shares_18[106, 1] <- 2018L
 str(US_top_income_shares_18)
-ls()
+```
+
+```{r, openxlsx, message = FALSE, echo = FALSE, results = 'hide', eval = TRUE}
+library(openxlsx)
+v_names <- c("Year", "P90_100", "P95_100", "P99_100", "P99.5_100", "P99.9_100", "P99.99_100", "P90_95", "P95_99", "P99_99.5", "P99.5_99.9", "P99.9_99.99")
+US_top_income_shares_18 <-
+  openxlsx::read.xlsx("../data/TabFig2018prel.xlsx",
+                      sheet = "Table A3",
+                      colNames = FALSE,
+                      cols = c(1:7, 9:13),
+                      rows = 6:111)
+names(US_top_income_shares_18) <- v_names
+US_top_income_shares_18[106, 1] <- 2018L
+str(US_top_income_shares_18)
+class(US_top_income_shares_18[, 1]) <- "integer"
 ```
 
 <!--작업을 마친 자료파일은 `US_top_income_shares_15`이며, 이 자료의 구조와 앞의 몇 열의 값은 다음과 같다.-->
 
 ```{r, data structure, echo = FALSE}
 library(knitr)
-kable(format(US_top_income_shares_18, digits = 1, nsmall = 1), align = "r")
+kable(format(US_top_income_shares_18, digits = 1, nsmall = 1))
 ```
 
 ## Save Data
