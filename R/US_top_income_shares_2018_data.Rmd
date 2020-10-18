@@ -36,7 +36,7 @@ library(openxlsx)
 v_names <- c("Year", "P90_100", "P95_100", "P99_100", "P99.5_100", "P99.9_100", "P99.99_100", "P90_95", "P95_99", "P99_99.5", "P99.5_99.9", "P99.9_99.99")
 US_top_income_shares_18 <-
   openxlsx::read.xlsx("../data/TabFig2018prel.xlsx",
-                      sheet = "Table A3",
+                      sheet = "Table A3",    #> sheet = 9, not working, sheet = 10
                       colNames = FALSE,
                       cols = c(1:7, 9:13),
                       rows = 6:111)
@@ -54,8 +54,8 @@ library(magrittr)
 v_names <- c("Year", "P90_100", "P95_100", "P99_100", "P99.5_100", "P99.9_100", "P99.99_100", "P90_95", "P95_99", "P99_99.5", "P99.5_99.9", "P99.9_99.99")
 US_top_income_shares_18 <-
   readxl::read_excel("../data/TabFig2018prel.xlsx",
-#                     sheet = "Table A3",
-                     sheet = 9,
+                     sheet = "Table A3",
+#                     sheet = 9, #> openxlsx 와 같은 문제점 발생
                      range = "A6:M111",
 #                    range = "Table A3!A6:M111",
                      col_names = FALSE)
