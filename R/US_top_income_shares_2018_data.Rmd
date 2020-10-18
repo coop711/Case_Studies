@@ -54,16 +54,16 @@ library(magrittr)
 v_names <- c("Year", "P90_100", "P95_100", "P99_100", "P99.5_100", "P99.9_100", "P99.99_100", "P90_95", "P95_99", "P99_99.5", "P99.5_99.9", "P99.9_99.99")
 US_top_income_shares_18 <-
   readxl::read_excel("../data/TabFig2018prel.xlsx",
-                     sheet = "Table A3",
+#                     sheet = "Table A3",
 #                     sheet = 9, #> openxlsx 와 같은 문제점 발생
-                     range = "A6:M111",
-#                    range = "Table A3!A6:M111",
+#                     range = "A6:M111",
+                     range = "Table A3!A6:M111",
                      col_names = FALSE)
 US_top_income_shares_18 <- US_top_income_shares_18[-8]
 names(US_top_income_shares_18) <- v_names
 US_top_income_shares_18[106, 1] <- 2018L
 str(US_top_income_shares_18)
-US_top_income_shares_18 %<>% 
+US_top_income_shares_18 %<>%
   data.frame
 class(US_top_income_shares_18$Year) <- "integer"
 ```
