@@ -9,6 +9,8 @@ output: html_document
 
 준비한 자료는  [E. Saez 교수의 홈페이지](http://elsa.berkeley.edu/~saez/)에 있는 [`TabFig2015prel.xls`](http://eml.berkeley.edu//~saez/TabFig2017prel.xls)` 를 손봐서 불러들인 것이다. 
 
+### xlsx
+
 ```{r, read.xlsx, message = FALSE, echo = FALSE, results = 'hide', eval = FALSE}
 options(digits = 3)
 library(xlsx)
@@ -27,7 +29,9 @@ US_top_income_shares_18[106, 1] <- 2018L
 str(US_top_income_shares_18)
 ```
 
-```{r, openxlsx, message = FALSE, echo = FALSE, results = 'hide', eval = TRUE}
+### openxlsx
+
+```{r, openxlsx, message = FALSE, echo = FALSE, results = 'hide', eval = FALSE}
 library(openxlsx)
 v_names <- c("Year", "P90_100", "P95_100", "P99_100", "P99.5_100", "P99.9_100", "P99.99_100", "P90_95", "P95_99", "P99_99.5", "P99.5_99.9", "P99.9_99.99")
 US_top_income_shares_18 <-
@@ -41,6 +45,29 @@ US_top_income_shares_18[106, 1] <- 2018L
 str(US_top_income_shares_18)
 class(US_top_income_shares_18[, 1]) <- "integer"
 ```
+
+### readxl
+
+```{r, readxl, message = FALSE, echo = FALSE, results = 'hide', eval = TRUE}
+library(readxl)
+library(magrittr)
+v_names <- c("Year", "P90_100", "P95_100", "P99_100", "P99.5_100", "P99.9_100", "P99.99_100", "P90_95", "P95_99", "P99_99.5", "P99.5_99.9", "P99.9_99.99")
+US_top_income_shares_18 <-
+  readxl::read_excel("../data/TabFig2018prel.xlsx",
+#                     sheet = "Table A3",
+                     sheet = 9,
+                     range = "A6:M111",
+#                    range = "Table A3!A6:M111",
+                     col_names = FALSE)
+US_top_income_shares_18 <- US_top_income_shares_18[-8]
+names(US_top_income_shares_18) <- v_names
+US_top_income_shares_18[106, 1] <- 2018L
+str(US_top_income_shares_18)
+US_top_income_shares_18 %<>% 
+  data.frame
+class(US_top_income_shares_18$Year) <- "integer"
+```
+
 
 <!--작업을 마친 자료파일은 `US_top_income_shares_15`이며, 이 자료의 구조와 앞의 몇 열의 값은 다음과 같다.-->
 
