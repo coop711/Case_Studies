@@ -31,6 +31,8 @@ kable(US_top_income_shares_18)
 # kable(US_top_income_shares_18[c(11:20, 41:51, 92:106), ])
 ```
 
+## Plots
+
 ### Top 10%의 소득점유율
 
 소득 상위 10%(`P90_100`)의 소득점유율 변화
@@ -73,7 +75,10 @@ text(x = c(1935, 1965, 2018),
      label = times_label, 
      cex = 1.5, 
      col = "red")
-dev.copy(png, file = "../pics/US_top_income_share_10_2018_kr.png", width = 960, height = 540)
+dev.copy(png, 
+         file = "../pics/US_top_income_share_10_2018_kr.png", 
+         width = 960, 
+         height = 540)
 dev.off()
 ```
 
@@ -130,7 +135,10 @@ text(x = c(1935, 1965, 2018),
      label = times_label, 
      cex = 1.5, 
      col = "red")
-dev.copy(png, file = "../pics/US_top_income_share_1-4-5_2018_kr.png", width = 960, height = 540)
+dev.copy(png, 
+         file = "../pics/US_top_income_share_1-4-5_2018_kr.png", 
+         width = 960, 
+         height = 540)
 dev.off()
 ```
 
@@ -193,7 +201,10 @@ text(x = c(1935, 1965, 2018),
      label = times_label, 
      cex = 1.5, 
      col = "red")
-dev.copy(png, file = "../pics/US_top_income_share_0.1-0.4-0.5_2018_kr.png", width = 960, height = 540)
+dev.copy(png, 
+         file = "../pics/US_top_income_share_0.1-0.4-0.5_2018_kr.png", 
+         width = 960, 
+         height = 540)
 dev.off()
 ```
 
@@ -201,7 +212,7 @@ dev.off()
 
 소득 상위 0.1%(`P99.9_100`)를 상위 0.01%(`P99.99_100`)와 다음 0.09%(`P99_9.99.99`)로 분할
 
-```{r, partition top 1 0.01 vs 0.99, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 6.75}
+```{r, partition top 1 0.01 vs 0.09, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 6.75}
 # png(file = "../pics/US_top_income_share_0.01-0.09_2018_72dpi_kr.png", width = 864, height = 486)
 # png(file = "../pics/US_top_income_share_0.01-0.09_2018_300dpi_kr.png", width = 1280, height = 720)
 par(family = "KoPubWorldDotum Medium")
@@ -244,7 +255,10 @@ text(x = c(1935, 1965, 2018),
      label = times_label, 
      cex = 1.5, 
      col = "red")
-dev.copy(png, file = "../pics/US_top_income_share_0.01-0.09_2018_kr.png", width = 960, height = 540)
+dev.copy(png, 
+         file = "../pics/US_top_income_share_0.01-0.09_2018_kr.png", 
+         width = 960, 
+         height = 540)
 dev.off()
 ```
 
@@ -258,22 +272,32 @@ dev.off()
 
 ```{r, tidy, echo = FALSE, message = FALSE}
 library(tidyverse)
-data_10_df <- US_top_income_shares_18[c("Year", "P90_100")]
-data_10 <- US_top_income_shares_18[c("Year", "P99_100", "P95_99", "P90_95")]
-data_10_tbl <- data_10 %>%
+data_10_df <- 
+  US_top_income_shares_18[c("Year", "P90_100")]
+data_10 <- 
+  US_top_income_shares_18[c("Year", "P99_100", "P95_99", "P90_95")]
+data_10_tbl <- 
+  data_10 %>%
   as_tibble %>%
   gather(key = "Percentiles", value = "Share", -Year) %>%
-  mutate(Percentiles = factor(Percentiles, levels = c("P99_100", "P95_99", "P90_95")))
-data_1 <- US_top_income_shares_18[c("Year", "P99.9_100", "P99.5_99.9", "P99_99.5")]
-data_1_tbl <- data_1 %>%
+  mutate(Percentiles = factor(Percentiles, 
+                              levels = c("P99_100", "P95_99", "P90_95")))
+data_1 <- 
+  US_top_income_shares_18[c("Year", "P99.9_100", "P99.5_99.9", "P99_99.5")]
+data_1_tbl <- 
+  data_1 %>%
   as_tibble %>%
   gather(key = "Percentiles", value = "Share", -Year) %>%
-  mutate(Percentiles = factor(Percentiles, levels = c("P99.9_100", "P99.5_99.9", "P99_99.5")))
-data_01 <- US_top_income_shares_18[c("Year", "P99.99_100", "P99.9_99.99")]
-data_01_tbl <- data_01 %>%
+  mutate(Percentiles = factor(Percentiles, 
+                              levels = c("P99.9_100", "P99.5_99.9", "P99_99.5")))
+data_01 <- 
+  US_top_income_shares_18[c("Year", "P99.99_100", "P99.9_99.99")]
+data_01_tbl <- 
+  data_01 %>%
   as_tibble %>%
   gather(key = "Percentiles", value = "Share", -Year) %>%
-  mutate(Percentiles = factor(Percentiles, levels = c("P99.99_100", "P99.9_99.99")))
+  mutate(Percentiles = factor(Percentiles, 
+                              levels = c("P99.99_100", "P99.9_99.99")))
 ```
 
 ### Top 10%의 소득점유(%)
@@ -288,21 +312,25 @@ ggplot(data = data_10_df,
              stroke = 1.2,
              color = "white",
              na.rm = TRUE) +
-  theme_bw() + 
-  theme(panel.grid.major = element_line(linetype = "dotted", colour = "black")) +
+  theme_bw(base_family = "KoPubWorldDotum Medium") + 
+  theme(panel.grid.major = element_line(linetype = "dotted", 
+                                        colour = "black")) +
   scale_x_continuous(breaks = seq(1910, 2020, by = 10), 
                      limits = c(1910, 2020)) +
   scale_y_continuous(breaks = seq(30, 50, by = 5), 
                      limits = c(30, 52)) +
   labs(x = x_lab, y = y_lab, title = main_title) +
-  theme(axis.title.x = element_text(family = "KoPubWorldDotum Medium")) +
-  theme(axis.title.y = element_text(family = "KoPubWorldDotum Medium")) +
-  theme(plot.title = element_text(family = "KoPubWorldDotum Medium", size = 20, hjust = 0.5)) +
+  theme(axis.title.x = element_text()) +
+  theme(axis.title.y = element_text()) +
+  theme(plot.title = element_text(size = 20, 
+                                  hjust = 0.5)) +
   annotate("text", 
-           x = c(1927.5, 2007, 2012, 2018), y = c(50.5, 50.5, 51.5, 51.5), 
+           x = c(1927.5, 2007, 2012, 2018), 
+           y = c(50.5, 50.5, 51.5, 51.5), 
            label = c(1928, 2007, 2012, 2018)) +
   annotate("text", 
-           x = c(1935, 1965, 2018), y = c(48.5, 32, 46.5), 
+           x = c(1935, 1965, 2018), 
+           y = c(48.5, 32, 46.5), 
            label = times_label, 
            colour = "red", 
            family = "KoPubWorldDotum Medium", 
@@ -310,7 +338,9 @@ ggplot(data = data_10_df,
 ```
 
 ```{r, Top 10 percent share ggsave, warning = FALSE, echo = FALSE, fig.width = 12, fig.height = 6}
-ggsave("../pics/US_top_income_share_10_2018_ggplot_kr.png", width = 12, height = 6.75)
+ggsave("../pics/US_top_income_share_10_2018_ggplot_kr.png", 
+       width = 12, 
+       height = 6.75)
 ```
 
 
@@ -318,7 +348,7 @@ ggsave("../pics/US_top_income_share_10_2018_ggplot_kr.png", width = 12, height =
 
 ```{r, Top 10 percent, warning = FALSE, echo = FALSE, fig.width = 12, fig.height = 6}
 ggplot(data = data_10_tbl, 
-             mapping = aes(x = Year, y = Share, colour = Percentiles)) + 
+       mapping = aes(x = Year, y = Share, colour = Percentiles)) + 
   geom_line(na.rm = TRUE) + 
   geom_point(shape = 24, 
              aes(fill = Percentiles), 
@@ -326,25 +356,34 @@ ggplot(data = data_10_tbl,
              stroke = 1.2,
              colour = "white",
              na.rm = TRUE) +
-  theme_bw() +
-  theme(panel.grid.major = element_line(linetype = "dotted", colour = "black")) +
-  scale_x_continuous(breaks = seq(1910, 2020, by = 10), limits = c(1910, 2020)) +
-  scale_y_continuous(breaks = seq(5, 25, by = 5), limits = c(5, 25)) +
+  theme_bw(base_family = "KoPubWorldDotum Medium") +
+  theme(panel.grid.major = element_line(linetype = "dotted", 
+                                        colour = "black")) +
+  scale_x_continuous(breaks = seq(1910, 2020, by = 10), 
+                     limits = c(1910, 2020)) +
+  scale_y_continuous(breaks = seq(5, 25, by = 5), 
+                     limits = c(5, 25)) +
   labs(x = x_lab, 
        y = y_lab, 
        title = main_title_1, 
        colour = "Income Fractile", 
        fill = "Income Fractile") +
-  theme(axis.title.x = element_text(family = "KoPubWorldDotum Medium")) +
-  theme(axis.title.y = element_text(family = "KoPubWorldDotum Medium")) +
-  theme(plot.title = element_text(family = "KoPubWorldDotum Medium", size = 20, hjust = 0.5)) +
+  theme(axis.title.x = element_text()) +
+  theme(axis.title.y = element_text()) +
+  theme(plot.title = element_text(size = 20, 
+                                  hjust = 0.5)) +
   theme(legend.position =  c(0.5, 0.85)) +
-  scale_colour_manual(name = "", values = c("black", "red", "blue"), labels = legend_text_1) +
-  scale_fill_manual(name = "", values = c("black", "red", "blue"), labels = legend_text_1) +
-  theme(legend.text = element_text(family = "KoPubWorldDotum Light", size = 12)) +
+  scale_colour_manual(name = "", 
+                      values = c("black", "red", "blue"), 
+                      labels = legend_text_1) +
+  scale_fill_manual(name = "", 
+                    values = c("black", "red", "blue"), 
+                    labels = legend_text_1) +
+  theme(legend.text = element_text(size = 12)) +
   guides(colour ="none") +
   theme(legend.title = element_blank()) +
-  theme(legend.background = element_rect(fill = "white", colour = "black")) +
+  theme(legend.background = element_rect(fill = "white", 
+                                         colour = "black")) +
 #  theme(legend.key = element_blank()) +
   annotate("text", 
            x = c(1928, 2007), 
@@ -360,7 +399,9 @@ ggplot(data = data_10_tbl,
 ```
 
 ```{r, Top 10 percent ggsave, warning = FALSE, echo = FALSE, fig.width = 12, fig.height = 6}
-ggsave("../pics/US_top_income_share_1-4-5_2018_ggplot_kr.png", width = 12, height = 6.75)
+ggsave("../pics/US_top_income_share_1-4-5_2018_ggplot_kr.png", 
+       width = 12, 
+       height = 6.75)
 ```
 
 <P style="page-break-before:always">
@@ -377,25 +418,34 @@ ggplot(data = data_1_tbl,
              stroke = 1.2,
              colour = "white",
              na.rm = TRUE) +
-  theme_bw() + 
-  theme(panel.grid.major = element_line(linetype = "dotted", colour = "black")) +
-  scale_x_continuous(breaks = seq(1910, 2020, by = 10), limits = c(1910, 2020)) +
-  scale_y_continuous(breaks = seq(0, 12, by = 3), limits = c(0, 13)) +
+  theme_bw(base_family = "KoPubWorldDotum Medium") + 
+  theme(panel.grid.major = element_line(linetype = "dotted", 
+                                        colour = "black")) +
+  scale_x_continuous(breaks = seq(1910, 2020, by = 10), 
+                     limits = c(1910, 2020)) +
+  scale_y_continuous(breaks = seq(0, 12, by = 3), 
+                     limits = c(0, 13)) +
   labs(x = x_lab,
        y = y_lab,
        title = main_title_2,
        colour = "Income Fractile", 
        fill = "Income Fractile") +
-  theme(axis.title.x = element_text(family = "KoPubWorldDotum Medium")) +
-  theme(axis.title.y = element_text(family = "KoPubWorldDotum Medium")) +
-  theme(plot.title = element_text(family = "KoPubWorldDotum Medium", size = 20, hjust = 0.5)) +
+  theme(axis.title.x = element_text()) +
+  theme(axis.title.y = element_text()) +
+  theme(plot.title = element_text(size = 20, 
+                                  hjust = 0.5)) +
   theme(legend.position =  c(0.5, 0.85)) +
-  scale_colour_manual(name = "", values = c("black", "red", "blue"), labels = legend_text_2) +
-  scale_fill_manual(name = "", values = c("black", "red", "blue"), labels = legend_text_2) +
-  theme(legend.text = element_text(family = "KoPubWorldDotum Light", size = 12)) +
+  scale_colour_manual(name = "", 
+                      values = c("black", "red", "blue"), 
+                      labels = legend_text_2) +
+  scale_fill_manual(name = "", 
+                    values = c("black", "red", "blue"), 
+                    labels = legend_text_2) +
+  theme(legend.text = element_text(size = 12)) +
   guides(colour ="none") +
   theme(legend.title = element_blank()) +
-  theme(legend.background = element_rect(fill = "white", colour = "black")) +
+  theme(legend.background = element_rect(fill = "white", 
+                                         colour = "black")) +
 #  theme(legend.key = element_blank())
   annotate("text", 
            x = c(1925, 2007), 
@@ -411,7 +461,9 @@ ggplot(data = data_1_tbl,
 ```
 
 ```{r, Top 1 percent ggsave, warning = FALSE, echo = FALSE, fig.width = 12, fig.height = 6}
-ggsave("../pics/US_top_income_share_0.1-0.4-0.5_2018_ggplot_kr.png", width = 12, height = 6.75)
+ggsave("../pics/US_top_income_share_0.1-0.4-0.5_2018_ggplot_kr.png", 
+       width = 12, 
+       height = 6.75)
 ```
 
 ### Top 0.1%의 분할 
@@ -426,25 +478,34 @@ ggplot(data = data_01_tbl,
              stroke = 1.2,
              colour = "white",
              na.rm = TRUE) +
-  theme_bw() +
-  theme(panel.grid.major = element_line(linetype = "dotted", colour = "black")) +
-  scale_x_continuous(breaks = seq(1910, 2020, by = 10), limits = c(1910, 2020)) + 
-  scale_y_continuous(breaks = seq(0, 6, by = 2), limits = c(0, 7)) +
+  theme_bw(base_family = "KoPubWorldDotum Medium") +
+  theme(panel.grid.major = element_line(linetype = "dotted", 
+                                        colour = "black")) +
+  scale_x_continuous(breaks = seq(1910, 2020, by = 10), 
+                     limits = c(1910, 2020)) + 
+  scale_y_continuous(breaks = seq(0, 6, by = 2), 
+                     limits = c(0, 7)) +
   labs(x = x_lab,
        y = y_lab,
        title = main_title_3,
        colour = "Income Fractile", 
        fill = "Income Fractile") +
-  theme(axis.title.x = element_text(family = "KoPubWorldDotum Medium")) +
-  theme(axis.title.y = element_text(family = "KoPubWorldDotum Medium")) +
-  theme(plot.title = element_text(family = "KoPubWorldDotum Medium", size = 20, hjust = 0.5)) +
+  theme(axis.title.x = element_text()) +
+  theme(axis.title.y = element_text()) +
+  theme(plot.title = element_text(size = 20, 
+                                  hjust = 0.5)) +
   theme(legend.position =  c(0.5, 0.85)) +
-  scale_colour_manual(name = "", values = c("black", "blue"), labels = legend_text_3) +
-  scale_fill_manual(name = "", values = c("black", "blue"), labels = legend_text_3) +
-  theme(legend.text = element_text(family = "KoPubWorldDotum Light", size = 12)) +
+  scale_colour_manual(name = "", 
+                      values = c("black", "blue"), 
+                      labels = legend_text_3) +
+  scale_fill_manual(name = "", 
+                    values = c("black", "blue"), 
+                    labels = legend_text_3) +
+  theme(legend.text = element_text(size = 12)) +
   guides(colour ="none") +
   theme(legend.title = element_blank()) +
-  theme(legend.background = element_rect(fill = "white", colour = "black")) +
+  theme(legend.background = element_rect(fill = "white", 
+                                         colour = "black")) +
 #   theme(legend.key = element_blank())
   annotate("text", 
            x = c(1928, 2007), 
@@ -460,7 +521,9 @@ ggplot(data = data_01_tbl,
 ```
 
 ```{r, Top 0.1 percent ggsave, warning = FALSE, echo = FALSE, fig.width = 12, fig.height = 6.75}
-ggsave("../pics/US_top_income_share_0.01-0.09_2018_ggplot_kr.png", width = 12, height = 6.75)
+ggsave("../pics/US_top_income_share_0.01-0.09_2018_ggplot_kr.png", 
+       width = 12, 
+       height = 6.75)
 ```
 
 
