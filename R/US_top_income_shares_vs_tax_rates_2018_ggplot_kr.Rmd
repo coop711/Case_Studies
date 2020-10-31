@@ -15,16 +15,20 @@ options(digits = 2)
 library(knitr)
 library(magrittr)
 library(ggplot2)
+library(extrafont)
 #> 데이터 불러 들이기
 load("US_top_income_shares_vs_tax_rates_2018_v2.RData")
-# source("./theme_kr.R")
 ```
 
 이 중에서 상위 1%의 소득 점유율(`P99_100`)과 한계 소득세율(Marginal Tax Rates) 간의 관계를 살펴보자
 
 ```{r, top 1 percent shares vs MTR, echo = FALSE, fig.width = 12, fig.height = 6.75, message = FALSE}
-M1 <- ggplot(data = M_tbl, 
-             mapping = aes(x = Year, y = Values, colour = Variables, linetype = Variables)) +
+M1 <- 
+  ggplot(data = M_tbl, 
+         mapping = aes(x = Year, 
+                       y = Values, 
+                       colour = Variables, 
+                       linetype = Variables)) +
   geom_line(show.legend = FALSE) +
   geom_point(data = subset(M_tbl, M_tbl$Variables == "P99_100_z"),
              mapping = aes(x = Year, y = Values), 
@@ -39,17 +43,28 @@ M2 <- M1 +
   scale_colour_manual(values = c("red", "black")) +
   scale_linetype_manual(values = c("longdash", "solid")) 
 M3 <- M2 + 
-  theme_bw() + 
-#  theme_kr +
-  scale_x_continuous(name = "연도", breaks = seq(1910, 2020, by = 10), labels = seq(1910, 2020, by = 10)) +
-  scale_y_continuous(name = "상위 1% 소득 점유율(%)", breaks = y1_at, labels = labels1_at, limits = c(0, 1),
-                     sec.axis = sec_axis(name = "한계 소득세율(%)", trans = ~ z(., q = .), 
-                                         breaks = (y4_at + 0.05 )/1.1, labels = labels4_at)) +
+  theme_bw(base_family = "KoPubWorldDotum Medium") + 
+  scale_x_continuous(name = "연도", 
+                     breaks = seq(1910, 2020, by = 10), 
+                     labels = seq(1910, 2020, by = 10)) +
+  scale_y_continuous(name = "상위 1% 소득 점유율(%)", 
+                     breaks = y1_at, 
+                     labels = labels1_at, 
+                     limits = c(0, 1),
+                     sec.axis = sec_axis(name = "한계 소득세율(%)", 
+                                         trans = ~ z(., q = .), 
+                                         breaks = (y4_at + 0.05 )/1.1, 
+                                         labels = labels4_at)) +
   labs(title = "상위 1% 소득점유율과 한계 소득세율") +
-  annotate("text", x = c(1975, 1955), y = c(0.8, 0.35), 
+  annotate("text", 
+           x = c(1975, 1955), 
+           y = c(0.8, 0.35), 
            label = c("한계 소득세율", "상위 1% 소득점유율"), 
-           family = "", size = 6) +
-  theme(plot.title = element_text(hjust = 0.5, size = 20, margin = margin(t = 0, r = 0, b = 12, l = 0)))
+           family = "KoPubWorldDotum Medium", 
+           size = 6) +
+  theme(plot.title = element_text(hjust = 0.5, 
+                                  size = 20, 
+                                  margin = margin(t = 0, r = 0, b = 12, l = 0)))
 M3
 ``` 
 

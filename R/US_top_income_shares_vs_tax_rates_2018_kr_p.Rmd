@@ -14,6 +14,7 @@ output: html_document
 options(digits = 2)
 library(knitr)
 library(magrittr)
+library(extrafont)
 #> 데이터 불러 들이기
 load("US_top_income_shares_vs_tax_rates_2018.RData")
 ```
@@ -25,15 +26,19 @@ load("US_top_income_shares_vs_tax_rates_2018.RData")
 # png(file = "../pics/US_Top_Income_Share_vs_MTR_300dpi_en.png", width = 1280, height = 720)
 #> 왼쪽, 오른쪽 수직 축의 축 눈금을 수평하게 놓을 수 있도록 공간 조정
 par(mar = c(5, 6, 4, 6) + 0.1,
-    family = "HCR Dotum LVT")
+    family = "KoPubWorldDotum Medium")
 #> 점과 선을 함께 사용하여 소득 상위 1%의 점유율 표시.
 top_income_tax %>%
-  plot(P99_100_z ~ Year, data = ., 
-       type = "b", pch = 17, 
+  plot(P99_100_z ~ Year, 
+       data = ., 
+       type = "b", 
+       pch = 17, 
        cex = 1.2, 
        lwd = 3,
-       axes = FALSE, ann = FALSE, 
-       xlim = c(1910, 2020), ylim = c(0, 1))
+       axes = FALSE, 
+       ann = FALSE, 
+       xlim = c(1910, 2020), 
+       ylim = c(0, 1))
 #> 점유율 도표를 박스 안에
 box()
 #> 수평축 눈금 표시
@@ -41,19 +46,26 @@ seq(1910, 2020, by = 10) %>%
   axis(side = 1, at = ., labels = .)
 # axis(side = 1, at = seq(1910, 2020, by = 10), labels = seq(1910, 2020, by = 10))
 #> 상위 1% 소득점유율을 왼편 수직축에 표시. 수직축 눈금을 표시하기 위하여 선형변환 함수를 이용하되, 실제 표시되는 눈금은 상위 1% 소득점유율의 실제 값이 표시될 수 있도록 최소값과 최대값을 범위로 하고 중간에는 10%, 17%, 20%만 나오도록 함. 
-y1_at <- top_income_tax$P99_100 %>%
+y1_at <- 
+  top_income_tax$P99_100 %>%
   z(., c(10, 17, 20)) %>%
   c(0, ., 1)
 # y1_at <- c(0, z(top_income_tax$P99_100, c(10, 17, 20)), 1)
-labels1_at <- top_income_tax$P99_100 %>%
+labels1_at <- 
+  top_income_tax$P99_100 %>%
   min %>%
   c(., seq(10, 20, by = 5), max(top_income_tax$P99_100)) %>%
   format(digits = 2, nsmall = 1)
 # labels1_at <- format(c(min(top_income_tax$P99_100), seq(10, 20, by = 5), max(top_income_tax$P99_100)),
 #                     digits = 2, nsmall = 1)
-axis(side = 2, at = y1_at, labels = labels1_at, las = 1)
+axis(side = 2, 
+     at = y1_at, 
+     labels = labels1_at, 
+     las = 1)
 #> 왼편 수직축 가장자리에 석 줄을 띠워 놓고 축 이름 표시.
-mtext("상위 1% 소득점유율(%)", side = 2, line = 3)
+mtext("상위 1% 소득점유율(%)", 
+      side = 2, 
+      line = 3)
 #> 범위를 0에서 1사이로 변환한 한계소득세율을 도표에 추가.
 top_income_tax %>%
   lines(Marginal_z ~ Year, data = ., 
@@ -73,14 +85,25 @@ labels4_at <- top_income_tax$Marginal %>%
   format(digits = 2, nsmall = 1)
 # labels4_at <- format(c(min(top_income_tax$Marginal), seq(20, 80, by = 20), max(top_income_tax$Marginal)),
 #                     digits = 2, nsmall = 1)
-axis(side = 4, at = y4_at, labels = labels4_at, las = 1)
+axis(side = 4, 
+     at = y4_at, 
+     labels = labels4_at, 
+     las = 1)
 #> 오른편 수직축의 이름을 석 줄 띄워 표시.
-mtext("최고 한계세율(%)", side = 4, line = 3)
+mtext("최고 한계세율(%)", 
+      side = 4, 
+      line = 3)
 #> 메인 타이틀 작성
-title(main = "상위 1% 소득점유율과 최고 한계세율", xlab = "연도", cex.main = 1.8)
+title(main = "상위 1% 소득점유율과 최고 한계세율", 
+      xlab = "연도", 
+      cex.main = 1.8)
 #> 어느 선이 어느 변수인지 텍스트로 표시
-text(x = 1953, y = 0.9, labels = "최고 한계세율", cex = 1.2)
-text(x = 1964, y = 0.2, labels = "상위 1% 소득점유율", cex = 1.2)
+text(x = 1953, y = 0.9, 
+     labels = "최고 한계세율", 
+     cex = 1.2)
+text(x = 1964, y = 0.2, 
+     labels = "상위 1% 소득점유율", 
+     cex = 1.2)
 #> 외부 그림 파일로 저장.
 # dev.copy(png, file ="../pics/US_Top_Income_Share_vs_MTR_kr.png", width = 960, height = 540)
 dev.copy(png, file ="../pics/US_Top_Income_Share_vs_MTR_kr_wide.png", width = 960, height = 540)
@@ -93,7 +116,7 @@ dev.off()
 # png(file = "../pics/US_Top_Income_Share_vs_MTR_72dpi_en.png", width = 864, height = 486)
 # png(file = "../pics/US_Top_Income_Share_vs_MTR_300dpi_en.png", width = 1280, height = 720)
 par(mar = c(5, 6, 4, 6) + 0.1,
-    family = "HCR Dotum LVT")
+    family = "KoPubWorldDotum Medium")
 plot(P99_100_z ~ Year, data = top_income_tax, 
      type = "b", pch = 17, 
      cex = 1.2, 
@@ -133,7 +156,7 @@ dev.off()
 # png(file = "../pics/US_Top_Income_Growth_vs_MTR_72dpi_en.png", width = 864, height = 486)
 # png(file = "../pics/US_Top_Income_Growth_vs_MTR_300dpi_en.png", width = 1280, height = 720)
 par(mar = c(5, 6, 4, 6) + 0.1,
-    family = "HCR Dotum LVT")
+    family = "KoPubWorldDotum Medium")
 plot(Rate_99_z ~ Year, data = top_income_tax, type = "b", pch = 24, col = "black", bg = "black", axes = FALSE, ann = FALSE, xlim = c(1910, 2020), ylim = c(0, 1))
 lines(Rate_1_z ~ Year, data = top_income_tax, type = "b", pch = 24, col = "black", bg = "white")
 box()
@@ -168,7 +191,7 @@ dev.off()
 # png(file = "../pics/US_Income_Growth_vs_MTR_72dpi_K.png", width = 864, height = 486)
 # png(file = "../pics/US_Income_Growth_vs_MTR_300dpi_K.png", width = 1280, height = 720)
 par(mar = c(5, 6, 4, 6) + 0.1,
-    family = "HCR Dotum LVT")
+    family = "KoPubWorldDotum Medium")
 plot(Rate_99_K_z ~ Year, data = top_income_tax, type = "b", pch = 24, col = "black", bg = "black", axes = FALSE, ann = FALSE, xlim = c(1910, 2020), ylim = c(0, 1))
 lines(Rate_1_K_z ~ Year, data = top_income_tax, type = "b", pch = 24, col = "black", bg = "white")
 box()
