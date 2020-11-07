@@ -69,9 +69,16 @@ class(US_top_income_shares_18$Year) <- "integer"
 ```
 
 
-<!--작업을 마친 자료파일은 `US_top_income_shares_15`이며, 이 자료의 구조와 앞의 몇 열의 값은 다음과 같다.-->
+<!--작업을 마친 자료파일은 `US_top_income_shares_18`이며, 이 자료의 구조와 앞의 몇 열의 값은 다음과 같다.-->
 
 ```{r, data structure, echo = FALSE}
 library(knitr)
 kable(format(US_top_income_shares_18, digits = 1, nsmall = 1))
+```
+
+## Save Data
+
+```{r, save.image}
+saveRDS(US_top_income_shares_18, file = "./US_top_income.RDS")
+save.image(file = "US_top_income_shares_2018.RData")
 ```
