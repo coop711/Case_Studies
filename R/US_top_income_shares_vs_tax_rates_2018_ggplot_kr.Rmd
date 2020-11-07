@@ -31,7 +31,8 @@ M1 <-
                        linetype = Variables)) +
   geom_line(show.legend = FALSE) +
   geom_point(data = subset(M_tbl, M_tbl$Variables == "P99_100_z"),
-             mapping = aes(x = Year, y = Values), 
+             mapping = aes(x = Year, 
+                           y = Values), 
              shape = 24, 
              fill = "black",
              size = 3, 
@@ -214,7 +215,8 @@ RK3 <- RK2 +
            x = 1925, 
            y = 0.9, 
            label = "한계 소득세율", 
-           family = "", size = 6) +
+           family = "KoPubWorldDotum Medium", 
+           size = 6) +
   theme(plot.title = element_text(hjust = 0.5, size = 20),
         legend.position = c(0.9, 0.1),
         legend.title = element_blank(),
