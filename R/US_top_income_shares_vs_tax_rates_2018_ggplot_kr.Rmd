@@ -142,8 +142,9 @@ R2 <- R1 +
   scale_linetype_manual(values = c("longdash", "solid", "solid"), 
                         guide = FALSE) +
   scale_shape_manual(name = "", 
-                     labels = c("하위99%", "상위1%"), 
-                     values = c(17, 24))
+                     labels = c("상위1%", "하위99%"), 
+                     values = c(24, 17),
+                     guide = guide_legend(reverse = TRUE))
 R3 <- R2 + 
   theme_bw(base_family = "KoPubWorldDotum Medium") + 
   scale_x_continuous(name = "연도", 
@@ -195,8 +196,10 @@ RK2 <- RK1 +
                       guide = FALSE) +
   scale_linetype_manual(values = c("longdash", "solid", "solid"), 
                         guide = FALSE) +
-  scale_shape_manual(name = "", labels = c("하위99%", "상위1%"), 
-                     values = c(17, 24))
+  scale_shape_manual(name = "", 
+                     labels = c("상위1%", "하위99%"), 
+                     values = c(24, 17),
+                     guide = guide_legend(reverse = TRUE))
 RK3 <- RK2 + 
   theme_bw(base_family = "KoPubWorldDotum Medium") + 
   scale_x_continuous(name = "연도",
