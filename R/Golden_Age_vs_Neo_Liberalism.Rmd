@@ -13,12 +13,15 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, data, echo = FALSE}
 library(knitr)
-Fifth <- factor(5:1, 
-                levels = 5:1, 
-                labels = paste(c("Top", "Fourth", "Third", "Second", "Bottom"), "Fifth"))
+Fifth <- 
+  factor(5:1, 
+         levels = 5:1, 
+         labels = paste(c("Top", "Fourth", "Third", "Second", "Bottom"), "Fifth"))
 Golden_Age <- c(99, 115, 113, 101, 122)
 Neo_Liberal <- c(55, 25, 15, 7, -4)
 Income_Gains_df <- data.frame(Fifth, Golden_Age, Neo_Liberal)
+df <- data.frame(Fifth = paste(c("Top", "Fourth", "Third", "Second", "Bottom"), "Fifth"), Golden_Age, Neo_Liberal)
+df
 # str(Income_Gains_df)
 kable(Income_Gains_df)
 ```
@@ -43,13 +46,14 @@ title(main = title_1,
       cex.main = 2.0)
 abline(v = 0, 
        lwd = 5)
-text(5, x1, 
+text(x = 5, 
+     y = x1, 
      labels = Fifth, 
      cex = 1, 
      adj = 0)
-text(Golden_Age + 10, 
-     x1, 
-     labels = paste(Golden_Age, "%", sep =""), 
+text(x = Golden_Age + 10, 
+     y = x1, 
+     labels = paste0(Golden_Age, "%"), 
      cex = 1)
 x2 <- barplot(Neo_Liberal, 
               horiz = TRUE, 
@@ -65,8 +69,9 @@ title(main = title_2,
       cex.main = 2.0)
 abline(v = 0, 
        lwd = 5)
-text(Neo_Liberal + c(rep(5, 4), 10), 
-     x2, labels = paste(Neo_Liberal, "%", sep = ""), 
+text(x = Neo_Liberal + c(rep(5, 4), 10), 
+     y = x2, 
+     labels = paste0(Neo_Liberal, "%"), 
      cex = 1)
 # dev.copy(png, "../pics/income_increase_by_times.png", width = 960, height = 480)
 ```
@@ -76,10 +81,14 @@ text(Neo_Liberal + c(rep(5, 4), 10),
 ## 한글화
 
 ```{r, data in kr, echo = FALSE}
-Fifth_kr <- factor(5:1, levels = 5:1, labels = paste(5:1, "분위"))
+Fifth_kr <- 
+  factor(5:1, 
+         levels = 5:1, 
+         labels = paste(5:1, "분위"))
 # Golden_Age <- c(99, 115, 113, 101, 122)
 # Neo_Liberal <- c(55, 25, 15, 7, -4)
-Income_Gains_df_kr <- data.frame(Fifth_kr, Golden_Age, Neo_Liberal)
+Income_Gains_df_kr <- 
+  data.frame(Fifth_kr, Golden_Age, Neo_Liberal)
 # str(Income_Gains_df_kr)
 kable(Income_Gains_df_kr)
 ```
@@ -104,13 +113,14 @@ title(main = title_1_kr,
       cex.main = 2.0)
 abline(v = 0, 
        lwd = 5)
-text(5, x1_kr, 
+text(x = 5, 
+     y = x1_kr, 
      labels = Fifth_kr, 
      cex = 1, 
      adj = 0)
-text(Golden_Age - 10, 
-     x1, 
-     labels = paste(Golden_Age, "%", sep =""), 
+text(x = Golden_Age - 10, 
+     y = x1, 
+     labels = paste0(Golden_Age, "%"), 
      cex = 1)
 x2_kr <- barplot(Neo_Liberal, 
                  horiz = TRUE, 
@@ -128,7 +138,7 @@ abline(v = 0,
        lwd = 5)
 text(Neo_Liberal + c(rep(5, 4), 10), 
      x2_kr, 
-     labels = paste(Neo_Liberal, "%", sep = ""),
+     labels = paste0(Neo_Liberal, "%"),
      cex = 1)
 # dev.copy(png, "../pics/income_increase_by_times_kr.png", width = 960, height = 480)
 ```
