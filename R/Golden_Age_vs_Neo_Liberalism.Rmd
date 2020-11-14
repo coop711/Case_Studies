@@ -20,8 +20,6 @@ Fifth <-
 Golden_Age <- c(99, 115, 113, 101, 122)
 Neo_Liberal <- c(55, 25, 15, 7, -4)
 Income_Gains_df <- data.frame(Fifth, Golden_Age, Neo_Liberal)
-df <- data.frame(Fifth = paste(c("Top", "Fourth", "Third", "Second", "Bottom"), "Fifth"), Golden_Age, Neo_Liberal)
-df
 # str(Income_Gains_df)
 kable(Income_Gains_df)
 ```

@@ -1,0 +1,143 @@
+---
+title: "Golden Age vs Neo Liberalism Period"
+author: "coop711"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data
+
+```{r, data, echo = FALSE}
+library(knitr)
+Fifth <- 
+  factor(5:1, 
+         levels = 5:1, 
+         labels = paste(c("Top", "Fourth", "Third", "Second", "Bottom"), "Fifth"))
+Golden_Age <- c(99, 115, 113, 101, 122)
+Neo_Liberal <- c(55, 25, 15, 7, -4)
+Income_Gains_df <- data.frame(Fifth, Golden_Age, Neo_Liberal)
+# str(Income_Gains_df)
+kable(Income_Gains_df)
+```
+
+## ggplot
+
+```{r, barplots, echo = FALSE, fig.width = 12, fig.height = 6}
+library(ggplot2)
+library(grid)
+library(gridExtra)
+g1 <- 
+  ggplot(data = Income_Gains_df) +
+  geom_bar(aes(x = Fifth, 
+               y = Golden_Age), 
+           stat = "identity", 
+           width = 0.7,
+           fill = "tan") +
+  geom_hline(yintercept = 0, size = 2) +
+  geom_text(aes(x = Fifth, 
+                y = 5, 
+                label = Fifth, 
+                hjust = 0)) +
+  geom_text(aes(x = Fifth, 
+                y = Golden_Age + 5, 
+                label = paste0(Golden_Age, "%"))) +
+  labs(title = "Golden Age\n1947 ~ 1979") +
+  theme_void() +
+  coord_flip() +
+  theme(plot.title = element_text(size = 20, hjust = 0.5))
+g2 <- 
+  ggplot(data = Income_Gains_df) +
+  geom_bar(aes(x = Fifth, 
+               y = Neo_Liberal), 
+           stat = "identity", 
+           width = 0.7,
+           fill = "cadetblue") +
+  geom_hline(yintercept = 0, size = 2) +
+  geom_text(aes(x = Fifth, 
+                y = -15, 
+                label = Fifth, 
+                hjust = 0)) +
+  geom_text(aes(x = Fifth, 
+                y = Neo_Liberal + c(rep(2.5, 4), 7), 
+                label = paste0(Neo_Liberal, "%"))) +
+  labs(title = "Neo Liberalism\n1980 ~ 2009") +
+  theme_void() +
+  coord_flip() +
+  theme(plot.title = element_text(size = 20, hjust = 0.5))
+grid.arrange(g1, g2, ncol = 2)
+```
+
+<P style = "page-break-before:always">
+
+## 한글화
+
+```{r, data in kr, echo = FALSE}
+Fifth_kr <- 
+  factor(5:1, 
+         levels = 5:1, 
+         labels = paste(5:1, "분위"))
+# Golden_Age <- c(99, 115, 113, 101, 122)
+# Neo_Liberal <- c(55, 25, 15, 7, -4)
+Income_Gains_df_kr <- 
+  data.frame(Fifth_kr, Golden_Age, Neo_Liberal)
+# str(Income_Gains_df_kr)
+kable(Income_Gains_df_kr)
+```
+
+## ggplot
+
+```{r, barplots in kr, echo = FALSE, fig.width = 12, fig.height = 6}
+g1_kr <- 
+  ggplot(data = Income_Gains_df_kr) +
+  geom_bar(aes(x = Fifth_kr, 
+               y = Golden_Age), 
+           stat = "identity", 
+           width = 0.7,
+           fill = "tan") +
+  geom_hline(yintercept = 0, size = 2) +
+  geom_text(aes(x = Fifth_kr, 
+                y = 5, 
+                label = Fifth_kr, 
+                family = "KoPubWorldDotum Medium",
+                hjust = 0)) +
+  geom_text(aes(x = Fifth_kr, 
+                y = Golden_Age + 5, 
+                label = paste0(Golden_Age, "%"))) +
+  labs(title = "황금기\n1947 ~ 1979") +
+  theme_void(base_family = "KoPubWorldDotum Medium") +
+  coord_flip() +
+  theme(plot.title = element_text(family = "KoPubWorldDotum Medium", size = 20, hjust = 0.5))
+g2_kr <- 
+  ggplot(data = Income_Gains_df_kr) +
+  geom_bar(aes(x = Fifth_kr, 
+               y = Neo_Liberal), 
+           stat = "identity", 
+           width = 0.7,
+           fill = "cadetblue") +
+  geom_hline(yintercept = 0, size = 2) +
+  geom_text(aes(x = Fifth_kr, 
+                y = -10, 
+                label = Fifth_kr, 
+                family = "KoPubWorldDotum Medium",
+                hjust = 0)) +
+  geom_text(aes(x = Fifth_kr, 
+                y = Neo_Liberal + c(rep(2.5, 4), 7), 
+                label = paste0(Neo_Liberal, "%"))) +
+  labs(title = "신자유주의\n1980 ~ 2009") +
+  theme_void() +
+  coord_flip() +
+  theme(plot.title = element_text(family = "KoPubWorldDotum Medium",size = 20, hjust = 0.5))
+grid.arrange(g1_kr, g2_kr, ncol = 2)
+```
+
+## Save
+
+```{r, save, echo = FALSE}
+save.image("./G_age_N_liberal_ggplot.RData")
+```
+
+
