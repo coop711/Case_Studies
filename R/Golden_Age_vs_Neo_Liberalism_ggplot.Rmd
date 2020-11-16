@@ -75,7 +75,8 @@ grid.arrange(g1, g2, ncol = 2)
 
 ## 한글화
 
-```{r, data in kr, echo = FALSE}
+```{r, data in kr, echo = FALSE, message = FALSE}
+library(extrafont)
 Fifth_kr <- 
   factor(5:1, 
          levels = 5:1, 
