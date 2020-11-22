@@ -1,0 +1,27 @@
+---
+title: "Productivity_vs_Wages : Data"
+author: "coop711"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+```
+
+## Data
+
+```{r, data, echo = FALSE, results = 'markup'}
+prod_wage <- read.table("../data/productivity_wages.txt", header = TRUE, stringsAsFactors = FALSE)
+prod_wage_2 <- read.table("../data/productivity_median_wages.txt", header = TRUE, stringsAsFactors = FALSE)
+kable(prod_wage)
+kable(prod_wage_2)
+# str(prod_wage)
+```
+
+## Save
+
+```{r, save, echo = FALSE}
+save.image("./prod_wage.RData")
+```
