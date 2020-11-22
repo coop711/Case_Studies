@@ -27,6 +27,7 @@ kable(Income_Gains_df)
 ## Bar Plots
 
 ```{r, barplots, echo = FALSE, fig.width = 12, fig.height = 6}
+library(extrafont)
 par(mfrow = c(1, 2), mai = c(1.0, 1.8, 0.8, 0.4) + 0.2)
 # par(mfrow = c(1, 2))
 x1 <- barplot(Golden_Age, 
