@@ -83,9 +83,12 @@ ggplot(data = hh_econ_10th_melt,
        y = y_lab, 
        fill = "Income or Expenses") + 
   theme(legend.position = c(0.2, 0.8)) + 
-  scale_fill_grey(start = 1/6, end = 5/6) + 
+#  scale_fill_grey(start = 1/6, end = 5/6) + 
   scale_colour_grey(start = 1/6, end = 5/6) + 
   scale_fill_manual(values = c("blue", "cyan", "red")) + 
-  theme(legend.key = element_blank())
+  theme(plot.title = element_text(hjust = 0.5, size = 20),
+        legend.title = element_blank(),
+        legend.box.background = element_rect(fill = "white",
+                                             colour = "black"))
 ggsave("../pics/no_trickle_down_effects_10th.png")
 ```

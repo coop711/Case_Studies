@@ -12,7 +12,7 @@ options(width = 180)
 
 ## Data
 
-```{r, load}
+```{r, load, message = FALSE}
 library(knitr)
 library(extrafont)
 load("./hh_econ_10th.RData")

@@ -13,7 +13,6 @@ options(width = 180)
 ## Data
 
 ```{r, library}
-library(xlsx)
 library(readxl)
 library(magrittr)
 library(knitr)
@@ -41,9 +40,11 @@ hh_econ_10th_11 <-
 str(hh_econ_10th_11)
 kable(hh_econ_10th_11, 
       row.names = FALSE, 
-      col.names = paste(1:10, "분위"), caption = "소득 분위별 가계수지(2011년)")
+      col.names = paste(1:10, "분위"), 
+      caption = "소득 분위별 가계수지(2011년)")
 dimnames(hh_econ_10th_11) <- 
-  list(c("소득", "소비지출", "처분가능소득"), paste0(1:10, "분위"))
+  list(c("소득", "소비지출", "처분가능소득"), 
+       paste0(1:10, "분위"))
 kable(hh_econ_10th_11, 
       caption = "소득 분위별 가계수지(2011년)")
 kable(hh_econ_10th_11_2 <- 
