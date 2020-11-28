@@ -1,0 +1,59 @@
+---
+title: "Household Economy"
+author: "coop711"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(width = 180)
+```
+
+## Data
+
+```{r, library}
+library(xlsx)
+library(readxl)
+library(magrittr)
+library(knitr)
+```
+
+```{r, Data}
+hh_econ_10th <-
+  read_excel("../data/20151102192605.xlsx",
+             range = "C5:AF18",
+             col_names = FALSE)
+hh_econ_10th %<>%
+  data.frame
+str(hh_econ_10th)
+rownames(hh_econ_10th) <- 
+  c(2003:2014, "15_14", "15_24")
+colnames(hh_econ_10th) <- 
+  paste0(rep(1:10, each = 3), c("분위_소득", "분위_소비지출", "분위_처분가능소득"))
+str(hh_econ_10th)
+kable(hh_econ_10th[, 1:15])
+kable(hh_econ_10th[, 16:30])
+str(hh_econ_10th)
+hh_econ_10th_11 <- 
+  matrix(as.numeric(hh_econ_10th["2011", ]), 
+         nrow = 3)
+str(hh_econ_10th_11)
+kable(hh_econ_10th_11, 
+      row.names = FALSE, 
+      col.names = paste(1:10, "분위"), caption = "소득 분위별 가계수지(2011년)")
+dimnames(hh_econ_10th_11) <- 
+  list(c("소득", "소비지출", "처분가능소득"), paste0(1:10, "분위"))
+kable(hh_econ_10th_11, 
+      caption = "소득 분위별 가계수지(2011년)")
+kable(hh_econ_10th_11_2 <- 
+        hh_econ_10th_11[c(1, 3, 2), ])
+```
+
+## Save
+
+```{r, save}
+save.image("./hh_econ_10th.RData")
+```
+
+
