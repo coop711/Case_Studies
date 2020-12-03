@@ -112,7 +112,7 @@ text_lab <- end_df %>%
        y = y_lab) + 
   theme_bw() +
   theme(plot.title = element_text(hjust = 0.5, size = 20)))
-# ggsave("../pics/Productivity_vs_Wages_ggplot.png", width = 8, height = 6)
+ggsave("../pics/Productivity_vs_Wages_ggplot.png", width = 8, height = 6)
 ```
 
 <P style = "page-break-before:always"/>
@@ -176,7 +176,7 @@ blues_pal <- brewer.pal(9, "Blues")
        y = y_lab_2) + 
   theme_bw() +
   theme(plot.title = element_text(hjust = 0.5, size = 20)))
-# ggsave("../pics/Productivity_vs_Wages_2_ggplot.png", width = 8, height = 6)
+ggsave("../pics/Productivity_vs_Wages_2_ggplot.png", width = 8, height = 6)
 ```
 
 <!--

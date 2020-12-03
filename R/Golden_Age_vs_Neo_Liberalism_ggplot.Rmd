@@ -68,7 +68,8 @@ g2 <-
   theme_void() +
   coord_flip() +
   theme(plot.title = element_text(size = 20, hjust = 0.5))
-grid.arrange(g1, g2, ncol = 2)
+ga <- grid.arrange(g1, g2, ncol = 2)
+ggsave("../pics/Golden_Age_vs_New_Liberalism_ggplot.png", ga)
 ```
 
 <P style = "page-break-before:always">
@@ -132,7 +133,8 @@ g2_kr <-
   theme_void() +
   coord_flip() +
   theme(plot.title = element_text(family = "KoPubWorldDotum Medium",size = 20, hjust = 0.5))
-grid.arrange(g1_kr, g2_kr, ncol = 2)
+ga_kr <- grid.arrange(g1_kr, g2_kr, ncol = 2)
+ggsave("../pics/Golden_Age_vs_New_Liberalism_ggplot_kr.png", ga_kr)
 ```
 
 ## Save

@@ -132,7 +132,7 @@ text(x = c(1924, 2007),
      pos = 3)
 text(x = c(1935, 1965, 2018), 
      y = c(22, 8, 18), 
-     label = times_label, 
+     labels = times_label, 
      cex = 1.5, 
      col = "red")
 dev.copy(png, 
