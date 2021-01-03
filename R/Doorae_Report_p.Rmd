@@ -112,21 +112,41 @@ tbl <- doorae %$%
 #   table(.$"공동체상태", .$"조직형태", 
 #         dnn = c("공동체상태", "조직형태")) %>%
 #   t 
-tbl_df <- tbl %>%    #> (깔끔한) 데이터 프레임으로 전환.
+#> 막대의 중간 위치 좌표 잡는 사용자 함수 설정
+pos <- function(x){
+    cumsum(x) - x / 2
+}
+#> 깔끔한 데이터 프레임 전환
+tbl_df <- tbl %>%    
   as.data.frame
-N <- length(levels(tbl_df[, 1])) #> fill 로 표현할 factor의 level 수효
-tbl_p_df <- tbl %>%   #> 각 조합의 비율 계산 
-  prop.table %>%
-  as.data.frame
-tbl_p_m <- tbl_df %>%  #> x 축에 표시할 factor 비율의 주변 합 계산
+#> p 행열 계산에서 tbl_df를 입력할 것에 대비하여 코드 수정하고,
+#> (깔끔한) 데이터 프레임으로 전환.
+tbl_p_df <- tbl_df %>%
   `[`(, 3) %>%
-  tapply(tbl_df[, 2], sum) %>%
-  prop.table
-tbl_p_df$width <- tbl_p_m[match(tbl_p_df[, 2], names(tbl_p_m))] #> tbl_p_df 에 폭 벡터 추가
-tbl_p_df$height <- tbl %>%       #> tbl_p_df 에 높이 벡터 추가
-  prop.table(margin = 2) %>%
-  as.data.frame %>%
-  `[`(, 3)
+  proportions %>%
+  data.frame(tbl_df[1:2], "Prop" = .)
+#> fill 로 표현할 factor의 level 수효
+N <- length(levels(tbl_df[, 1])) 
+# tbl_p_df <- tbl %>%   #> 각 조합의 비율 계산 
+#   prop.table %>%
+#   as.data.frame
+#> x 축에 표시할 factor 비율의 주변 합 계산 (아래 계산에서만 필요함)
+# tbl_p_m <- tbl_df %>%  
+#   `[`(, 3) %>%
+#   tapply(tbl_df[, 2], sum) %>%
+#   prop.table
+#> mosaic plot의 폭 계산
+tbl_p_df$width <- tapply(tbl_p_df[, 3], tbl_p_df[, 2], sum) %>% 
+    rep(each = N)
+# tbl_p_df$width <- tbl_p_m[match(tbl_p_df[, 2], names(tbl_p_m))] (코드 일관성 유지)
+#> 막대의 높이 벡터 계산 (코드 일관성 유지)
+tbl_p_df$height <- unlist(tapply(tbl_p_df[, 3], 
+                                   tbl_p_df[, 2], 
+                                   proportions))
+# tbl_p_df$height <- tbl %>%       
+#   prop.table(margin = 2) %>%
+#   as.data.frame %>%
+#  `[`(, 3)
 #> 추가 정보로 표시할 라벨의 좌표 계산
 tbl_p_df$label_height <- unlist(tapply(tbl_p_df$height, 
                                        tbl_p_df[, 2], 
@@ -135,11 +155,13 @@ tbl_p_df$label_height <- unlist(tapply(tbl_p_df$height,
 tbl_p_df$y_breaks <- unlist(tapply(tbl_p_df$height, 
                                    tbl_p_df[, 2], 
                                    cumsum))
-#> x 축에 표시할 눈금의 좌표 계산
-x_center <- cumsum(tbl_p_m) - tbl_p_m / 2
 #> x 축에 표시할 눈금의 좌표를 tbl_p_df  데이터 프레임에 벡터로 추가
-tbl_p_df$center <- x_center[match(tbl_p_df[, 2], names(x_center))]
-#> ggeom_bar  로 그리기
+tbl_p_df$center <- tapply(tbl_p_df[, 3], tbl_p_df[, 2], sum) %>%
+    pos %>%
+    rep(each = N)
+# x_center <- cumsum(tbl_p_m) - tbl_p_m / 2
+# tbl_p_df$center <- x_center[match(tbl_p_df[, 2], names(x_center))]
+#> geom_bar  로 그리기
 m1 <- ggplot(data = tbl_p_df, 
              aes(x = center, y = height, width = width)) + 
   geom_bar(aes(fill = tbl_df[, 1]), 
@@ -158,6 +180,8 @@ m4 <- m3 +
             label = format(ifelse(tbl_df[, 3] == 0, "", tbl_df[, 3]), 
                            big.mark = ","), 
             position = position_identity())
+##########
+tbl_p_m <- tapply(tbl_p_df[, 3], tbl_p_df[, 2], sum)
 x_breaks <- c(0, ifelse(cumsum(tbl_p_m) < 0.1, 0.0, cumsum(tbl_p_m)))
 x_label <- format(x_breaks * 100, 
                   digits = 3, 
@@ -166,6 +190,7 @@ y_breaks <- c(0, tbl_p_df$y_breaks)
 y_label <- format(y_breaks * 100,
                   digits = 2,
                   nsmall = 1)
+##########
 m5 <- m4 + 
   scale_x_continuous(name = "공동체상태", 
                      breaks = x_breaks, 
@@ -184,7 +209,7 @@ m6 <- m5 +
 m6
 ```
 
-```{r, echo = FALSE, fig.width = 6, fig.height = 4.2}
+```{r, echo = FALSE,, fig.width = 6, fig.height = 4.2}
 source("./mosaic_gg.R")
 tbl %>%
   mosaic_gg(base_family = "KoPubWorldDotum Medium",

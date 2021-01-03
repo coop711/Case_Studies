@@ -138,7 +138,7 @@ tbl_p_df$y_breaks <- unlist(tapply(tbl_p_df$height,
 x_center <- cumsum(tbl_p_m) - tbl_p_m / 2
 #> x 축에 표시할 눈금의 좌표를 tbl_p_df  데이터 프레임에 벡터로 추가
 tbl_p_df$center <- x_center[match(tbl_p_df[, 2], names(x_center))]
-#> ggeom_bar  로 그리기
+#> geom_bar  로 그리기
 m1 <- ggplot(data = tbl_p_df, 
              aes(x = center, y = height, width = width)) + 
   geom_bar(aes(fill = tbl_df[, 1]), 
@@ -151,7 +151,7 @@ m2 <- m1 +
 m3 <- m2 + 
   geom_text(aes(x = center, y = 1.05), 
             label = tbl_p_df[, 2], 
-            family = "HCR Dotum LVT")
+            family = "KoPubWorldDotum Medium")
 m4 <- m3 + 
   geom_text(aes(x = center, y = label_height), 
             label = format(ifelse(tbl_df[, 3] == 0, "", tbl_df[, 3]), 
@@ -175,17 +175,17 @@ m5 <- m4 +
   scale_fill_brewer(name = "조직형태") +
   ggtitle("공동체상태와 조직형태")
 m6 <- m5 + 
-  theme(title = element_text(family = "HCR Dotum LVT"),
-        axis.title = element_text(family = "HCR Dotum LVT"),
-        legend.text = element_text(family = "HCR Dotum LVT"),
-        legend.title = element_text(family = "HCR Dotum LVT"))
+  theme(title = element_text(family = "KoPubWorldDotum Medium"),
+        axis.title = element_text(family = "KoPubWorldDotum Medium"),
+        legend.text = element_text(family = "KoPubWorldDotum Medium"),
+        legend.title = element_text(family = "KoPubWorldDotum Medium"))
 m6
 ```
 
-```{r, echo = FALSE, fig.width = 6, fig.height = 4.2}
-source("./mosaic_gg.R")
+```{r, echo = FALSE, fig.width = 6, fig.height = 4.2, message = FALSE}
+source("./mosaic_gg_old_v2.R")
 tbl %>%
-  mosaic_gg(base_family = "HCR Dotum LVT",
+  mosaic_gg(base_family = "KoPubWorldDotum Medium",
             ggtitle = "공동체상태와 조직형태",
             xlab = "공동체상태",
             ylab = "조직형태", 
@@ -196,11 +196,11 @@ tbl %>%
 * 조직형태와 공동체상태
     * 이는 거꾸로 법인격을 갖춘 공동체사업체 중에 경영개선 상태에 들어간 비율이 압도적으로 많다는 것으로 이해할 수도 있음.
 
-```{r, echo = FALSE, fig.width = 6, fig.height = 4.2}
+```{r, echo = FALSE, fig.width = 6, fig.height = 4.2, message = FALSE}
 doorae %$%
   table(.$"공동체상태", .$"조직형태", 
         dnn = c("공동체상태", "조직형태")) %>%
-  mosaic_gg(base_family = "HCR Dotum LVT",
+  mosaic_gg(base_family = "KoPubWorldDotum Medium",
             ggtitle = "조직형태와 공동체상태",
             xlab = "조직형태", 
             ylab = "공동체상태",
@@ -354,11 +354,11 @@ doorae %>%
 
 ### 모자이크 플롯
 
-```{r, echo=FALSE, fig.width = 6, fig.height = 4.5}
+```{r, echo=FALSE, fig.width = 6, fig.height = 4.5, message = FALSE}
 doorae %$%
   table(.$"공동체상태", .$"법인유형", dnn = c("공동체상태", "조직유형")) %>%
   t %>%
-  mosaic_gg(base_family = "HCR Dotum LVT",
+  mosaic_gg(base_family = "KoPubWorldDotum Medium",
             ggtitle = "공동체상태와 조직유형",
             xlab = "공동체상태", 
             ylab = "조직유형",
@@ -400,12 +400,12 @@ doorae %$%
 
 ### 모자이크 플롯
 
-```{r, echo=FALSE, fig.width = 6, fig.height = 4.5}
+```{r, echo=FALSE, fig.width = 6, fig.height = 4.5, message = FALSE}
 doorae %$%
   table(.$"공동체상태", .$"사업아이템", 
         dnn = c("공동체상태", "사업아이템")) %>%
   t %>%
-  mosaic_gg(base_family = "HCR Dotum LVT",
+  mosaic_gg(base_family = "KoPubWorldDotum Medium",
             ggtitle = "공동체상태와 사업아이템",
             xlab = "공동체상태", 
             ylab = "사업아이템",
@@ -450,10 +450,10 @@ box_2 <- box_1 +
   ggtitle("공동체상태와 업력") + 
   xlab("공동체상태") + 
   ylab("업력(년)") +
-  theme(plot.title = element_text(family = "HCR Dotum LVT"),
-        axis.text.x = element_text(family = "HCR Dotum LVT"),
-        axis.title.x = element_text(family = "HCR Dotum LVT"),
-        axis.title.y = element_text(family = "HCR Dotum LVT"))
+  theme(plot.title = element_text(family = "KoPubWorldDotum Medium"),
+        axis.text.x = element_text(family = "KoPubWorldDotum Medium"),
+        axis.title.x = element_text(family = "KoPubWorldDotum Medium"),
+        axis.title.y = element_text(family = "KoPubWorldDotum Medium"))
 # box_2
 box_3 <- box_2 + 
   scale_x_discrete(labels = c("창업준비", "경영개선")) 
@@ -464,7 +464,7 @@ box_4 <- box_3 +
            y = c(11.7, 12.4), 
            label = c("예그리나", "아름다운인제관광"), 
            size = 3.5, 
-           family = "HCR Dotum LVT")
+           family = "KoPubWorldDotum Medium")
 box_4
 ```
 
@@ -492,11 +492,11 @@ ecdf_5 <- ecdf_3 +
   ggtitle("공동체상태와 업력") +
   xlab("업력(년)") +
   ylab("분위") +
-  theme(plot.title = element_text(family = "HCR Dotum LVT"),
-        axis.title.x = element_text(family = "HCR Dotum LVT"),
-        axis.title.y = element_text(family = "HCR Dotum LVT"),
-        legend.title = element_text(family = "HCR Dotum LVT"),
-        legend.text = element_text(family = "HCR Dotum LVT"))
+  theme(plot.title = element_text(family = "KoPubWorldDotum Medium"),
+        axis.title.x = element_text(family = "KoPubWorldDotum Medium"),
+        axis.title.y = element_text(family = "KoPubWorldDotum Medium"),
+        legend.title = element_text(family = "KoPubWorldDotum Medium"),
+        legend.text = element_text(family = "KoPubWorldDotum Medium"))
 # ecdf_5
 ecdf_8 <- ecdf_5 + 
   labs(colour = "공동체상태") 
@@ -528,7 +528,7 @@ ecdf_13 <- ecdf_12 +
            y = 0.54, 
            label = "중위수의 차이", 
            size = 3, 
-           family = "HCR Dotum LVT")
+           family = "KoPubWorldDotum Medium")
 # ecdf_13
 ecdf_14 <- ecdf_13 + 
   annotate("text", 
@@ -536,7 +536,7 @@ ecdf_14 <- ecdf_13 +
            y = 0.46, 
            label = "약 3년", 
            size = 3, 
-           family = "HCR Dotum LVT")
+           family = "KoPubWorldDotum Medium")
 ecdf_14
 ```
 
@@ -580,15 +580,15 @@ poly_4 <- poly_3 +
 # poly_4
 poly_5 <- poly_4 + 
   ggtitle("공동체상태와 업력") +
-  theme(plot.title = element_text(family = "HCR Dotum LVT"))
+  theme(plot.title = element_text(family = "KoPubWorldDotum Medium"))
 # poly_5
 poly_6 <- poly_5 + 
   xlab("업력(년)") +
-  theme(axis.title.x = element_text(family = "HCR Dotum LVT"))
+  theme(axis.title.x = element_text(family = "KoPubWorldDotum Medium"))
 # poly_6
 poly_7 <- poly_6 + 
   ylab("분위") +
-  theme(axis.title.y = element_text(family = "HCR Dotum LVT"))
+  theme(axis.title.y = element_text(family = "KoPubWorldDotum Medium"))
 # poly_7
 poly_8 <- poly_7 + 
   labs(colour = "공동체상태") 
@@ -610,7 +610,7 @@ poly_12 <- poly_11 +
            label="두 도표 간 면적은\n평균의 차이,\n약 3년", 
            size = 4, 
            angle = 15, 
-           family = "HCR Dotum LVT")
+           family = "KoPubWorldDotum Medium")
 # poly_12
 poly_13 <- poly_12 + 
   annotate("text", 
@@ -618,14 +618,14 @@ poly_13 <- poly_12 +
            y = 0.6, 
            label = "경영개선", 
            size = 4, 
-           family = "HCR Dotum LVT")
+           family = "KoPubWorldDotum Medium")
 poly_14 <- poly_13 + 
   annotate("text", 
            x = 1, 
            y = 0.9, 
            label = "창업준비", 
            size = 4, 
-           family = "HCR Dotum LVT")
+           family = "KoPubWorldDotum Medium")
 poly_14
 ```
 
@@ -672,11 +672,11 @@ d_8 <- d_7 +
 # d_8
 d_9 <- d_8 + 
   ggtitle("공동체상태별 업력") +
-  theme(plot.title = element_text(family = "HCR Dotum LVT"),
-        axis.title.x = element_text(family = "HCR Dotum LVT"),
-        axis.title.y = element_text(family = "HCR Dotum LVT"),
-        legend.title = element_text(family = "HCR Dotum LVT"),
-        legend.text = element_text(family = "HCR Dotum LVT"))
+  theme(plot.title = element_text(family = "KoPubWorldDotum Medium"),
+        axis.title.x = element_text(family = "KoPubWorldDotum Medium"),
+        axis.title.y = element_text(family = "KoPubWorldDotum Medium"),
+        legend.title = element_text(family = "KoPubWorldDotum Medium"),
+        legend.text = element_text(family = "KoPubWorldDotum Medium"))
 d_9
 ```
 

@@ -1,9 +1,5 @@
 mosaic_gg <-
-function(tbl, base_family = "KoPubWorldDotum Medium", 
-                      ggtitle = "", 
-                      xlab = "", 
-                      ylab = "", 
-                      fill_name = ""){
+function(tbl){
 tbl_df <- tbl %>%    #> (깔끔한) 데이터 프레임으로 전환.
   as.data.frame
 N <- length(levels(tbl_df[, 1])) #> fill 로 표현할 factor의 level 수효
@@ -43,11 +39,10 @@ m1 <- ggplot(tbl_p_df,
            size = 1, 
            position = position_stack(reverse = TRUE)) 
 m2 <- m1 + 
-  theme_bw(base_family = base_family)
+  theme_bw()
 m3 <- m2 + 
   geom_text(aes(x = center, y = 1.05), 
-            label = tbl_p_df[, 2], 
-            family = base_family)
+            label = tbl_p_df[, 2])
 m4 <- m3 + 
   geom_text(aes(x = center, y = label_height), 
             label = format(ifelse(tbl_df[, 3] == 0, "", tbl_df[, 3]), 
@@ -68,17 +63,10 @@ y_label <- format(y_breaks * 100,
                   digits = 2,
                   nsmall = 1)
 m5 <- m4 + 
-  scale_x_continuous(name = xlab, 
-                     breaks = x_breaks, 
+  scale_x_continuous(breaks = x_breaks, 
                      label = x_label) + 
-  scale_y_continuous(name = ylab,
-                     breaks = y_breaks,
-                     label = y_label) + 
-  scale_fill_manual(name = fill_name, 
-                    values = rainbow(N)[N:1], 
-                    labels = tbl_df[, 1], 
-                    guide = guide_legend()) +
-  ggtitle(ggtitle) +
+  scale_y_continuous(breaks = y_breaks,
+                     label = y_label) +
   theme(plot.margin = unit(c(1, 2, 1, 1), "lines"))
 return(m5)
 }

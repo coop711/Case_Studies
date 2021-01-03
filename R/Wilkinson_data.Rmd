@@ -1,0 +1,70 @@
+---
+title: "Income Inequality vs Index of Health and Social Problems : Data"
+author: "coop711"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+### Data Preparation
+
+Equality Trust에서 기부금을 받고 제공하는 두 종류의 자료 중 23개 국가의 각종 지표를 비교한 자료에 [World Bank에서 발표하는 GDP자료](https://en.wikipedia.org/wiki/List_of_countries_by_GDP_(PPP)_per_capita)를 추가하여 읽어들이면,
+
+```{r, data with GDP}
+library(knitr)
+data_full <- read.csv("../data/international-inequality_GDP.csv", stringsAsFactors = FALSE)
+names(data_full)
+```
+
+이 자료 중 소득불평등을 나타내는 지표는 5분위배율로서 두번째 컬럼에 `Income.inequality`라는 이름으로 나와 있고, 건강과 사회문제 지표는 13번째 컬럼에 `Index.of.health...social_problems`라는 이름으로 주어져 있다. 나라들은 `Country`라는 변수명으로 첫번째 컬럼에 나와 있다. 그리고, 건강과 사회문제 지표에 결측치들이 있기 때문에 먼저 이 나라들을 제외하고 분석작업을 수행하여야 한다.
+`which()`를 이용하여 해당 인덱스를 찾고, 나라명을 추출한다.
+
+```{r, which}
+# is.na(data_full$Index.of.health...social_problems)
+# (country_na <- is.na(data_full$Index.of.health...social_problems))
+(country_na <- which(is.na(data_full$Index.of.health...social_problems)))
+data_full$Country[country_na]
+```
+
+결측치가 있는 나라를 빼고, 필요한 변수만 챙겨서 새로운 data frame 을 구성하기 위하여 건강과 사회문제 지표의 위치를 찾아보자.
+
+```{r, NA in Index.of.health...social_problems}
+names(data_full) == "Index.of.health...social_problems"
+which(names(data_full) == "Index.of.health...social_problems")
+```
+
+새로운 data frame 을 `data_21` 으로 저장하자. 시각적 가독성을 높이기 위하여 자릿수를 조정한다.
+
+```{r, data for 21 countries}
+options(digits = 2)
+v_names <- c("Country", "Income.inequality", "Index.of.health...social_problems", "GDP_WB")
+names(data_full) %in% v_names
+(v_names_index <- which(names(data_full) %in% v_names))
+data_21 <- data_full[-country_na, v_names]
+# data_21 <- data_full[-c(11, 18), v_names_index]
+str(data_21)
+names(data_21)[2:3] <- c("Income_inequality", "Index_HS")
+str(data_21)
+```
+
+<P style = "page-break-before:always">
+
+```{r}
+kable(data_21)
+```
+
+### Save
+
+```{r, save}
+save.image(file = "Inequality_Index_HS.RData")
+```
+
+
+
+
+
+
+
+
+
+
+

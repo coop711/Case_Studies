@@ -39,8 +39,8 @@ ogrInfo(dsn = "../data/BND_SIDO_PG",  #> `ogrInfo()`
 shp1 <- readOGR(dsn = "../data/BND_SIDO_PG", 
                 layer = "BND_SIDO_PG",
                 encoding = "UTF-8",
+#                encoding = "CP949",
                 stringsAsFactors = FALSE)
-#                 encoding = "CP949")
 shp1@data #> data file 이 빈약한 것 확인.
 data.frame(shp1)
 class(shp1)
@@ -113,11 +113,11 @@ map1_df <- left_join(shp1_84_df,
                      shp1_84@data, 
                      by = c("id" = "id"))
 str(map1_df)
-load("./coords.RData")
-ls(patt = "*_coord$")
-# Dokdo_coord <- geocode("Dokdo") Google Maps 는 요금계산토록 변경됨.
-# Dokdo_coord <- geocode("Dokdo", source = "dsk") #> (Data Science Toolkit 활용)
-# Ulleung_coord <- geocode("울릉도", source = "dsk")
+# load("./coords.RData")
+# ls(patt = "*_coord$")
+Dokdo_coord <- geocode("Dokdo") #> Google Maps 는 요금계산토록 변경됨.
+Dokdo_coord <- geocode("Dokdo", source = "google") #> (Data Science Toolkit 활용)
+Ulleung_coord <- geocode("울릉도", source = "google")
 ```
 
 <P style = "page-break-before:always">
@@ -132,8 +132,8 @@ ogrInfo(dsn = "../data/BND_SIGUNGU_PG",  #> `ogrInfo()`
 shp2 <- readOGR(dsn = "../data/BND_SIGUNGU_PG", 
                 layer = "BND_SIGUNGU_PG",
                 encoding = "UTF-8",
+#                encoding = "CP949",
                 stringsAsFactors = FALSE)
-#                 encoding = "CP949")
 summary(shp2) #> 요약
 class(shp2)
 #> data file에서 면적과 둘레 확인. 앞뒤 10개 시군씩만 확인. 뒷 부분의 이상한 점에 주의
@@ -349,7 +349,7 @@ color = ~mypalette1(shp1_84$SHAPE_AREA))
 
 ```{r, fig.width = 9, fig.height = 9}
 mypalette2 <- colorNumeric(palette = "Reds", domain = shp2_84$SHAPE_AREA)
-popup2 <- paste(shp2_84$SIGUNGU_NM, 
+popup2 <- paste(shp2_84$SIGUNGU_NM2, 
                "\n", 
                format(shp2_84$SHAPE_AREA/1000000, digits = 1, nsmall = 1, big.mark = ","), 
                "제곱km")

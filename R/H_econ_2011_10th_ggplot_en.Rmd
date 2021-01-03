@@ -1,0 +1,94 @@
+---
+title: "Household Economy"
+author: "coop711"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(width=180)
+```
+
+## Data
+
+```{r, Data}
+library(knitr)
+load("./hh_econ_10th_en.RData")
+```
+
+## ggplots
+
+### Data Reshaping
+
+```{r, reshape2}
+library(reshape2)
+dimnames(hh_econ_10th_11_2) <- 
+  list("Income_Expense" = rownames(hh_econ_10th_11_2), 
+       "Income_Tenths" = colnames(hh_econ_10th_11_2))
+kable(hh_econ_10th_melt <- melt(hh_econ_10th_11_2, 
+                                value.name = "Amount"))
+```
+
+<P style = "page-break-before:always">
+
+### ggplots step by step
+
+```{r, ggplot, warning = FALSE, fig.width = 9, fig.height = 5.1}
+library(ggplot2)
+gg_title <- "Income and Consumer Expenditure for each Tenth (2011 4/4)"
+x_lab <- "Income Tenth"
+y_lab <- "Amount in Thousand Won"
+Income_Amount <- 
+  hh_econ_10th_melt[hh_econ_10th_melt$Income_Expense == "Market Income", "Amount"]
+ggplot(data = hh_econ_10th_melt, 
+       aes(x = Income_Tenths, 
+           y = Amount, 
+           fill = Income_Expense)) + 
+  geom_bar(stat = "identity")
+```
+
+<P style = "page-break-before:always">
+
+```{r, , fig.width = 9, fig.height = 5.1}
+ggplot(data = hh_econ_10th_melt, 
+       aes(x = Income_Tenths, 
+           y = Amount, 
+           fill = Income_Expense)) + 
+  geom_bar(stat = "identity", 
+           position = "dodge") + 
+  theme_bw() + 
+  geom_line(aes(group = Income_Expense, 
+                linetype = Income_Expense), 
+            position = position_dodge(width = 1.0), 
+            size = 1, 
+            na.rm = TRUE, 
+            show.legend = FALSE) + 
+  geom_point(aes(group = Income_Expense, 
+                 shape = Income_Expense), 
+             position = position_dodge(width = 1.0), 
+             size = 3, 
+             stroke = 1.2, 
+             na.rm = TRUE, 
+             show.legend = FALSE) +
+  scale_y_continuous(breaks = Income_Amount, 
+                     labels = format(Income_Amount/1000, 
+                                     digits = 1, 
+                                     nsmall = 1, 
+                                     big.mark = ",")) + 
+  scale_linetype_manual(values = c("blank", "solid", "solid")) +
+  scale_shape_manual(values = c(NA, 4, 4)) +
+  labs(title = gg_title, 
+       x = x_lab, 
+       y = y_lab, 
+       fill = "Income or Expenses") + 
+  theme(legend.position = c(0.2, 0.8)) + 
+#  scale_fill_grey(start = 1/6, end = 5/6) + 
+  scale_colour_grey(start = 1/6, end = 5/6) + 
+  scale_fill_manual(values = c("blue", "cyan", "red")) + 
+  theme(plot.title = element_text(hjust = 0.5, size = 20),
+        legend.title = element_blank(),
+        legend.box.background = element_rect(fill = "white",
+                                             colour = "black"))
+ggsave("../pics/no_trickle_down_effects_10th.png")
+```

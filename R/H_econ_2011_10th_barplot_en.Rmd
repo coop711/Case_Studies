@@ -1,0 +1,134 @@
+---
+title: "Household Economy"
+author: "coop711"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r, setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(width = 180)
+```
+
+## Data
+
+```{r, load, message = FALSE}
+library(knitr)
+library(extrafont)
+load("./hh_econ_10th.RData")
+rownames(hh_econ_10th_11) <- 
+  c("Market Income", "Consumer Spending", "Disposable Income")
+colnames(hh_econ_10th_11) <- 
+  c("1st", "2nd", "3rd", paste0(4:10, "th"))
+kable(format(hh_econ_10th_11/1000, 
+             digits = 1, 
+             nsmall = 1, 
+             justify = "right", 
+             big.mark = ","), 
+      align = "r")
+rownames(hh_econ_10th_11_2) <- 
+  c("Market Income", "Disposable Income", "Consumer Spending")
+colnames(hh_econ_10th_11_2) <- 
+  c("1st", "2nd", "3rd", paste0(4:10, "th"))
+kable(format(hh_econ_10th_11_2/1000, 
+             digits = 1, 
+             nsmall = 1, 
+             justify = "right", 
+             big.mark = ","), 
+      align = "r")
+```
+
+<P style = "page-break-before:always;">
+
+## Bar Plots
+
+```{r, stacked barplots, fig.width = 12, fig.height = 6}
+barplot(hh_econ_10th_11)
+```
+
+```{r, barplots beside TRUE, fig.width = 12, fig.height = 6}
+barplot(hh_econ_10th_11, 
+        beside = TRUE)
+```
+
+<P style = "page-break-before:always;">
+
+```{r, barplots di first, fig.width = 12, fig.height = 6}
+barplot(hh_econ_10th_11_2, 
+        beside = TRUE)
+```
+
+<!--
+<P style = "page-break-before:always;">
+-->
+
+### Axes and Titles
+
+```{r, Legend and Annotation, fig.width = 12, fig.height = 6}
+par(family = "KoPubWorldDotum Medium")
+barplot(hh_econ_10th_11_2, 
+        beside = TRUE, 
+        yaxt = "n", 
+        col = gray(c(1/6, 1/2, 5/6)))
+axis(side = 2, 
+     at = seq(0, 10000000, by = 1000000), 
+     labels = 0:10, 
+     las = 1)
+title_kr <- "2011년 가계수지"
+xlab_kr <- "소득 10분위"
+ylab_kr <- "금액(단위:백만원)"
+title(main = title_kr, 
+      xlab = xlab_kr, 
+      ylab = ylab_kr)
+```
+
+<P style = "page-break-before:always;">
+
+### Legends, Lines, Colors
+
+```{r, Lines to Compare, fig.width = 12, fig.height = 6.75}
+par(family = "KoPubWorldDotum Medium")
+# b <- barplot(hh_econ_10th_11_2, beside = TRUE, yaxt = "n", col = gray(c(1/6, 1/2, 5/6)))
+b <- barplot(hh_econ_10th_11_2, 
+             beside = TRUE, 
+             yaxt = "n", 
+             col = c("blue", "cyan", "red"))
+axis(side = 2, 
+     at = seq(0, 10000000, by = 1000000), 
+     labels = 0:10, 
+     las = 1)
+# legend("topleft", inset = 0.1, legend = rownames(hh_econ_10th_11), fill = gray(c(1/6, 1/2, 5/6)))
+legend("topleft", 
+       inset = 0.1, 
+       legend = rownames(hh_econ_10th_11_2), 
+       fill = c("blue", "cyan", "red"))
+title_en <- "Households Income and Expenditure (2011)"
+xlab_en <- "Income Tenths"
+ylab_en <- "Amount in Million Won"
+title(main = title_en, 
+      xlab = xlab_en, 
+      ylab = ylab_en, 
+      cex.main = 2.0)
+# lines(x = seq(2.5, 38.5, length.out=10), y = hh_econ_10th_11[2, ], lwd=5, col=gray(1/2))
+lines(x = b[2, ], 
+      y = hh_econ_10th_11_2[2, ], 
+      type = "b", 
+      pch = 24, 
+      bg = "white", 
+      col = "black", 
+      lwd = 4)
+# lines(x = b[2, ], y = hh_econ_10th_11[2, ], lwd = 8, col = gray(1/2))
+lines(x = b[3, ], 
+      y = hh_econ_10th_11_2[3, ], 
+      type = "b", 
+      pch = 25, 
+      bg = "white", 
+      col = "black", 
+      lwd = 4)
+```
+
+### Save
+
+```{r, save}
+save.image("./hh_econ_10th_en.RData")
+```

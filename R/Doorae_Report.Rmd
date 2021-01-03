@@ -88,10 +88,10 @@ kable(as.matrix(status.vs.structure.ap.2),
     * 경영개선 상태에서 법인격을 갖춘 공동체사업의 비율이 창업준비 상태에서 법인격을 갖춘 공동체사업의 비율보다 압도적으로 많다는 점에 유의.
 
 ```{r, echo=FALSE, fig.width = 6, fig.height = 4.2}
-source("./mosaic_gg.R")
+source("./mosaic_gg_old.R")
 load("./coord.rda")
 mosaic_gg(t(status.vs.structure), 
-          base_family = "",
+          base_family = "KoPubWorldDotum Medium",
           ggtitle = "공동체상태와 조직형태",
           ylab = "조직형태",
           xlab = "공동체상태",
@@ -108,7 +108,7 @@ mosaic_gg(t(status.vs.structure),
 
 ```{r, echo=FALSE, fig.width = 6, fig.height = 4.2}
 mosaic_gg(status.vs.structure, 
-          base_family = "",
+          base_family = "KoPubWorldDotum Medium",
           ggtitle = "조직형태와 공동체상태",
           xlab = "조직형태",
           ylab = "공동체상태",
@@ -212,7 +212,7 @@ kable(doorae[stock.co, c("공동체상태", "조직명")], caption="<주식회�
 
 ```{r, echo=FALSE, fig.width = 6, fig.height = 4.5}
 mosaic_gg(t(status.vs.corporate_type), 
-          base_family = "",
+          base_family = "KoPubWorldDotum Medium",
           ggtitle = "공동체상태와 조직유형",
           ylab = "조직유형",
           xlab = "공동체상태",
@@ -257,7 +257,7 @@ kable(round(status.vs.business_item.p.am, digits=1), caption= "<공동체상태�
 
 ```{r, echo=FALSE, fig.width = 6, fig.height = 4.5}
 mosaic_gg(t(status.vs.business_item), 
-          base_family = "",
+          base_family = "KoPubWorldDotum Medium",
           ggtitle = "공동체상태와 사업아이템",
           xlab = "공동체상태",
           ylab = "사업아이템",
@@ -282,7 +282,9 @@ mosaic_gg(t(status.vs.business_item),
 ### 요약표
 
 ```{r, echo=FALSE, results='markup'}
-tapply(doorae$"업력", doorae$"공동체상태", summary)
+tapply(doorae$"업력", 
+       INDEX = doorae$"공동체상태", 
+       FUN = summary)
 ```
 
 ### Box Plot
@@ -301,24 +303,28 @@ box.0 <- ggplot(data = doorae.ys,
 # box.0
 box.1 <- box.0 + 
   geom_boxplot() + 
-  theme_bw() 
+  theme_bw(base_family = "KoPubWorldDotum Medium") 
 #  theme.kr.HCR
 # box.1
-box.2 <- box.1 + 
-  ggtitle("공동체상태와 업력") + 
-  xlab("공동체상태") + 
-  ylab("업력(년)") 
+# box.2 <- box.1 + 
+#   ggtitle("공동체상태와 업력") + 
+#   xlab("공동체상태") + 
+#   ylab("업력(년)") 
+box.2 <- box.1 +
+  labs(title = "공동체상태와 업력",
+       x = "공동체상태",
+       y = "업력(년)")
 # box.2
-box.3 <- box.2 + 
-  scale_x_discrete(labels = c("창업준비", "경영개선")) 
+# box.3 <- box.2 + 
+#  scale_x_discrete(labels = c("창업준비", "경영개선")) 
 # box.3
-box.4 <- box.3 + 
+box.4 <- box.2 + 
   annotate("text", 
            x = c(0.8, 1.65), 
            y = c(11.7, 12.4), 
            label = c("예그리나", "아름다운인제관광"), 
-           size = 3.5, 
-           family = "")
+           size = 3.5,
+           family = "KoPubWorldDotum Medium")
 box.4
 ```
 
@@ -337,7 +343,7 @@ ecdf.2 <- ecdf.1 +
   stat_ecdf()
 # ecdf.2
 ecdf.3 <- ecdf.2 + 
-  theme_bw() 
+  theme_bw(base_family = "KoPubWorldDotum Medium") 
 #  theme.kr.HCR
 # ecdf.3
 ecdf.4 <- ecdf.3 + theme(panel.background=element_rect("white"), panel.border=element_rect(colour="black", fill=NA))
@@ -376,7 +382,7 @@ ecdf.13 <- ecdf.12 +
            y = 0.54, 
            label = "중위수의 차이", 
            size = 3, 
-           family = "")
+           family = "KoPubWorldDotum Medium")
 # ecdf.13
 ecdf.14 <- ecdf.13 + 
   annotate("text", 
@@ -384,7 +390,7 @@ ecdf.14 <- ecdf.13 +
            y = 0.46, 
            label = "약 3년", 
            size = 3, 
-           family = "")
+           family = "KoPubWorldDotum Medium")
 ecdf.14
 ```
 
@@ -416,7 +422,7 @@ poly.2 <- poly.1 +
                fill = "red") 
 # poly.2
 poly.3 <- poly.2 + 
-  theme_bw() 
+  theme_bw(base_family = "KoPubWorldDotum Medium") 
 # poly.3
 # + theme.kr.HCR
 poly.4 <- poly.3 + 
@@ -452,7 +458,7 @@ poly.12 <- poly.11 +
            label="두 도표 간 면적은\n평균의 차이,\n약 3년", 
            size = 4, 
            angle = 15, 
-           family = "")
+           family = "KoPubWorldDotum Medium")
 # poly.12
 poly.13 <- poly.12 + 
   annotate("text", 
@@ -460,14 +466,14 @@ poly.13 <- poly.12 +
            y = 0.6, 
            label = "경영개선", 
            size = 4, 
-           family = "")
+           family = "KoPubWorldDotum Medium")
 poly.14 <- poly.13 + 
   annotate("text", 
            x = 1, 
            y = 0.9, 
            label = "창업준비", 
            size = 4, 
-           family = "")
+           family = "KoPubWorldDotum Medium")
 poly.14
 ```
 
@@ -496,7 +502,7 @@ d.3 <- d.2 +
                       limits = c("경영개선", "창업준비"))
 d.3
 d.4 <- d.3 + 
-  theme_bw()
+  theme_bw(base_family = "KoPubWorldDotum Medium")
 d.4
 d.5 <- d.4
 #  theme.kr.HCR
@@ -513,7 +519,9 @@ d.8 <- d.7 +
         legend.justification = c(1, 0.5))
 d.8
 d.9 <- d.8 + 
-  ggtitle("공동체상태별 업력") 
+  ggtitle("공동체상태별 업력") +
+  theme(plot.title = element_text(hjust = 0.5, 
+                                  size = 20))
 d.9
 ```
 
