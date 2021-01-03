@@ -16,27 +16,32 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Data
 
 ```{r, xlsx}
-library(xlsx)
+# library(xlsx)
+library(readxl)
 options(width = 180)
+# class_roll <- "../data/class_roll1902.xlsx" %>% 
+#   read.xlsx(sheetIndex = 1,
+#             startRow = 2, endRow = 40,
+#             colIndex = 4:5,
+#             header = TRUE,
+#             encoding = "UTF-8",
+#             stringsAsFactors = FALSE)
 class_roll <- "../data/class_roll1902.xlsx" %>% 
-  read.xlsx(sheetIndex = 1,
-            startRow = 2, endRow = 40,
-            colIndex = 4:5,
-            header = TRUE,
-            encoding = "UTF-8",
-            stringsAsFactors = FALSE)
+  read_excel(range = "D2:E40")
 class_roll %<>%
   `names<-`(c("ID", "Name"))
 class_roll$ID %<>%
   as.character
 str(class_roll)
+# BFI <- "../data/BFI_CS1902v2.xlsx" %>% 
+#   read.xlsx(sheetIndex = 1, 
+#             startRow = 1, endRow = 39, 
+#             colIndex = 3:16, 
+#             header = TRUE, 
+#             encoding = "UTF-8",
+#             stringsAsFactors = FALSE)
 BFI <- "../data/BFI_CS1902v2.xlsx" %>% 
-  read.xlsx(sheetIndex = 1, 
-            startRow = 1, endRow = 39, 
-            colIndex = 3:16, 
-            header = TRUE, 
-            encoding = "UTF-8",
-            stringsAsFactors = FALSE)
+  read_excel(range = "C1:P39")
 # names(BFI) %<>%
 #   `[<-`(1, "ID")
 # names(BFI)[1] <- "ID"
@@ -52,13 +57,15 @@ BFI %>%
 duplicated(BFI$ID)
 BFI <- BFI[-1, ]
 str(BFI)
+# MI <- "../data/MI_CS1902v2.xlsx" %>%
+#   read.xlsx(sheetIndex = 1, 
+#             startRow = 1, endRow = 39, 
+#             colIndex = 3:60, 
+#             header = TRUE, 
+#             encoding = "UTF-8",
+#             stringsAsFactors = FALSE)
 MI <- "../data/MI_CS1902v2.xlsx" %>%
-  read.xlsx(sheetIndex = 1, 
-            startRow = 1, endRow = 39, 
-            colIndex = 3:60, 
-            header = TRUE, 
-            encoding = "UTF-8",
-            stringsAsFactors = FALSE)
+  read_excel(range = "C1:BH39")
 MI %<>%
   `names<-`(c("ID", "Name", paste0("Q", 1:56)))
 # names(MI) <- c("ID", paste0("Q", 1:56))
