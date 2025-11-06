@@ -60,15 +60,15 @@ shapefiles 는 벡터 형식의 공간자료 저장
 `download.file()`의 용법 익히기. dsn 설정에서 "../data/SnowGIS_SHp/"로 설정하면 linux나 MacOS에서는 작동하지만 Windows에서는 "Cannot open data source" 에러가 나오게 됨. folder를 의미하는 마지막 "/" 를 쓰지 않아야 함.
 
 ```{r, GDAL}
-# install.packages("rgdal", repos = "https://cran.rstudio.com")
+install.packages("rgdal", repos = "https://cran.rstudio.com")
 library(rgdal) 
-# download.file("http://rtwilson.com/downloads/SnowGIS_SHP.zip", "../data/SnowGIS_SHP.zip")
+download.file("http://rtwilson.com/downloads/SnowGIS_SHP.zip", "../data/SnowGIS_SHP.zip")
 dsn <- "../data/SnowGIS_SHP"  
 #> dsn의 파일 리스트
 list.files(dsn) 
 ogrListLayers(dsn)
 ogrInfo(dsn, layer = "Cholera_Deaths")
-# readOGR(dsn, "Pumps")
+readOGR(dsn, "Pumps")
 CholeraDeaths <- readOGR(dsn, layer = "Cholera_Deaths")
 Pumps <- readOGR(dsn, layer = "Pumps")
 summary(CholeraDeaths)

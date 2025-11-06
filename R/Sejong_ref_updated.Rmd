@@ -1,0 +1,224 @@
+---
+title: "King Sejong National Referendum on the Map (sf/ggplot2 modernized)"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+## 개요
+
+- 이 문서는 2016년 코드의 의존성을 **sf/ggplot2 기반**으로 완전히 현대화한 버전입니다.  
+- 제거: `sp`, `rgdal`, `rgeos`, `maptools`, `GISTools`, `extrafont`  
+- 대체: `sf`, `dplyr`, `ggplot2`, `RColorBrewer`, `showtext`, (선택) `tmap`  
+- 주요 변경점  
+  - `readOGR()` → `st_read()`  
+  - `gUnaryUnion()` → `st_union()`  
+  - `gIntersection()` → `st_intersection()`  
+  - `coordinates()` → `st_coordinates(st_centroid())` 등  
+  - `choropleth()` → `ggplot2::geom_sf(aes(fill = ...))`  
+
+## 라이브러리
+
+```{r}
+library(sf)
+library(dplyr)
+library(ggplot2)
+library(RColorBrewer)
+library(showtext)
+
+# 폰트 설정 (Posit Cloud 등에서 KoPubWorld 폰트 사용 예시)
+# 업로드 경로에 맞춰 파일명을 조정하세요.
+font_add(family = "kopub", 
+         regular = "~/Library/Fonts/KoPubWorld Dotum Medium.ttf",
+         bold    = "~/Library/Fonts/KoPubWorld Dotum Bold.ttf")
+showtext_auto()
+theme_set(theme_minimal(base_family = "kopub"))
+# theme_set(theme_bw())  # 폰트 준비 전 기본 테마
+```
+
+## 데이터 로드 (sf)
+
+```{r}
+# 경로는 기존 구조 유지: ../data/KOR_adm/KOR_adm1.shp, ../data/PRK_adm/PRK_adm1.shp
+shp_S <- st_read("../data/KOR_adm/KOR_adm1.shp", quiet = TRUE)
+shp_N <- st_read("../data/PRK_adm/PRK_adm1.shp", quiet = TRUE)
+
+# 좌표계 확인 및 통일 (필요시 WGS84로 변환)
+if (is.na(st_crs(shp_S))) {
+  message("남한 도형의 CRS가 비어 있음: 필요시 st_set_crs()로 지정하세요.")
+}
+if (is.na(st_crs(shp_N))) {
+  message("북한 도형의 CRS가 비어 있음: 필요시 st_set_crs()로 지정하세요.")
+}
+
+# 필요시 EPSG:4326으로 맞추기
+# shp_S <- st_transform(shp_S, 4326)
+# shp_N <- st_transform(shp_N, 4326)
+```
+
+## 속성 정리 (이름/구군 라벨 등)
+
+```{r}
+# 원 코드의 Names_kr 및 Names_kr_old 생성
+# (KOR_adm1, PRK_adm1의 행 순서가 원본과 다른 경우가 있을 수 있으니 실제 속성에 맞게 수정해 주세요.)
+
+shp_S <- shp_S %>% 
+  mutate(
+    Names_kr = c("부산", "충북", "충남", "대구", "대전", "강원", "광주", "경기", "경북",
+                 "경남", "인천", "제주", "전북", "전남", "세종", "서울", "울산")
+  )
+
+shp_N <- shp_N %>% 
+  mutate(
+    Names_kr = c("자강", "함북", "함남", "황북", "황남", "개성", "강원", "금강", "평북",
+                 "평남", "평양", "라선", "량강", "신의")
+  )
+
+shp_S <- shp_S %>% 
+  mutate(
+    Names_kr_old = case_when(
+      Names_kr %in% c("부산","대구", "경북", "경남", "울산") ~ "경상",
+      Names_kr %in% c("광주", "제주", "전북", "전남") ~ "전라",
+      Names_kr %in% c("충북", "충남", "대전", "세종") ~ "충청",
+      Names_kr %in% c("경기", "인천") ~ "경기",
+      Names_kr == "서울" ~ "서울",
+      TRUE ~ "강원"
+    )
+  )
+
+shp_N <- shp_N %>% 
+  mutate(
+    Names_kr_old = case_when(
+      Names_kr %in% c("자강","평북", "평남", "평양", "신의") ~ "평안",
+      Names_kr %in% c("함북", "함남", "라선", "량강") ~ "함길",
+      Names_kr %in% c("황북", "황남") ~ "황해",
+      Names_kr %in% c("강원", "금강") ~ "강원",
+      TRUE ~ "유후"
+    )
+  )
+
+# 확인
+shp_S %>% count(Names_kr_old)
+shp_N %>% count(Names_kr_old)
+```
+
+## 지지율 데이터 (예시 값 유지)
+
+```{r}
+rates  <- c(50.7, 94.1, 98.6, 4.5, 22.3, 33.3, 12.0, 1.0, 98.9, 99.1)
+names(rates) <- c("서울", "유후", "경기", "평안", "황해", "충청", "강원", "함길", "경상", "전라")
+
+rates_b <- c(50.7, 85.3, 14.3, 50.0, 55.6, 33.3, 16.7, 77.5, 75.0) 
+names(rates_b) <- c("서울", "경기", "평안", "황해", "충청", "강원", "함길", "경상", "전라")
+
+rates_c <- c(94.1, 98.6, 4.4, 22.2, 33.3, 12.0, 1.0, 99.0, 99.1)
+names(rates_c) <- c("유후", "경기", "평안", "황해", "충청", "강원", "함길", "경상", "전라")
+
+rates_SL <- c(9.8, 39.7, 79.1)
+names(rates_SL) <- c("대신", "현직", "전직")
+N_SL <- c(215, 652, 560)
+```
+
+## 매칭 및 라벨 좌표
+
+```{r}
+# 매칭
+shp_S <- shp_S %>% 
+  mutate(rate   = rates[Names_kr_old],
+         rate_b = rates_b[Names_kr_old],
+         rate_c = rates_c[Names_kr_old])
+
+shp_N <- shp_N %>% 
+  mutate(rate   = rates[Names_kr_old],
+         rate_b = rates_b[Names_kr_old],
+         rate_c = rates_c[Names_kr_old])
+
+# 라벨 좌표(centroid)
+cent_S <- st_centroid(shp_S) %>% st_coordinates() %>% as.data.frame()
+cent_N <- st_centroid(shp_N) %>% st_coordinates() %>% as.data.frame()
+colnames(cent_S) <- c("lon","lat")
+colnames(cent_N) <- c("lon","lat")
+```
+
+## Choropleth (전체)
+
+```{r, fig.width=10, fig.height=8}
+pal <- "RdYlBu"
+
+ggplot() +
+  geom_sf(data = shp_S, aes(fill = rate), color = "grey30", linewidth = 0.2) +
+  geom_sf(data = shp_N, aes(fill = rate), color = "grey30", linewidth = 0.2) +
+  scale_fill_distiller(palette = pal, direction = -1, na.value = "white") +
+  geom_text(data = cbind(cent_S, lab = paste0(shp_S$Names_kr_old, ":", shp_S$rate, "%")),
+            aes(lon, lat, label = lab), size = 3) +
+  geom_text(data = cbind(cent_N, lab = paste0(shp_N$Names_kr_old, ":", shp_N$rate, "%")),
+            aes(lon, lat, label = lab), size = 3) +
+  coord_sf(xlim = c(123, 132), ylim = c(32, 44), expand = FALSE) +
+  labs(title = "국민투표 찬성 비율(전체)", fill = "찬성(%)") +
+  theme_bw()
+```
+
+## 관료 vs 품관 촌민 (2분할)
+
+```{r, fig.width=12, fig.height=6}
+library(patchwork)
+
+p_b <- ggplot() +
+  geom_sf(data = shp_S, aes(fill = rate_b), color = "grey30", linewidth = 0.2) +
+  geom_sf(data = shp_N, aes(fill = rate_b), color = "grey30", linewidth = 0.2) +
+  scale_fill_distiller(palette = pal, direction = -1, na.value = "white") +
+  geom_text(data = cbind(cent_S, lab = paste0(shp_S$Names_kr_old, ":", shp_S$rate_b, "%")),
+            aes(lon, lat, label = lab), size = 3) +
+  geom_text(data = cbind(cent_N, lab = paste0(shp_N$Names_kr_old, ":", shp_N$rate_b, "%")),
+            aes(lon, lat, label = lab), size = 3) +
+  coord_sf(xlim = c(123, 132), ylim = c(32, 44), expand = FALSE) +
+  labs(title = "관료", fill = "찬성(%)") +
+  theme_bw()
+
+p_c <- ggplot() +
+  geom_sf(data = shp_S, aes(fill = rate_c), color = "grey30", linewidth = 0.2) +
+  geom_sf(data = shp_N, aes(fill = rate_c), color = "grey30", linewidth = 0.2) +
+  scale_fill_distiller(palette = pal, direction = -1, na.value = "white") +
+  geom_text(data = cbind(cent_S, lab = paste0(shp_S$Names_kr_old, ":", shp_S$rate_c, "%")),
+            aes(lon, lat, label = lab), size = 3) +
+  geom_text(data = cbind(cent_N, lab = paste0(shp_N$Names_kr_old, ":", shp_N$rate_c, "%")),
+            aes(lon, lat, label = lab), size = 3) +
+  coord_sf(xlim = c(123, 132), ylim = c(32, 44), expand = FALSE) +
+  labs(title = "품관 촌민", fill = "찬성(%)") +
+  theme_bw()
+
+p_b + p_c + plot_annotation(title = "세종대왕의 세법개혁 국민투표 지지율")
+```
+
+## 결합/분해 연산 예시 (st_union / st_intersection)
+
+```{r}
+GW_N <- shp_N %>% filter(Names_kr_old == "강원") %>% st_union()
+GW_S <- shp_S %>% filter(Names_kr_old == "강원") %>% st_union()
+
+GW_bbox <- st_bbox(st_union(GW_N, GW_S))
+GW_I <- st_intersection(GW_N, GW_S)
+
+plot(st_geometry(GW_N), col = NA, border = "red",
+     xlim = GW_bbox[c(1,3)], ylim = GW_bbox[c(2,4)],
+     main = "강원(북/남) 결합/교차")
+plot(st_geometry(GW_S), add = TRUE, border = "blue")
+if (!is.null(GW_I) && length(GW_I) > 0) plot(st_geometry(GW_I), add = TRUE, col = rgb(0,0,0,0.2), border = NA)
+```
+
+## ggplot용 간단 지도
+
+```{r, fig.width=6, fig.height=6}
+ggplot() +
+  geom_sf(data = shp_S, fill = "white", color = "black", linewidth = 0.3) +
+  geom_sf(data = shp_N, fill = "white", color = "black", linewidth = 0.3) +
+  coord_sf() +
+  theme_bw()
+```
+
+## 참고
+- 필요 시 `tmap` 패키지(`tm_shape`, `tm_fill`, `tm_borders`)로도 손쉽게 choropleth 제작 가능
+- 라벨 위치 미세 조정은 `st_point_on_surface()` 또는 수동 오프셋 사용
+- 폰트는 `showtext` 권장 (Linux/Posit Cloud에서 한글 출력 안정)

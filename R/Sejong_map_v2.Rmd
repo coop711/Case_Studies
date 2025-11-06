@@ -1,0 +1,603 @@
+---
+title: "King Sejong National Referendum on the Map (Modernized)"
+output: html_document
+---
+
+## Map Data
+
+[Global Administrative Areas](http://www.gadm.org/country) 에서 다운로드한  zip 파일을 풀고 shape 파일을 [mapshaper](https://mapshaper.org) 에서 간략히 한 후 작업에 착수한다.
+`.shp` 형태로만 불러들일 수 있기 때문에 `@data`는 원본에서 복사하여야 한다.
+
+### Libraries
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+# 오래된 패키지들을 제거하고 최신 패키지들만 로드합니다.
+library(sf)        # 공간 데이터 처리의 현대적 표준 (rgdal, rgeos 대체)
+library(dplyr)     # 데이터 조작
+library(ggplot2)   # 시각화 (GISTools::choropleth 대체)
+library(RColorBrewer) # 컬러 팔레트
+library(extrafont) # 폰트 처리
+library(showtext)
+
+# 폰트 설정 (Posit Cloud 등에서 KoPubWorld 폰트 사용 예시)
+# 업로드 경로에 맞춰 파일명을 조정하세요.
+font_add(family = "kopub", 
+         regular = "~/Library/Fonts/KoPubWorld Dotum Medium.ttf",
+         bold    = "~/Library/Fonts/KoPubWorld Dotum Bold.ttf")
+showtext_auto()
+theme_set(theme_minimal(base_family = "kopub"))
+library(patchwork) # ggplot 객체들을 쉽게 배열하기 위함
+options(width = 132)
+```
+
+## Simplified Versions 
+
+from [mapshaper](https://mapshaper.org)
+
+### Simplified Shape files
+
+```{r, results = 'hide'}
+# readOGR 대신 st_read 사용
+# shape 파일 불러오기 시 options = "ENCODING=UTF-8"로 인코딩 지정
+shp_S <- st_read(dsn = "../data/KOR_adm",
+                 layer = "KOR_adm1",
+                 options = "ENCODING=UTF-8")
+shp_N <- st_read(dsn = "../data/PRK_adm",
+                 layer = "PRK_adm1",
+                 options = "ENCODING=UTF-8")
+
+# 원본 코드의 shp_S_1, shp_N_1 대신 shp_S, shp_N을 그대로 사용하거나 복사합니다.
+shp_S_1 <- shp_S
+shp_N_1 <- shp_N
+```
+
+### Data
+
+#### Names
+
+```{r, results = 'hide'}
+# 이전 코드에서 shp_S@data 복사 로직은 sf에서는 st_read 시 자동으로 처리되므로 생략
+# Names
+shp_S_1 <- shp_S_1 %>%
+  mutate(Names_kr = c("부산", "충북", "충남", "대구", "대전", "강원", "광주", "경기", "경북",
+                      "경남", "인천", "제주", "전북", "전남", "세종", "서울", "울산"),
+         Names_kr_old = case_when(
+           Names_kr %in% c("부산", "대구", "경북", "경남", "울산") ~ "경상",
+           Names_kr %in% c("광주", "제주", "전북", "전남") ~ "전라",
+           Names_kr %in% c("충북", "충남", "대전", "세종") ~ "충청",
+           Names_kr %in% c("경기", "인천") ~ "경기",
+           Names_kr == "서울" ~ "서울",
+           TRUE ~ "강원"
+         ))
+
+shp_N_1 <- shp_N_1 %>%
+  mutate(Names_kr = c("자강", "함북", "함남", "황북", "황남", "개성", "강원", "금강", "평북",
+                      "평남", "평양", "라선", "량강", "신의"),
+         Names_kr_old = case_when(
+           Names_kr %in% c("자강", "평북", "평남", "평양", "신의") ~ "평안",
+           Names_kr %in% c("함북", "함남", "라선", "량강") ~ "함길",
+           Names_kr %in% c("황북", "황남") ~ "황해",
+           Names_kr %in% c("강원", "금강") ~ "강원",
+           TRUE ~ "유후"
+         ))
+```
+
+#### 찬성율과 좌표 (Rates and Coordinates)
+
+```{r, results = 'hide'}
+# Rates
+rates <- c(50.7, 94.1, 98.6, 4.5, 22.3, 33.3, 12.0, 1.0, 98.9, 99.1)
+names(rates) <- c("서울", "유후", "경기", "평안", "황해", "충청", "강원", "함길", "경상", "전라")
+rates_b <- c(50.7, 85.3, 14.3, 50.0, 55.6, 33.3, 16.7, 77.5, 75.0)
+names(rates_b) <- c("서울", "경기", "평안", "황해", "충청", "강원", "함길", "경상", "전라")
+rates_c <- c(94.1, 98.6, 4.4, 22.2, 33.3, 12.0, 1.0, 99.0, 99.1)
+names(rates_c) <- c("유후", "경기", "평안", "황해", "충청", "강원", "함길", "경상", "전라")
+rates_SL <- c(9.8, 39.7, 79.1)
+names(rates_SL) <- c("대신", "현직", "전직")
+N_SL <- c(215, 652, 560)
+
+# 데이터 프레임에 찬성율 병합
+shp_S_1 <- shp_S_1 %>%
+  mutate(rates = rates[match(Names_kr_old, names(rates))],
+         rates_b = rates_b[match(Names_kr_old, names(rates_b))],
+         rates_c = rates_c[match(Names_kr_old, names(rates_c))])
+
+shp_N_1 <- shp_N_1 %>%
+  mutate(rates = rates[match(Names_kr_old, names(rates))],
+         rates_b = rates_b[match(Names_kr_old, names(rates_b))],
+         rates_c = rates_c[match(Names_kr_old, names(rates_c))])
+
+# Coordinates (sf::st_centroid와 st_coordinates 사용)
+index_S <- shp_S_1$Names_kr %in% c("경북", "대전", "강원", "전북", "경기", "서울")
+index_N <- shp_N_1$Names_kr %in% c("개성", "황북", "평남", "함남")
+
+# 중심 좌표 추출
+coords_S <- st_coordinates(st_centroid(shp_S_1, of_largest_polygon = TRUE))
+coords_N <- st_coordinates(st_centroid(shp_N_1, of_largest_polygon = TRUE))
+
+Lon_S_1 <- coords_S[index_S, 1]
+Lat_S_1 <- coords_S[index_S, 2]
+Lat_S_1[c(3, 6)] <- Lat_S_1[c(3, 6)] + c(-0.3, 0.2) # 레이블 조정은 수동으로 유지
+Lon_N_1 <- coords_N[index_N, 1]
+Lat_N_1 <- coords_N[index_N, 2]
+
+# Labels
+labels_S <- paste(shp_S_1$Names_kr_old[index_S], paste0(shp_S_1$rates[index_S], "%"), sep = ":")
+labels_N <- paste(shp_N_1$Names_kr_old[index_N], paste0(shp_N_1$rates[index_N], "%"), sep = ":")
+labels_S_b <- paste(shp_S_1$Names_kr_old[index_S], paste0(shp_S_1$rates_b[index_S], "%"), sep = ":")
+labels_N_b <- paste(shp_N_1$Names_kr_old[index_N], paste0(shp_N_1$rates_b[index_N], "%"), sep = ":")
+labels_S_c <- paste(shp_S_1$Names_kr_old[index_S], paste0(shp_S_1$rates_c[index_S], "%"), sep = ":")
+labels_N_c <- paste(shp_N_1$Names_kr_old[index_N], paste0(shp_N_1$rates_c[index_N], "%"), sep = ":")
+
+col_S <- c("black", "black", "white", "white", "white", "white")
+col_N <- c("black", "black", "white", "black")
+```
+
+<P style = "page-break-before:always">
+
+## ggplot2를 사용한 시각화 
+
+### Simple Plots
+
+```{r, fig.width = 8, fig.height = 8}
+# ggplot으로 전체 영역 표시 (단순 플롯)
+ggplot() +
+  geom_sf(data = shp_S_1, aes(fill = Names_kr_old), color = "black", show.legend = FALSE) +
+  geom_sf(data = shp_N_1, aes(fill = Names_kr_old), color = "black", show.legend = FALSE) +
+  # pointLabel 대신 geom_text 사용
+  geom_text(data = as.data.frame(coords_S), aes(x = X, y = Y, label = shp_S_1$Names_kr),
+            size = 2) +
+  geom_text(data = as.data.frame(coords_N), aes(x = X, y = Y, label = shp_N_1$Names_kr),
+            size = 2) +
+  coord_sf(ylim = c(32, 44), xlim = c(123, 132)) +
+  labs(title = "대한민국 및 북한 행정 구역 지도") 
+```
+
+<P style = "page-break-before:always">
+
+#### 관료와 품관 촌민
+
+```{r, fig.width = 12, fig.height = 6}
+# 컬러 팔레트 설정
+shades_pal <- colorRampPalette(brewer.pal(11, "RdYlBu"))(101) # 0~100%이므로 101개 색상
+
+# 관료 지도 (rates_b)
+p_b <- ggplot() +
+  geom_sf(data = shp_S_1, aes(fill = rates_b)) +
+  geom_sf(data = shp_N_1, aes(fill = rates_b)) +
+  scale_fill_gradientn(colors = shades_pal, limits = c(0, 100), name = "찬성률 (%)") +
+  # 레이블 추가 (Lon_S_1, Lat_S_1 좌표 사용)
+  geom_text(data = data.frame(Lon_S_1, Lat_S_1, labels = labels_S_b),
+            aes(x = Lon_S_1, y = Lat_S_1, label = labels), size = 2.5, color = "black") +
+  geom_text(data = data.frame(Lon_N_1, Lat_N_1, labels = labels_N_b),
+            aes(x = Lon_N_1, y = Lat_N_1, label = labels), size = 2.5, color = "black") +
+  coord_sf(ylim = c(32, 44), xlim = c(123, 132)) +
+  labs(title = "관료")  +
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+
+# 품관 촌민 지도 (rates_c)
+p_c <- ggplot() +
+  geom_sf(data = shp_S_1, aes(fill = rates_c)) +
+  geom_sf(data = shp_N_1, aes(fill = rates_c)) +
+  scale_fill_gradientn(colors = shades_pal, limits = c(0, 100), name = "찬성률 (%)") +
+  geom_text(data = data.frame(Lon_S_1, Lat_S_1, labels = labels_S_c),
+            aes(x = Lon_S_1, y = Lat_S_1, label = labels), size = 2.5, color = col_S) +
+  geom_text(data = data.frame(Lon_N_1, Lat_N_1, labels = labels_N_c),
+            aes(x = Lon_N_1, y = Lat_N_1, label = labels), size = 2.5, color = col_N) +
+  coord_sf(ylim = c(32, 44), xlim = c(123, 132)) +
+  labs(title = "품관 촌민")+
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+
+# patchwork으로 두 지도를 나란히 배치하고 전체 제목 추가
+p_b + p_c + 
+  plot_annotation(title = "세종대왕의 세법개혁 국민투표 지지율",
+                  theme = theme(plot.title = element_text(size = 22, hjust = 0.5)))
+```
+
+<P style = "page-break-before:always">
+
+#### 전체
+
+```{r, fig.width = 10, fig.height = 10}
+# 전체 지도 (rates)
+ggplot() +
+  geom_sf(data = shp_S_1, aes(fill = rates)) +
+  geom_sf(data = shp_N_1, aes(fill = rates)) +
+  scale_fill_gradientn(colors = shades_pal, limits = c(0, 100), name = "찬성률 (%)") +
+  geom_text(data = data.frame(Lon_S_1, Lat_S_1, labels = labels_S),
+            aes(x = Lon_S_1, y = Lat_S_1, label = labels), size = 3, color = col_S) +
+  geom_text(data = data.frame(Lon_N_1, Lat_N_1, labels = labels_N),
+            aes(x = Lon_N_1, y = Lat_N_1, label = labels), size = 3, color = col_N) +
+  coord_sf(ylim = c(32, 44), xlim = c(123, 132)) +
+  labs(title = "세종대왕의 세법개혁 국민투표 찬성 비율 (전체)") +
+  theme(plot.title = element_text(size = 20, hjust = 0.5))
+```
+
+<P style = "page-break-before:always">
+
+## ggplot
+
+```{r, fig.width = 5, fig.height = 5}
+ggplot() +
+  # geom_polygon() 대신 geom_sf()를 사용합니다.
+  geom_sf(data = shp_S_1,
+          color = "black", fill = "white") +
+  geom_sf(data = shp_N_1,
+          color = "black", fill = "white") +
+  # coord_quickmap() 대신 coord_sf()를 사용합니다 (sf 객체의 표준).
+  coord_sf()
+```
+
+<P style = "page-break-before:always">
+
+## Piece by piece into Unification
+
+### 서울
+
+```{r}
+shp_SL <- shp_S_1 %>% 
+  filter(Names_kr_old == "서울")
+shp_SL_u <- st_union(shp_SL)
+plot(shp_SL_u)
+```
+
+<P style = "page-break-before:always">
+
+### 유후사
+
+```{r}
+shp_YH <- shp_N_1 %>% 
+  filter(Names_kr_old == "유후")
+shp_YH_u <- st_union(shp_YH)
+plot(shp_YH_u)
+```
+
+<P style = "page-break-before:always">
+
+### 경상도
+
+```{r}
+shp_GS <- shp_S_1 %>% 
+  filter(Names_kr_old == "경상")
+shp_GS_u <- st_union(shp_GS)
+plot(shp_GS_u)
+```
+
+<P style = "page-break-before:always">
+
+### 전라도
+
+```{r}
+shp_JL <- shp_S_1 %>% 
+  filter(Names_kr_old == "전라")
+shp_JL_u <- st_union(shp_JL)
+plot(shp_JL_u)
+```
+
+<P style = "page-break-before:always">
+
+### 충청도
+
+```{r}
+shp_CC <- shp_S_1 %>% 
+  filter(Names_kr_old == "충청")
+shp_CC_u <- st_union(shp_CC)
+plot(shp_CC_u)
+```
+
+<P style = "page-break-before:always">
+
+### 경기도
+
+```{r, message = FALSE, results = 'hide'}
+# 1. 통합된 경기도 Shapefile 불러오기 (readOGR 대체)
+# 'GG' 파일이 이미 경기도 전체를 하나의 폴리곤으로 정리해 둔 파일이라고 가정합니다.
+shp_GG <- st_read(dsn = "../data/GG",
+                  layer = "GG",
+                  options = "ENCODING=UTF-8")
+
+# 2. 만약 불러온 shp_GG가 여러 폴리곤을 포함한다면, 최종적으로 단일 폴리곤으로 통합
+#    (불필요할 수도 있지만, 안전을 위해 st_union으로 통합하는 코드는 유지)
+#    shp_GG_u 객체를 생성하여 최종 통합본으로 사용합니다.
+shp_GG_u <- st_union(shp_GG)
+
+# 3. 통합된 결과 시각화
+plot(shp_GG_u)
+```
+
+<P style = "page-break-before:always">
+
+### 평안도
+
+```{r}
+shp_PA <- shp_N_1 %>% 
+  filter(Names_kr_old == "평안")
+shp_PA_u <- st_union(shp_PA)
+plot(shp_PA_u)
+```
+
+<P style = "page-break-before:always">
+
+### 북강원
+
+```{r}
+# shp_N_1이 st_read로 불러온 sf 객체라고 가정합니다.
+
+# 1. 필터링 (dplyr 사용 권장)
+shp_GW_N <- shp_N_1 %>%
+  filter(Names_kr_old == "강원")
+
+# 2. 공간 통합 (gUnaryUnion 대신 st_union 사용)
+shp_GW_N_u <- st_union(shp_GW_N)
+
+# 3. 시각화 (sf 객체 plot)
+plot(shp_GW_N_u)
+```
+
+<P style = "page-break-before:always">
+
+### 황해도
+
+```{r}
+shp_HH <- shp_N_1 %>% 
+  filter(Names_kr_old == "황해")
+shp_HH_u <- st_union(shp_HH)
+plot(shp_HH_u)
+```
+
+<P style = "page-break-before:always">
+
+### 함길도
+
+```{r}
+shp_HG <- shp_N_1 %>% 
+  filter(Names_kr_old == "함길")
+shp_HG_u <- st_union(shp_HG)
+plot(shp_HG_u)
+```
+
+<P style = "page-break-before:always">
+
+### 남강원
+
+```{r}
+shp_GW_S <- shp_S_1 %>% 
+  filter(Names_kr_old == "강원")
+shp_GW_S_u <- st_union(shp_GW_S)
+plot(shp_GW_S_u)
+```
+
+<P style = "page-break-before:always">
+
+### 강원도
+
+```{r}
+# bbox() 대신 st_bbox() 사용
+st_bbox(shp_GW_N_u) # 이제 sf 객체의 경계 상자를 반환합니다
+st_bbox(shp_GW_S_u) # 이제 sf 객체의 경계 상자를 반환합니다
+
+# st_bbox() 결과는 이름이 붙은 벡터이므로 인덱싱 방식이 약간 달라집니다.
+# [1] = xmin, [2] = ymin, [3] = xmax, [4] = ymax
+bbox_u <- st_bbox(shp_GW_N_u)
+bbox_S <- st_bbox(shp_GW_S_u)
+
+# xlim, ylim 계산
+xlim_u <- c(min(bbox_u["xmin"], bbox_S["xmin"]),
+            max(bbox_u["xmax"], bbox_S["xmax"]))
+ylim_u <- c(min(bbox_u["ymin"], bbox_S["ymin"]),
+            max(bbox_u["ymax"], bbox_S["ymax"]))
+
+plot(shp_GW_N_u, xlim = xlim_u, ylim = ylim_u)
+plot(shp_GW_S_u, add = TRUE)
+```
+
+```{r}
+# shp_GW_N_u와 shp_GW_S가 sf 객체라고 가정
+shp_GW_I_u <- st_intersection(shp_GW_N_u, shp_GW_S_u)
+class(shp_GW_I_u) # 결과는 sf 객체가 됩니다.
+plot(shp_GW_I_u)
+```
+
+```{r}
+# readOGR() 대신 sf::st_read() 사용
+shp_GW <- st_read(dsn = "../data/GW2",
+                  layer = "GW",
+                  options = "ENCODING=UTF-8", 
+                  quiet = TRUE)
+# shp_GW가 st_read()를 통해 불러온 sf 객체라고 가정합니다.
+class(shp_GW)
+# 1. 중심 좌표 추출 (Coordinates() 대체):
+#    st_centroid()로 중심점을 찾고, st_coordinates()로 좌표 행렬을 얻습니다.
+gw_coords <- st_coordinates(st_centroid(shp_GW))
+
+# 2. 이후 shp_GW를 SpatialPolygonsDataFrame으로 변환하거나 저장하는 코드가 있다면,
+#    이를 sf 표준에 맞게 변경해야 합니다. (예시: writeOGR 대신 st_write 사용)
+
+# ... (원래 목적에 맞게 이후 코드를 st_write 등으로 교체해야 함) ...
+
+# shp_GW_spdf <- SpatialPolygonsDataFrame(shp_GW, ...) # 이 부분도 필요하면 st_write로 대체
+
+# shp_GW를 사용하여 플롯 (sf 객체 그대로 사용)
+shp_GW_u <- st_union(shp_GW)
+plot(shp_GW_u)
+summary(shp_GW_u)
+# class(shp_GW_u)
+class(shp_GW_u)
+```
+
+<P style = "page-break-before:always">
+
+## Old Map
+
+```{r, fig.width = 10, fig.height = 10}
+# 맵 데이터 통합 (서울/유후는 통합할 필요 없음)
+# shp_SL <- shp_S_1 %>% filter(Names_kr_old == "서울")
+# shp_YH <- shp_N_1 %>% filter(Names_kr_old == "유후")
+# shp_GW_S <- shp_S_1 %>% filter(Names_kr_old == "강원")
+# shp_GW_N <- shp_N_1 %>% filter(Names_kr_old == "강원")
+# shp_GW_u <- st_union(shp_GW_S, shp_GW_N) # 남북 강원 통합
+# shp_GG <- shp_S_1 %>% filter(Names_kr_old == "경기") # 경기도는 이미 통합된 형태로 불러왔다고 가정
+
+# 통합된 지도 시각화 (각 도별로 다른 색상)
+ggplot() +
+  geom_sf(data = shp_HG_u, fill = "lightblue", color = "black") +
+  geom_sf(data = shp_PA_u, fill = "lightgreen", color = "black") +
+  geom_sf(data = shp_HH_u, fill = "yellow", color = "black") +
+  geom_sf(data = shp_GW_u, fill = "lightcoral", color = "black") +
+  geom_sf(data = shp_GG_u, fill = "lightcyan", color = "black") +
+  geom_sf(data = shp_CC_u, fill = "lightpink", color = "black") +
+  geom_sf(data = shp_JL_u, fill = "orange", color = "black") +
+  geom_sf(data = shp_GS_u, fill = "grey", color = "black") +
+  geom_sf(data = shp_SL_u, fill = "white", color = "black") +
+  geom_sf(data = shp_YH_u, fill = "white", color = "black") +
+  coord_sf(xlim = c(123, 132), ylim = c(32, 44)) +
+  labs(title = "팔도별 통합 지도 (Old Map 개념)") +
+  theme_void()
+```
+
+<P style = "page-break-before:always">
+
+#### Colours
+
+```{r, fig.width = 12, fig.height = 12}
+par(mar = c(0, 0, 0, 0), mfrow  = c(2, 2))
+cols_b <- rates_b * 10
+cols_b
+cols_c <- rates_c * 10
+cols_c
+cols <- rates * 10
+cols
+cols_SL <- rates_SL * 10
+cols_SL
+# c(shp_S_1$rates, shp_N_1$rates)
+# unique(c(shp_S_1$rates, shp_N_1$rates))
+# cols
+names(cols_b) <- c("SL", "GG", "PA", "HH", "CC", "GW", "HG", "GS", "JL")
+names(cols_c) <- c("YH", "GG", "PA", "HH", "CC", "GW", "HG", "GS", "JL")
+names(cols) <- c("SL", "YH", "GG", "PA", "HH", "CC", "GW", "HG", "GS", "JL")
+pie(rep(1, 9), 
+    col = colorRampPalette(brewer.pal(11, "RdYlBu"))(1001)[cols_b],
+    labels = names(cols_b))
+pie(rep(1, 9), 
+    col = colorRampPalette(brewer.pal(11, "RdYlBu"))(1001)[cols_c],
+    labels = names(cols_c))
+pie(rep(1, 10), 
+    col = colorRampPalette(brewer.pal(11, "RdYlBu"))(1001)[cols],
+    labels = names(cols))
+pie(rep(1, 3), 
+    col = colorRampPalette(brewer.pal(11, "RdYlBu"))(1001)[cols_SL],
+    labels = names(cols_SL))
+cols_hex_b <- colorRampPalette(brewer.pal(11, "RdYlBu"))(1001)[cols_b]
+cols_hex_c <- colorRampPalette(brewer.pal(11, "RdYlBu"))(1001)[cols_c]
+cols_hex <- colorRampPalette(brewer.pal(11, "RdYlBu"))(1001)[cols]
+cols_hex_SL <- colorRampPalette(brewer.pal(11, "RdYlBu"))(1001)[cols_SL]
+names(cols_hex_b) <- names(cols_b)
+names(cols_hex_c) <- names(cols_c)
+names(cols_hex) <- names(cols)
+cols_hex_b
+cols_hex_c
+cols_hex
+cols_hex_SL
+```
+
+<!--
+<P style = "page-break-before:always">
+-->
+
+### Combined
+
+#### 서울
+
+```{r, fig.width = 12, fig.height = 4}
+### 서울 Combined (최종 정리)
+
+# shp_SL을 순수한 지오메트리 객체로 통합하여 자동 출력 방지
+shp_SL_u <- st_union(shp_SL)
+
+# shp_SL_u의 중심 좌표 계산 (통합된 객체 사용)
+coords_SL <- st_coordinates(st_centroid(shp_SL_u))
+Lon_SL <- coords_SL[1]
+Lat_SL <- coords_SL[2]
+
+par(mar = c(0, 0, 3.1, 0), mfrow = c(1, 3), oma = c(0, 0, 2, 0))
+
+# 첫 번째 지도: shp_SL 대신 통합된 shp_SL_u 사용
+plot(shp_SL_u, col = cols_hex_SL[1], main = "대신", cex.main = 2.5)
+text(Lon_SL, Lat_SL, labels = paste0("찬성 : ", rates_SL[1], "%"), cex = 2)
+
+# 두 번째 지도
+plot(shp_SL_u, col = cols_hex_SL[2], main = "3품이하 현직", cex.main = 2.5)
+text(Lon_SL, Lat_SL, labels = paste0("찬성 : ", rates_SL[2], "%"), cex = 2)
+
+# 세 번째 지도
+plot(shp_SL_u, col = cols_hex_SL[3], main = "3품이하 전직", cex.main = 2.5)
+text(Lon_SL, Lat_SL, labels = paste0("찬성 : ", rates_SL[3], "%"), cex = 2)
+
+title(main = "서울의 세법개혁 찬반(관료)", outer = TRUE, cex.main = 2.5)
+par(mfrow = c(1, 1))
+```
+
+<P style = "page-break-before:always">
+
+#### 관료와 품관 촌민
+
+```{r, fig.width = 12, fig.height = 12}
+suppressMessages({
+par(mar = c(0, 0, 3.1, 0), mfrow = c(1, 2))
+plot(shp_HG_u, xlim = c(123, 132), ylim = c(32, 44), col = cols_hex_b["HG"])
+plot(shp_PA_u, add = TRUE, col = cols_hex_b["PA"])
+plot(shp_HH_u, add = TRUE, col = cols_hex_b["HH"])
+plot(shp_GW_u, add = TRUE, col = cols_hex_b["GW"])
+plot(shp_GG_u, add = TRUE, col = cols_hex_b["GG"])
+plot(shp_CC_u, add = TRUE, col = cols_hex_b["CC"])
+plot(shp_JL_u, add = TRUE, col = cols_hex_b["JL"])
+plot(shp_GS_u, add = TRUE, col = cols_hex_b["GS"])
+plot(shp_SL_u, add = TRUE, col = cols_hex_b["SL"])
+plot(shp_YH_u, add = TRUE, col = cols_hex_b["YH"])
+text(Lon_S_1, Lat_S_1, labels = labels_S_b, col = "black", cex = 0.8)
+text(Lon_N_1, Lat_N_1, labels = labels_N_b, col = "black", cex = 0.8)
+title(main = "관료", cex.main = 2.5, line = -4)
+# par(mar = c(0, 0, 0, 0))
+plot(shp_HG_u, xlim = c(123, 132), ylim = c(32, 44), col = cols_hex_c["HG"])
+plot(shp_PA_u, add = TRUE, col = cols_hex_c["PA"])
+plot(shp_HH_u, add = TRUE, col = cols_hex_c["HH"])
+plot(shp_GW_u, add = TRUE, col = cols_hex_c["GW"])
+plot(shp_GG_u, add = TRUE, col = cols_hex_c["GG"])
+plot(shp_CC_u, add = TRUE, col = cols_hex_c["CC"])
+plot(shp_JL_u, add = TRUE, col = cols_hex_c["JL"])
+plot(shp_GS_u, add = TRUE, col = cols_hex_c["GS"])
+plot(shp_SL_u, add = TRUE, col = cols_hex_c["SL"])
+plot(shp_YH_u, add = TRUE, col = cols_hex_c["YH"])
+text(Lon_S_1, Lat_S_1, labels = labels_S_c, col = col_S, cex = 0.8)
+text(Lon_N_1, Lat_N_1, labels = labels_N_c, col = col_N, cex = 0.8)
+title(main = "품관 촌민", cex.main = 2.5, line = -4)
+dev.copy(png, file = "../pics/sejong_ref_maps.png", width = 960, height = 960)
+invisible(dev.off())
+})
+```
+
+<P style = "page-break-before:always">
+
+#### 전체
+
+```{r, fig.width = 12, fig.height = 12}
+suppressMessages({
+par(mar = c(3.1, 0, 3.1, 0))
+plot(shp_HG_u, xlim = c(123, 132), ylim = c(32, 44), col = cols_hex["HG"])
+plot(shp_PA_u, add = TRUE, col = cols_hex["PA"])
+plot(shp_HH_u, add = TRUE, col = cols_hex["HH"])
+plot(shp_GW_u, add = TRUE, col = cols_hex["GW"])
+plot(shp_GG_u, add = TRUE, col = cols_hex["GG"])
+plot(shp_CC_u, add = TRUE, col = cols_hex["CC"])
+plot(shp_JL_u, add = TRUE, col = cols_hex["JL"])
+plot(shp_GS_u, add = TRUE, col = cols_hex["GS"])
+plot(shp_SL_u, add = TRUE, col = cols_hex["SL"])
+plot(shp_YH_u, add = TRUE, col = cols_hex["YH"])
+text(Lon_S_1, Lat_S_1, labels = labels_S, col = col_S, cex = 0.8)
+text(Lon_N_1, Lat_N_1, labels = labels_N, col = col_N, cex = 0.8)
+title(main = "전체", cex.main = 2.5, line = -4)
+dev.copy(png, file = "../pics/sejong_ref_map.png", width = 640, height = 960)
+invisible(dev.off())
+})
+```
