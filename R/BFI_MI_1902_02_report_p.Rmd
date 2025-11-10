@@ -20,7 +20,7 @@ panderOptions("table.split.table", Inf)
 ## 필수 자료 읽어들이기
 
 ```{r, data}
-load("./BFI_MI_1902.RData")
+load("./BFI_MI_CS1902.RData")
 # ls()
 str(BFI)
 # str(BFI_self)
@@ -223,6 +223,7 @@ MI_sort_kr_df[-1] %<>%
 ```{r, merge with class_roll}
 MI_sort_full_kr <- join(class_roll, MI_sort_kr_df, by = "ID")
 MI_sort_full_kr$ID == BFI$ID
+setequal(MI_sort_full_kr$ID, BFI$ID)
 #> 이름은 제외
 MI_sort_full_kr <- MI_sort_full_kr[c(1, 3:10)]
 kable(head(MI_sort_full_kr), align = "c")
@@ -264,5 +265,5 @@ class_roll$Name[class_roll$ID %in% setdiff(class_roll$ID, MI$ID)]
 ## Save
 
 ```{r, save, echo = FALSE}
-save.image("BFI_MI_report_1902.RData")
+save.image("BFI_MI_report_CS1902.RData")
 ```
